@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from house_spider.items import HouseSpiderItem
+from scrapy.linkextractors import LinkExtractor
+from house_spider.items import HouseItem
 
 CITY = ' Berlin,'
 
@@ -13,8 +14,14 @@ class ImmobilienScout24Spider(scrapy.Spider):
     )
 
     def parse(self, response):
-        item = HouseSpiderItem()
-        item['title'] = response.css('h1#expose-title::text').extract()
+        for link in LinkExtractor(allow=r'expose/[0-9]+$').extract_links(response):
+            yield scrapy.Request(link.url, callback=self.parse_item)
+
+    def parse_item(self, response):
+        item = HouseItem()
+        item['url'] = response.url
+        item['id'] = int(''.join(response.css('div ul.is24-ex-id li::text').extract()).strip())
+        item['title'] = ''.join(response.css('h1#expose-title::text').extract())
 
         full_address = ''.join(response.xpath("//span[@data-qa='is24-expose-address']/text()").extract()).strip()
         parts = full_address.split(CITY)

@@ -5,12 +5,14 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 
-import scrapy
+from scrapy import Item, Field
 
 
-class HouseSpiderItem(scrapy.Item):
-    title = scrapy.Field()
-    address = scrapy.Field()
-    neighborhood = scrapy.Field()
-    cold_rent = scrapy.Field()
-    warm_rent = scrapy.Field()
+class HouseItem(Item):
+    id = Field()
+    url = Field()
+    title = Field()
+    address = Field()
+    neighborhood = Field()
+    cold_rent = Field()
+    warm_rent = Field()
