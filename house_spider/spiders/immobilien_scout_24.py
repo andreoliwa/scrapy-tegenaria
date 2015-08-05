@@ -2,7 +2,7 @@
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
-from house_spider.items import HouseItem
+from house_spider.items import HouseItem, json_config
 
 CITY = ' Berlin,'
 
@@ -35,3 +35,5 @@ class ImmobilienScout24Spider(scrapy.Spider):
         item.add_css('cold_rent', 'div.is24qa-kaltmiete::text')
         item.add_css('warm_rent', 'dd.is24qa-gesamtmiete::text')
         yield item.load_item()
+
+ImmobilienScout24Spider.start_urls = json_config(__file__, 'start_urls')
