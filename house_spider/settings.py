@@ -14,6 +14,8 @@ BOT_NAME = 'house_spider'
 SPIDER_MODULES = ['house_spider.spiders']
 NEWSPIDER_MODULE = 'house_spider.spiders'
 
+FEED_URI = 'file:///home/wagner/Dropbox/src/python/python-house-spider/var/results/%(name)s.json'
+FEED_FORMAT = 'jsonlines'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'house_spider (+http://www.yourdomain.com)'
