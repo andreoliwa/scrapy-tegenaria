@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
+"""
+Define here the models for your scraped items.
 
-# Define here the models for your scraped items
-#
-# See documentation in:
-# http://doc.scrapy.org/en/latest/topics/items.html
+See documentation in:
+http://doc.scrapy.org/en/latest/topics/items.html
+"""
 import json
 import os
-from string import strip
+from string import strip  # pylint: disable=deprecated-module
 
 from scrapy import Item, Field
 from scrapy.loader.processors import Join, MapCompose
@@ -23,7 +24,10 @@ def sanitize_price(value):
     return value.replace(u'\u20ac', '').replace('.', '')
 
 
-class HomeItem(Item):
+class HomeItem(Item):  # pylint: disable=too-many-ancestors
+
+    """A home item."""
+
     url = Field(
         output_processor=Join()
     )
@@ -51,6 +55,12 @@ class HomeItem(Item):
 
 
 def json_config(current_file, key):
+    """Read a configuration from the JSON file.
+
+    :param current_file: Call from a spider, should be __file__.
+    :param key: Key to search in the JSON config file.
+    :return: The configuration value.
+    """
     config_dir = os.path.abspath(os.path.join(os.path.dirname(current_file), '../../var/config'))
     basename_no_ext = os.path.splitext(os.path.basename(current_file))[0]
     full_name = os.path.join(config_dir, '{}.json'.format(basename_no_ext))
