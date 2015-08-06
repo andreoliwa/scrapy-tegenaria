@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for house_spider project
+# Scrapy settings for home_spider project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -9,16 +9,16 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'house_spider'
+BOT_NAME = 'home_spider'
 
-SPIDER_MODULES = ['house_spider.spiders']
-NEWSPIDER_MODULE = 'house_spider.spiders'
+SPIDER_MODULES = ['home_spider.spiders']
+NEWSPIDER_MODULE = 'home_spider.spiders'
 
-FEED_URI = 'file:///home/wagner/Dropbox/src/python/python-house-spider/var/results/%(name)s.json'
+FEED_URI = 'file:///home/wagner/Dropbox/src/python/python-home-spider/var/results/%(name)s.json'
 FEED_FORMAT = 'jsonlines'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'house_spider (+http://www.yourdomain.com)'
+#USER_AGENT = 'home_spider (+http://www.yourdomain.com)'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS=32
@@ -46,13 +46,13 @@ FEED_FORMAT = 'jsonlines'
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'house_spider.middlewares.MyCustomSpiderMiddleware': 543,
+#    'home_spider.middlewares.MyCustomSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'house_spider.middlewares.MyCustomDownloaderMiddleware': 543,
+#    'home_spider.middlewares.MyCustomDownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -64,7 +64,7 @@ FEED_FORMAT = 'jsonlines'
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {
-#    'house_spider.pipelines.SomePipeline': 300,
+#    'home_spider.pipelines.SomePipeline': 300,
 #}
 
 # Enable and configure the AutoThrottle extension (disabled by default)

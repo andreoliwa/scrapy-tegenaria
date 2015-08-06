@@ -23,7 +23,7 @@ def sanitize_price(value):
     return value.replace(u'\u20ac', '').replace('.', '')
 
 
-class HouseItem(Item):
+class HomeItem(Item):
     url = Field(
         output_processor=Join()
     )

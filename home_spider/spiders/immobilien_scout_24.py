@@ -2,7 +2,7 @@
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
-from house_spider.items import HouseItem, json_config
+from home_spider.items import HomeItem, json_config
 
 CITY = ' Berlin,'
 
@@ -19,7 +19,7 @@ class ImmobilienScout24Spider(scrapy.Spider):
             yield scrapy.Request(link.url, callback=self.parse_item)
 
     def parse_item(self, response):
-        item = ItemLoader(HouseItem(), response=response)
+        item = ItemLoader(HomeItem(), response=response)
         item.add_value('url', response.url)
         item.add_xpath('id', "//div/ul[contains(@class, 'is24-ex-id')]/li[1]/text()")
         item.add_css('title', 'h1#expose-title::text')
