@@ -1,4 +1,5 @@
--r requirements.txt
+# Everything the developer needs in addition to the production requirements
+-r prod.txt
 
 cookiecutter==1.0.0
 flake8==2.4.1
