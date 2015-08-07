@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import home_spider
 
-
 try:
     from setuptools import setup, Command
 except ImportError:

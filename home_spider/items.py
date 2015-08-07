@@ -9,7 +9,7 @@ import json
 import os
 from string import strip  # pylint: disable=deprecated-module
 
-from scrapy import Item, Field
+from scrapy import Field, Item
 from scrapy.loader.processors import Join, MapCompose
 
 
