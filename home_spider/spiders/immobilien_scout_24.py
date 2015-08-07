@@ -3,6 +3,7 @@
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
+
 from home_spider.items import HomeItem, json_config
 
 
