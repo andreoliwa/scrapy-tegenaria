@@ -4,7 +4,7 @@ import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 
-from home_spider.items import HomeItem, json_config
+from home_spider.items import ApartmentItem, json_config
 
 
 class ImmobilienScout24Spider(scrapy.Spider):
@@ -18,6 +18,12 @@ class ImmobilienScout24Spider(scrapy.Spider):
     )
 
     CITY = ' Berlin,'
+    DIV_PRE_MAPPING = {
+        'description': 'is24qa-objektbeschreibung',
+        'equipment': 'is24qa-ausstattung',
+        'location': 'is24qa-lage',
+        'other': 'is24qa-sonstiges'
+    }
 
     def parse(self, response):
         """Parse a search results HTML page."""
@@ -26,10 +32,12 @@ class ImmobilienScout24Spider(scrapy.Spider):
 
     def parse_item(self, response):
         """Parse an ad page, with an apartment."""
-        item = ItemLoader(HomeItem(), response=response)
+        item = ItemLoader(ApartmentItem(), response=response)
         item.add_value('url', response.url)
-        item.add_xpath('external_id', "//div/ul[contains(@class, 'is24-ex-id')]/li[1]/text()")
         item.add_css('title', 'h1#expose-title::text')
+
+        for field, css_class in self.DIV_PRE_MAPPING.items():
+            item.add_xpath(field, "//div/pre[contains(@class, '{}')]/text()".format(css_class))
 
         full_address = ''.join(response.xpath("//span[@data-qa='is24-expose-address']/text()").extract()).strip()
         parts = full_address.split(self.CITY)

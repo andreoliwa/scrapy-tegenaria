@@ -7,7 +7,6 @@ http://doc.scrapy.org/en/latest/topics/items.html
 """
 import json
 import os
-from string import strip  # pylint: disable=deprecated-module
 
 from scrapy import Field, Item
 from scrapy.loader.processors import Join, MapCompose
@@ -21,35 +20,27 @@ def sanitize_price(value):
 
     :return: Clean value.
     """
-    return value.replace(u'\u20ac', '').replace('.', '')
+    return value.replace(u'\u20ac', '').replace('.', '').strip()
 
 
-class HomeItem(Item):  # pylint: disable=too-many-ancestors
+class ApartmentItem(Item):  # pylint: disable=too-many-ancestors
 
-    """A home item."""
+    """An apartment item."""
 
-    url = Field(
-        output_processor=Join()
-    )
-    external_id = Field(
-        input_processor=MapCompose(strip),
-        output_processor=Join()
-    )
-    title = Field(
-        output_processor=Join()
-    )
-    address = Field(
-        output_processor=Join()
-    )
-    neighborhood = Field(
-        output_processor=Join()
-    )
+    url = Field(output_processor=Join())
+    title = Field(output_processor=Join())
+    description = Field(output_processor=Join())
+    equipment = Field(output_processor=Join())
+    location = Field(output_processor=Join())
+    other = Field(output_processor=Join())
+    address = Field(output_processor=Join())
+    neighborhood = Field(output_processor=Join())
     cold_rent = Field(
-        input_processor=MapCompose(sanitize_price, strip),
+        input_processor=MapCompose(sanitize_price),
         output_processor=Join()
     )
     warm_rent = Field(
-        input_processor=MapCompose(sanitize_price, strip),
+        input_processor=MapCompose(sanitize_price),
         output_processor=Join()
     )
 
