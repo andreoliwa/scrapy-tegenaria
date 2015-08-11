@@ -5,6 +5,7 @@ help:
 	@echo "clean-build - remove build artifacts"
 	@echo "clean-pyc - remove Python file artifacts"
 	@echo "clean-test - remove test and coverage artifacts"
+	@echo "fix-isort - fix import order with isort"
 	@echo "lint - check style with isort, flake8, pep257 and pylint"
 	@echo "lt - lint and test"
 	@echo "ltd - lint, test and docs"
@@ -37,8 +38,11 @@ clean-test:
 	rm -f .coverage
 	rm -fr htmlcov/
 
-lint:
+fix-isort:
 	isort --recursive *.py home_spider tests
+
+lint:
+	isort --recursive --check *.py home_spider tests
 	flake8 home_spider tests
 	pep257 home_spider tests
 	pylint --rcfile=.pylintrc home_spider tests
