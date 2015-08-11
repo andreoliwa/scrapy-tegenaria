@@ -28,7 +28,7 @@ class ImmobilienScout24Spider(scrapy.Spider):
         """Parse an ad page, with an apartment."""
         item = ItemLoader(HomeItem(), response=response)
         item.add_value('url', response.url)
-        item.add_xpath('id', "//div/ul[contains(@class, 'is24-ex-id')]/li[1]/text()")
+        item.add_xpath('external_id', "//div/ul[contains(@class, 'is24-ex-id')]/li[1]/text()")
         item.add_css('title', 'h1#expose-title::text')
 
         full_address = ''.join(response.xpath("//span[@data-qa='is24-expose-address']/text()").extract()).strip()

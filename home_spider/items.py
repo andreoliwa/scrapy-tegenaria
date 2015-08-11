@@ -31,7 +31,7 @@ class HomeItem(Item):  # pylint: disable=too-many-ancestors
     url = Field(
         output_processor=Join()
     )
-    id = Field(
+    external_id = Field(
         input_processor=MapCompose(strip),
         output_processor=Join()
     )
