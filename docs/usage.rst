@@ -1,7 +1,7 @@
-========
+=====
 Usage
-========
+=====
 
-To use Home Spider in a project::
+To use Tegenaria in a project::
 
-    import home_spider
+    import tegenaria

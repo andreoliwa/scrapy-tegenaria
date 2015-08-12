@@ -39,13 +39,13 @@ clean-test:
 	rm -fr htmlcov/
 
 fix-isort:
-	isort --recursive *.py home_spider tests
+	isort --recursive *.py tegenaria tests
 
 lint:
-	isort --recursive --check *.py home_spider tests
-	flake8 home_spider tests
-	pep257 home_spider tests
-	pylint --rcfile=.pylintrc home_spider tests
+	isort --recursive --check *.py tegenaria tests
+	flake8 tegenaria tests
+	pep257 tegenaria tests
+	pylint --rcfile=.pylintrc tegenaria tests
 
 lt: lint test
 
@@ -58,14 +58,14 @@ test-all:
 	tox
 
 coverage:
-	py.test --cov=home_spider --cov-report=term --cov-report=html
+	py.test --cov=tegenaria --cov-report=term --cov-report=html
 	xdg-open htmlcov/index.html
 
 docs:
-	rm -f docs/home_spider.rst
+	rm -f docs/tegenaria.rst
 	rm -f docs/modules.rst
 	mkdir -p docs/_static
-	sphinx-apidoc -o docs/ home_spider
+	sphinx-apidoc -o docs/ tegenaria
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	xdg-open docs/_build/html/index.html

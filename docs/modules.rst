@@ -1,7 +1,7 @@
-home_spider
-===========
+tegenaria
+=========
 
 .. toctree::
    :maxdepth: 4
 
-   home_spider
+   tegenaria

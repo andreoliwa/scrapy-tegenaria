@@ -2,15 +2,15 @@
 # -*- coding: utf-8 -*-
 
 """
-test_home_spider
+test_tegenaria
 ----------------------------------
 
-Tests for `home_spider` module.
+Tests for `tegenaria` module.
 """
 
-import home_spider
+import tegenaria
 
 
 def test_something():
     """Test something."""
-    assert home_spider.__version__
+    assert tegenaria.__version__

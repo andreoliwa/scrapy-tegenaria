@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import home_spider
+import tegenaria
 
 try:
     from setuptools import setup, Command
@@ -39,23 +39,23 @@ class PyTest(Command):
         raise SystemExit(errno)
 
 setup(
-    name='home_spider',
-    version=home_spider.__version__,
-    description="Search for a home.",
+    name='tegenaria',
+    version=tegenaria.__version__,
+    description="Scrapy spiders to collect different items.",
     long_description=readme + '\n\n' + history,
     author="Wagner Augusto Andreoli",
     author_email='wagnerandreoli@gmail.com',
-    url='https://github.com/wagnerandreoli/python-home-spider',
+    url='https://github.com/wagnerandreoli/python-tegenaria',
     packages=[
-        'home_spider',
+        'tegenaria',
     ],
-    package_dir={'home_spider':
-                 'home_spider'},
+    package_dir={'tegenaria':
+                 'tegenaria'},
     include_package_data=True,
     install_requires=requirements,
     license="BSD",
     zip_safe=False,
-    keywords='home_spider',
+    keywords='tegenaria',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
@@ -74,8 +74,8 @@ setup(
     entry_points={
         'console_scripts': [
             # TODO: Put command line scripts here
-            # 'my-cli-script = home_spider.my_module:MyClass.main',
-            # 'my-other-cli-script = home_spider.another_module:some_function'
+            # 'my-cli-script = tegenaria.my_module:MyClass.main',
+            # 'my-other-cli-script = tegenaria.another_module:some_function'
         ],
     }
 )

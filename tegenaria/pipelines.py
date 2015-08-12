@@ -7,7 +7,7 @@ See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 """
 
 
-class HomeSpiderPipeline(object):
+class TegenariaPipeline(object):
 
     """An example of pipeline."""
 

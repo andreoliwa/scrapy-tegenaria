@@ -4,7 +4,7 @@ import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 
-from home_spider.items import ApartmentItem, json_config
+from tegenaria.items import ApartmentItem, json_config
 
 
 class ImmobilienScout24Spider(scrapy.Spider):
