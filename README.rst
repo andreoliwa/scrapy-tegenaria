@@ -1,18 +1,18 @@
-===============================
-Home Spider
-===============================
+=========
+Tegenaria
+=========
 
-.. image:: https://img.shields.io/travis/wagnerandreoli/python-home-spider.svg
-        :target: https://travis-ci.org/wagnerandreoli/python-home-spider
+.. image:: https://img.shields.io/travis/wagnerandreoli/python-tegenaria.svg
+        :target: https://travis-ci.org/wagnerandreoli/python-tegenaria
 
-.. image:: https://img.shields.io/pypi/v/home_spider.svg
-        :target: https://pypi.python.org/pypi/home_spider
+.. image:: https://img.shields.io/pypi/v/tegenaria.svg
+        :target: https://pypi.python.org/pypi/tegenaria
 
 
-Search for a home.
+Scrapy spiders to collect different items.
 
 * Free software: BSD license
-* Documentation: https://home_spider.readthedocs.org.
+* Documentation: https://tegenaria.readthedocs.org.
 
 Features
 --------

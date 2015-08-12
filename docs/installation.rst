@@ -4,9 +4,9 @@ Installation
 
 At the command line::
 
-    $ easy_install home_spider
+    $ easy_install tegenaria
 
 Or, if you have virtualenvwrapper installed::
 
-    $ mkvirtualenv home_spider
-    $ pip install home_spider
+    $ mkvirtualenv tegenaria
+    $ pip install tegenaria
