@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """A spider to crawl the Immobilien Scout 24 website."""
+import re
+
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
@@ -24,6 +26,7 @@ class ImmobilienScout24Spider(scrapy.Spider):
         'location': 'is24qa-lage',
         'other': 'is24qa-sonstiges'
     }
+    WARM_RENT_RE = re.compile(r'(?P<warm_rent>[0-9,.]+)[\s(]*(?P<warm_rent_notes>[^)]*)')
 
     def parse(self, response):
         """Parse a search results HTML page."""
@@ -49,6 +52,13 @@ class ImmobilienScout24Spider(scrapy.Spider):
 
         item.add_css('cold_rent', 'div.is24qa-kaltmiete::text')
         item.add_css('warm_rent', 'dd.is24qa-gesamtmiete::text')
-        yield item.load_item()
+        item_dict = item.load_item()
+
+        # Warm rent can have additional notes to the right.
+        match = self.WARM_RENT_RE.match(item_dict['warm_rent'])
+        if match:
+            item_dict.update(match.groupdict())
+
+        yield item_dict
 
 ImmobilienScout24Spider.start_urls = json_config(__file__, 'start_urls')
