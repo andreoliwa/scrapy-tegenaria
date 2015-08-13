@@ -20,7 +20,7 @@ def sanitize_price(value):
 
     :return: Clean value.
     """
-    return value.replace(u'\u20ac', '').replace('.', '').strip()
+    return value.replace(u'\u20ac', '').replace('.', '').replace(',', '.').strip()
 
 
 class ApartmentItem(Item):  # pylint: disable=too-many-ancestors
@@ -43,6 +43,7 @@ class ApartmentItem(Item):  # pylint: disable=too-many-ancestors
         input_processor=MapCompose(sanitize_price),
         output_processor=Join()
     )
+    warm_rent_notes = Field(output_processor=Join())
 
 
 def json_config(current_file, key):
