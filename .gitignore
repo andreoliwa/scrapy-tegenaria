@@ -1,13 +1,31 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
 *.py[cod]
 *.tmp
 
 # C extensions
 *.so
 
-# Packages
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+# dist/ This directory is used by jQuery and Bootstrap
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
 *.egg
+
+# Packages
 *.egg-info
-dist
 build
 eggs
 parts
@@ -19,29 +37,59 @@ develop-eggs
 lib
 lib64
 
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
 # Installer logs
 pip-log.txt
+pip-delete-this-directory.txt
 
 # Unit test / coverage reports
+htmlcov/
+.tox/
 .coverage
+.coverage.*
+.cache
 .tox
 nosetests.xml
-htmlcov
+coverage.xml
+*,cover
 
 # Translations
 *.mo
+*.pot
+
+# Django stuff:
+*.log
+
+# Sphinx documentation
+*/docs/_build/*
+
+# PyBuilder
+target/
 
 # Mr Developer
 .mr.developer.cfg
 .project
 .pydevproject
 
+# PyBuilder
+target/
+
 # Complexity
 output/*.html
 output/*/index.html
 
-# Sphinx
-docs/_build
+.webassets-cache
 
-# Editors
-.idea
+# Virtualenvs
+env/
+
+# PyCharm
+.idea/
+
+# Database
+*.db

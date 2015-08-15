@@ -45,7 +45,7 @@ lint:
 	isort --recursive --check *.py tegenaria tests
 	flake8 tegenaria tests
 	pep257 tegenaria tests
-	pylint --rcfile=.pylintrc tegenaria tests
+	pylint --rcfile=../.pylintrc tegenaria tests
 
 lt: lint test
 
