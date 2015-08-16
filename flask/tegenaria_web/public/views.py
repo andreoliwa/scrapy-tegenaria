@@ -7,7 +7,7 @@ from flask_table import Col, Table
 from sqlalchemy import Numeric
 
 from tegenaria_web.extensions import login_manager
-from tegenaria_web.models import Apartment
+from tegenaria_web.models import Apartment, Pin
 from tegenaria_web.public.forms import LoginForm
 from tegenaria_web.user.forms import RegisterForm
 from tegenaria_web.user.models import User
@@ -93,3 +93,23 @@ def apartments():
         Apartment.cold_rent.cast(Numeric)).all()
     table = ApartmentTable(items, classes=['table-bordered', 'table-striped'])
     return render_template("public/apartments.html", table=table)
+
+
+@blueprint.route("/pins/")
+def pins():
+    """List all pins."""
+    class PinTable(Table):
+
+        """An HTML table for the pins."""
+
+        name = Col('Name')
+        address = Col('Address')
+
+        def sort_url(self, col_id, reverse=False):
+            """Sort the table by clicking its headers."""
+            pass
+
+    # pylint: disable=no-member
+    items = Pin.query.all()
+    table = PinTable(items, classes=['table-bordered', 'table-striped'])
+    return render_template("public/pins.html", table=table)

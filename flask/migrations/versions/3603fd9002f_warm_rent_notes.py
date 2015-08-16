@@ -3,15 +3,13 @@
 Revision ID: 3603fd9002f
 Revises: 2ac56d1b4e0
 Create Date: 2015-08-13 23:45:16.956456
-
 """
-
-# revision identifiers, used by Alembic.
-revision = '3603fd9002f'
-down_revision = '2ac56d1b4e0'
-
+# pylint: disable=invalid-name,no-member
 import sqlalchemy as sa
 from alembic import op
+
+revision = '3603fd9002f'
+down_revision = '2ac56d1b4e0'
 
 
 def upgrade():

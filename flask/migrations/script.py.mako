@@ -3,10 +3,8 @@
 Revision ID: ${up_revision}
 Revises: ${down_revision}
 Create Date: ${create_date}
-
 """
 
-# revision identifiers, used by Alembic.
 revision = ${repr(up_revision)}
 down_revision = ${repr(down_revision)}
 

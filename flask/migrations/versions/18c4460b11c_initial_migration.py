@@ -3,15 +3,13 @@
 Revision ID: 18c4460b11c
 Revises: None
 Create Date: 2015-08-10 00:12:27.516484
-
 """
-
-# revision identifiers, used by Alembic.
-revision = '18c4460b11c'
-down_revision = None
-
+# pylint: disable=invalid-name,no-member
 import sqlalchemy as sa
 from alembic import op
+
+revision = '18c4460b11c'
+down_revision = None
 
 
 def upgrade():
@@ -26,8 +24,7 @@ def upgrade():
                     sa.Column('cold_rent', sa.String(), nullable=True),
                     sa.Column('warm_rent', sa.String(), nullable=True),
                     sa.PrimaryKeyConstraint('id'),
-                    sa.UniqueConstraint('url')
-                    )
+                    sa.UniqueConstraint('url'))
     op.create_table('users',
                     sa.Column('id', sa.Integer(), nullable=False),
                     sa.Column('username', sa.String(length=80), nullable=False),
@@ -40,16 +37,14 @@ def upgrade():
                     sa.Column('is_admin', sa.Boolean(), nullable=True),
                     sa.PrimaryKeyConstraint('id'),
                     sa.UniqueConstraint('email'),
-                    sa.UniqueConstraint('username')
-                    )
+                    sa.UniqueConstraint('username'))
     op.create_table('roles',
                     sa.Column('id', sa.Integer(), nullable=False),
                     sa.Column('name', sa.String(length=80), nullable=False),
                     sa.Column('user_id', sa.Integer(), nullable=True),
                     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
                     sa.PrimaryKeyConstraint('id'),
-                    sa.UniqueConstraint('name')
-                    )
+                    sa.UniqueConstraint('name'))
 
 
 def downgrade():
