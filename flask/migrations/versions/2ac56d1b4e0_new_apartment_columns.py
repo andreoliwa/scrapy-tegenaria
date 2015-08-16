@@ -3,15 +3,13 @@
 Revision ID: 2ac56d1b4e0
 Revises: 18c4460b11c
 Create Date: 2015-08-12 00:17:08.293722
-
 """
-
-# revision identifiers, used by Alembic.
-revision = '2ac56d1b4e0'
-down_revision = '18c4460b11c'
-
+# pylint: disable=invalid-name,no-member
 import sqlalchemy as sa
 from alembic import op
+
+revision = '2ac56d1b4e0'
+down_revision = '18c4460b11c'
 
 
 def upgrade():

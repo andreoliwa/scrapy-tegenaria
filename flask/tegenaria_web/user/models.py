@@ -4,8 +4,7 @@ import datetime as dt
 
 from flask_login import UserMixin
 
-from tegenaria_web.database import (Column, Model, SurrogatePK, db,
-                                    reference_column, relationship)
+from tegenaria_web.database import Column, Model, SurrogatePK, db, reference_column, relationship
 from tegenaria_web.extensions import bcrypt
 
 

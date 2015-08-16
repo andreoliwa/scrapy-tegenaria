@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Tegenaria models."""
-from tegenaria_web.database import Column, Model, SurrogatePK, db
+from tegenaria_web.database import Column, Model, SurrogatePK, db, reference_column
 
 
 class Apartment(SurrogatePK, Model):
@@ -24,3 +24,36 @@ class Apartment(SurrogatePK, Model):
     def __repr__(self):
         """Represent the object as a unique string."""
         return '<Apartment({url})>'.format(url=self.url)
+
+
+class Pin(SurrogatePK, Model):
+
+    """A pin in the map, a reference address to be used when calculating distances."""
+
+    __tablename__ = 'pin'
+
+    name = Column(db.String())
+    address = Column(db.String())
+
+    def __repr__(self):
+        """Represent the object as a unique string."""
+        return '<Pin({}, {})>'.format(self.name, self.address)
+
+
+class Distance(SurrogatePK, Model):
+
+    """Distance from a pin to an apartment."""
+
+    __tablename__ = 'distance'
+
+    apartment_id = reference_column('apartment')
+    pin_id = reference_column('pin')
+    distance_text = Column(db.String(), nullable=False)
+    distance_value = Column(db.Integer(), nullable=False)
+    duration_text = Column(db.String(), nullable=False)
+    duration_value = Column(db.Integer(), nullable=False)
+
+    def __repr__(self):
+        """Represent the object as a unique string."""
+        return '<Distance({} to {}, {}/{})>'.format(
+            self.apartment_id, self.pin_id, self.distance_text, self.duration_text)

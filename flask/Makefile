@@ -5,10 +5,10 @@ help:
 	@echo "test - run tests quickly with the default Python"
 
 fix-isort:
-	isort --recursive *.py tegenaria_web migrations tests
+	isort --recursive --settings-path .. *.py tegenaria_web migrations tests
 
 lint:
-	isort --recursive --check *.py tegenaria_web migrations tests
+	isort --recursive --settings-path .. --check *.py tegenaria_web migrations tests
 	flake8 tegenaria_web migrations tests
 	pep257 tegenaria_web migrations tests
 	pylint --rcfile=../.pylintrc tegenaria_web migrations tests
