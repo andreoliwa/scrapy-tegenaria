@@ -14,7 +14,7 @@ BOT_NAME = 'tegenaria'
 SPIDER_MODULES = ['tegenaria.spiders']
 NEWSPIDER_MODULE = 'tegenaria.spiders'
 
-FEED_URI = 'file:///home/wagner/Dropbox/src/python/python-tegenaria/var/results/%(name)s.json'
+FEED_URI = 'file:///tmp/tegenaria/%(name)s.json'
 FEED_FORMAT = 'jsonlines'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

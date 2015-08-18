@@ -28,6 +28,7 @@ def upgrade():
                     sa.Column('distance_value', sa.Integer(), nullable=False),
                     sa.Column('duration_text', sa.String(), nullable=False),
                     sa.Column('duration_value', sa.Integer(), nullable=False),
+                    sa.Column('updated_at', sa.DateTime(), nullable=False),
                     sa.ForeignKeyConstraint(['apartment_id'], ['apartment.id'], ),
                     sa.ForeignKeyConstraint(['pin_id'], ['pin.id'], ),
                     sa.PrimaryKeyConstraint('id'))
