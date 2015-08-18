@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """Tegenaria models."""
-from tegenaria_web.database import Column, Model, SurrogatePK, db, reference_column
+from sqlalchemy.sql.functions import func
+
+from tegenaria_web.database import Column, Model, SurrogatePK, db, reference_column, relationship
 
 
 class Apartment(SurrogatePK, Model):
@@ -20,6 +22,8 @@ class Apartment(SurrogatePK, Model):
     cold_rent = Column(db.String())
     warm_rent = Column(db.String())
     warm_rent_notes = Column(db.String())
+
+    distances = db.relationship('Distance')
 
     def __repr__(self):
         """Represent the object as a unique string."""
@@ -46,14 +50,19 @@ class Distance(SurrogatePK, Model):
 
     __tablename__ = 'distance'
 
-    apartment_id = reference_column('apartment')
-    pin_id = reference_column('pin')
     distance_text = Column(db.String(), nullable=False)
     distance_value = Column(db.Integer(), nullable=False)
     duration_text = Column(db.String(), nullable=False)
     duration_value = Column(db.Integer(), nullable=False)
+    updated_at = Column(db.DateTime, nullable=False, onupdate=func.now(), default=func.now())
+
+    apartment_id = reference_column('apartment')
+    apartment = relationship('Apartment')
+
+    pin_id = reference_column('pin')
+    pin = relationship('Pin')
 
     def __repr__(self):
         """Represent the object as a unique string."""
-        return '<Distance({} to {}, {}/{})>'.format(
-            self.apartment_id, self.pin_id, self.distance_text, self.duration_text)
+        return "<Distance('{}' to '{}', {}/{})>".format(
+            self.apartment.address, self.pin.address, self.distance_text, self.duration_text)
