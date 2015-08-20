@@ -90,7 +90,7 @@ def apartments():
             pass
 
     # pylint: disable=no-member
-    items = Apartment.query.order_by(
+    items = Apartment.query.filter(Apartment.active.is_(True)).order_by(
         Apartment.warm_rent.cast(Numeric),
         Apartment.cold_rent.cast(Numeric)).all()
     table = ApartmentTable(items)

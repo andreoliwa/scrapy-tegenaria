@@ -3,7 +3,6 @@
 Revision ID: 48a616b1f23
 Revises: 3603fd9002f
 Create Date: 2015-08-16 23:42:26.886334
-
 """
 # pylint: disable=invalid-name,no-member
 import sqlalchemy as sa

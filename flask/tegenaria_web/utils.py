@@ -9,10 +9,11 @@ from getpass import getpass
 from uuid import uuid4
 
 import keyring
+import requests
 from flask import flash, json
 from flask.ext.table import Col  # pylint: disable=no-name-in-module,import-error
 from googlemaps import Client
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 from sqlalchemy.exc import IntegrityError
 
 from tegenaria_web.extensions import db
@@ -48,7 +49,7 @@ def read_from_keyring(key, secret=True, always_ask=False):
     return value
 
 
-def save_json_to_db(input_dir, output_dir, model_class):
+def save_json_to_db(input_dir, output_dir, model_class):  # pylint: disable=too-many-locals
     """Save JSON records in a database model.
 
     :param input_dir: Input directory (must exist).
@@ -65,6 +66,10 @@ def save_json_to_db(input_dir, output_dir, model_class):
     output_dir = os.path.expanduser(output_dir)
     os.makedirs(output_dir, exist_ok=True)
 
+    LOGGER.warning('Deactivating all records first')
+    row_count = db.session.query(model_class).update(dict(active=False), synchronize_session=False)
+    LOGGER.warning('Inactive records: %d', row_count)
+
     LOGGER.warning('Searching for JSON files in %s', input_dir)
     for name in os.listdir(input_dir):
         full_name = os.path.join(input_dir, name)
@@ -75,6 +80,7 @@ def save_json_to_db(input_dir, output_dir, model_class):
         with open(full_name) as handle:
             for line in handle:
                 json_record = json.loads(line)
+                json_record.update(dict(active=True, updated_at=datetime.now()))
                 model = model_class(**json_record)
                 try:
                     model.save()
@@ -89,6 +95,17 @@ def save_json_to_db(input_dir, output_dir, model_class):
         destination_name = os.path.join(output_dir, '{}_{}{}'.format(suffix, str(uuid4()), extension))
         LOGGER.warning('Moving file to %s', destination_name)
         shutil.move(full_name, destination_name)
+
+    LOGGER.warning('Searching not found (404)')
+    all_inactive = model_class.query.filter(or_(model_class.active.is_(None), model_class.active == 0))
+    for one_inactive in list(all_inactive):
+        response = requests.get(one_inactive.url)
+        if response.status_code == requests.codes.NOT_FOUND:  # pylint: disable=no-member
+            LOGGER.warning('Not found: %s', one_inactive.url)
+        else:
+            LOGGER.warning('Reactivating: %s', one_inactive.url)
+            one_inactive.update(active=True)
+
     LOGGER.warning('Done.')
 
 
