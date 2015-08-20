@@ -84,3 +84,7 @@ footer .footer-nav {
   margin-right: 25px;
   list-style: none;
 }
+
+td {
+  padding: 5px;
+}

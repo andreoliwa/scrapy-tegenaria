@@ -11,7 +11,7 @@ from tegenaria_web.models import Apartment, Pin
 from tegenaria_web.public.forms import LoginForm
 from tegenaria_web.user.forms import RegisterForm
 from tegenaria_web.user.models import User
-from tegenaria_web.utils import flash_errors
+from tegenaria_web.utils import UrlCol, flash_errors
 
 blueprint = Blueprint('public', __name__, static_folder="../static")  # pylint: disable=invalid-name
 
@@ -75,8 +75,10 @@ def apartments():
 
         """An HTML table for the apartments."""
 
+        classes = ['table-bordered', 'table-striped']
+
         title = Col('Title')
-        url = Col('URL')
+        url = UrlCol('URL')
         address = Col('Address')
         neighborhood = Col('Neighborhood')
         warm_rent = Col('Warm Rent')
@@ -91,7 +93,7 @@ def apartments():
     items = Apartment.query.order_by(
         Apartment.warm_rent.cast(Numeric),
         Apartment.cold_rent.cast(Numeric)).all()
-    table = ApartmentTable(items, classes=['table-bordered', 'table-striped'])
+    table = ApartmentTable(items)
     return render_template("public/apartments.html", table=table)
 
 

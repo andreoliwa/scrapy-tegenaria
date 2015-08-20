@@ -2,6 +2,7 @@
 """Helper utilities and decorators."""
 import logging
 import os
+import re
 import shutil
 from datetime import date, datetime, timedelta
 from getpass import getpass
@@ -9,6 +10,7 @@ from uuid import uuid4
 
 import keyring
 from flask import flash, json
+from flask.ext.table import Col  # pylint: disable=no-name-in-module,import-error
 from googlemaps import Client
 from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
@@ -127,3 +129,12 @@ def calculate_distance():
                 distance_value=distance['value'],
                 duration_text=duration['text'],
                 duration_value=duration['value']))
+
+
+class UrlCol(Col):  # pylint: disable=no-init
+
+    """A column that displays a URL."""
+
+    def td_format(self, content):  # pylint: disable=no-self-use
+        """Format the content as a URL targeting a blank page."""
+        return '<a href="{}" target="_blank">{}</a>'.format(content, re.findall(r'/([0-9]+)', content)[0])
