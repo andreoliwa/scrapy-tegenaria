@@ -18,12 +18,14 @@ class BerlinovoSpider(scrapy.Spider):
     start_urls = (
         'https://www.berlinovo.de/en/suche-apartments',
     )
+    searched_pages = set()
 
     def parse(self, response):
         """Parse a search results HTML page."""
-        # TODO Infinite loop
-        # for link in LinkExtractor(allow=r'/en/suche-apartments', unique=True).extract_links(response):
-        #     yield scrapy.Request(link.url, callback=self.parse)
+        for link in LinkExtractor(allow=r'/en/suche-apartments.+page=', unique=True).extract_links(response):
+            if link.url not in (self.searched_pages, self.start_urls):
+                self.searched_pages.add(link.url)
+                yield scrapy.Request(link.url, callback=self.parse)
 
         for link in LinkExtractor(allow=r'/en/apartment/', unique=True).extract_links(response):
             yield scrapy.Request(link.url, callback=self.parse_item)

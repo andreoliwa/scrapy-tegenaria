@@ -160,4 +160,4 @@ class UrlCol(Col):  # pylint: disable=no-init
 
     def td_format(self, content):  # pylint: disable=no-self-use
         """Format the content as a URL targeting a blank page."""
-        return '<a href="{}" target="_blank">{}</a>'.format(content, re.findall(r'/([0-9]+)', content)[0])
+        return '<a href="{url}" target="_blank">{url}</a>'.format(url=content)
