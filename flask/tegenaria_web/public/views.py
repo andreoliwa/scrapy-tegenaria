@@ -81,9 +81,10 @@ def apartments():
         url = UrlCol('URL')
         address = Col('Address')
         neighborhood = Col('Neighborhood')
+        rooms = Col('Rooms')
+        cold_rent = Col('Cold Rent')
         warm_rent = Col('Warm Rent')
         warm_rent_notes = Col('Notes')
-        cold_rent = Col('Cold Rent')
 
         def sort_url(self, col_id, reverse=False):
             """Sort the table by clicking its headers."""

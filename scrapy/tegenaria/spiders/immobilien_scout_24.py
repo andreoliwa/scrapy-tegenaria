@@ -52,6 +52,7 @@ class ImmobilienScout24Spider(scrapy.Spider):
 
         item.add_css('cold_rent', 'div.is24qa-kaltmiete::text')
         item.add_css('warm_rent', 'dd.is24qa-gesamtmiete::text')
+        item.add_css('rooms', 'div.is24qa-zimmer::text')
         item_dict = item.load_item()
 
         # Warm rent can have additional notes to the right.
