@@ -35,15 +35,10 @@ class ApartmentItem(Item):  # pylint: disable=too-many-ancestors
     other = Field(output_processor=Join())
     address = Field(output_processor=Join())
     neighborhood = Field(output_processor=Join())
-    cold_rent = Field(
-        input_processor=MapCompose(sanitize_price),
-        output_processor=Join()
-    )
-    warm_rent = Field(
-        input_processor=MapCompose(sanitize_price),
-        output_processor=Join()
-    )
+    cold_rent = Field(input_processor=MapCompose(sanitize_price), output_processor=Join())
+    warm_rent = Field(input_processor=MapCompose(sanitize_price), output_processor=Join())
     warm_rent_notes = Field(output_processor=Join())
+    rooms = Field(output_processor=Join())
 
 
 def json_config(current_file, key):
