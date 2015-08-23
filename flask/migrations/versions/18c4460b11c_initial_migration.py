@@ -14,17 +14,6 @@ down_revision = None
 
 def upgrade():
     """Apply changes to a database (create tables, columns, etc.)."""
-    op.create_table('apartment',
-                    sa.Column('id', sa.Integer(), nullable=False),
-                    sa.Column('url', sa.String(), nullable=False),
-                    sa.Column('external_id', sa.String(), nullable=True),
-                    sa.Column('title', sa.String(), nullable=True),
-                    sa.Column('address', sa.String(), nullable=True),
-                    sa.Column('neighborhood', sa.String(), nullable=True),
-                    sa.Column('cold_rent', sa.String(), nullable=True),
-                    sa.Column('warm_rent', sa.String(), nullable=True),
-                    sa.PrimaryKeyConstraint('id'),
-                    sa.UniqueConstraint('url'))
     op.create_table('users',
                     sa.Column('id', sa.Integer(), nullable=False),
                     sa.Column('username', sa.String(length=80), nullable=False),
@@ -51,4 +40,3 @@ def downgrade():
     """Reverse actions performed during upgrade."""
     op.drop_table('roles')
     op.drop_table('users')
-    op.drop_table('apartment')
