@@ -22,6 +22,7 @@ class Apartment(SurrogatePK, Model):
     cold_rent = Column(db.String())
     warm_rent = Column(db.String())
     warm_rent_notes = Column(db.String())
+    rooms = Column(db.String())
     updated_at = Column(db.DateTime, onupdate=func.now(), default=func.now())
     active = Column(db.Boolean, default=False)
 
