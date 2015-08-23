@@ -30,7 +30,7 @@ class Apartment(SurrogatePK, Model):
 
     def __repr__(self):
         """Represent the object as a unique string."""
-        return '<Apartment({url})>'.format(url=self.url)
+        return '<Apartment({id}: {url})>'.format(id=self.id, url=self.url)
 
 
 class Pin(SurrogatePK, Model):

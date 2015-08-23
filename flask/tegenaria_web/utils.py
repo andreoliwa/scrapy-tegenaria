@@ -66,11 +66,8 @@ def save_json_to_db(input_dir, output_dir, model_class):  # pylint: disable=too-
     output_dir = os.path.expanduser(output_dir)
     os.makedirs(output_dir, exist_ok=True)
 
-    LOGGER.warning('Deactivating all records first')
-    row_count = db.session.query(model_class).update(dict(active=False), synchronize_session=False)
-    LOGGER.warning('Inactive records: %d', row_count)
-
     LOGGER.warning('Searching for JSON files in %s', input_dir)
+    saved_ids = []
     for name in os.listdir(input_dir):
         full_name = os.path.join(input_dir, name)
         if not os.path.isfile(full_name):
@@ -79,16 +76,25 @@ def save_json_to_db(input_dir, output_dir, model_class):  # pylint: disable=too-
         LOGGER.warning('Reading %s', full_name)
         with open(full_name) as handle:
             for line in handle:
-                json_record = json.loads(line)
+                raw_json_record = json.loads(line)
+                """:type: dict"""
+
+                # Remove all whitespace in every field, before inserting into the database.
+                json_record = {}
+                for key, value in raw_json_record.items():
+                    json_record[key] = value.strip()
                 json_record.update(dict(active=True, updated_at=datetime.now()))
+
                 model = model_class(**json_record)
                 try:
                     model.save()
+                    saved_ids.append(model.id)
                     LOGGER.warning('Creating %s', model)
                 except IntegrityError:
                     db.session.rollback()
                     existing = model_class.query.filter_by(url=model.url).one()
                     existing.update(**json_record)
+                    saved_ids.append(existing.id)
                     LOGGER.warning('Updating %s', model)
 
         suffix, extension = os.path.splitext(name)
@@ -96,15 +102,15 @@ def save_json_to_db(input_dir, output_dir, model_class):  # pylint: disable=too-
         LOGGER.warning('Moving file to %s', destination_name)
         shutil.move(full_name, destination_name)
 
-    LOGGER.warning('Searching not found (404)')
-    all_inactive = model_class.query.filter(or_(model_class.active.is_(None), model_class.active == 0))
-    for one_inactive in list(all_inactive):
-        response = requests.get(one_inactive.url)
+    LOGGER.warning('Searching not found (404) among records that were not updated')
+    not_updated = model_class.query.filter(model_class.id.notin_(saved_ids))
+    for record in list(not_updated):
+        response = requests.get(record.url)
         if response.status_code == requests.codes.NOT_FOUND:  # pylint: disable=no-member
-            LOGGER.warning('Not found: %s', one_inactive.url)
+            LOGGER.warning('Not found: %s', record.url)
+            record.update(active=False)
         else:
-            LOGGER.warning('Reactivating: %s', one_inactive.url)
-            one_inactive.update(active=True)
+            LOGGER.warning('Still active: %s', record.url)
 
     LOGGER.warning('Done.')
 
