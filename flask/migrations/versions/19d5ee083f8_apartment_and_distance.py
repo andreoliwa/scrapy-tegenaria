@@ -5,8 +5,8 @@ Revises: 2ac931bbe13
 Create Date: 2015-08-23 02:36:38.002640
 """
 # pylint: disable=invalid-name,no-member
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 revision = '19d5ee083f8'
 down_revision = '2ac931bbe13'

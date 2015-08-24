@@ -2,19 +2,18 @@
 """Helper utilities and decorators."""
 import logging
 import os
-import re
 import shutil
 from datetime import date, datetime, timedelta
 from getpass import getpass
 from uuid import uuid4
-from googlemaps.exceptions import HTTPError
 
 import keyring
 import requests
 from flask import flash, json
 from flask.ext.table import Col  # pylint: disable=no-name-in-module,import-error
 from googlemaps import Client
-from sqlalchemy import and_, or_
+from googlemaps.exceptions import HTTPError
+from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
 
 from tegenaria_web.extensions import db

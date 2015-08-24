@@ -5,9 +5,10 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask.ext.login import login_required, login_user, logout_user
 from flask_table import Col, Table
 from sqlalchemy import Numeric
+from sqlalchemy.orm import aliased
 
-from tegenaria_web.extensions import login_manager
-from tegenaria_web.models import Apartment, Pin
+from tegenaria_web.extensions import db, login_manager
+from tegenaria_web.models import Apartment, Distance, Pin
 from tegenaria_web.public.forms import LoginForm
 from tegenaria_web.user.forms import RegisterForm
 from tegenaria_web.user.models import User
@@ -91,10 +92,28 @@ def apartments():
             pass
 
     # pylint: disable=no-member
-    items = Apartment.query.filter(Apartment.active.is_(True)).order_by(
-        Apartment.warm_rent.cast(Numeric),
-        Apartment.cold_rent.cast(Numeric)).all()
-    table = ApartmentTable(items)
+    query = db.session.query(
+        Apartment.title, Apartment.url, Apartment.address, Apartment.neighborhood, Apartment.rooms,
+        Apartment.cold_rent, Apartment.warm_rent, Apartment.warm_rent_notes)
+    for pin in Pin.query.all():
+        duration_text_field = 'duration_text_{}'.format(pin.id)
+        duration_value_field = 'duration_value_{}'.format(pin.id)
+
+        ApartmentTable.add_column(duration_text_field, Col(pin.name))
+        distance_alias = aliased(Distance)
+        query = query.join(distance_alias, distance_alias.apartment_id == Apartment.id).add_columns(
+            distance_alias.duration_text.label(duration_text_field),
+            distance_alias.duration_value.label(duration_value_field),
+        ).filter(distance_alias.pin_id == pin.id)
+    query = query.filter(Apartment.active.is_(True))
+
+    # TODO Sort by column headers
+    if False:
+        query = query.order_by(Apartment.warm_rent.cast(Numeric), Apartment.cold_rent.cast(Numeric))
+    else:
+        query = query.order_by('duration_value_2', 'duration_value_1')
+
+    table = ApartmentTable(query.all())
     return render_template("public/apartments.html", table=table)
 
 
