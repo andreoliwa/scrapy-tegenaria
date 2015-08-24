@@ -7,6 +7,7 @@ import shutil
 from datetime import date, datetime, timedelta
 from getpass import getpass
 from uuid import uuid4
+from googlemaps.exceptions import HTTPError
 
 import keyring
 import requests
@@ -102,15 +103,16 @@ def save_json_to_db(input_dir, output_dir, model_class):  # pylint: disable=too-
         LOGGER.warning('Moving file to %s', destination_name)
         shutil.move(full_name, destination_name)
 
-    LOGGER.warning('Searching not found (404) among records that were not updated')
-    not_updated = model_class.query.filter(model_class.id.notin_(saved_ids))
-    for record in list(not_updated):
-        response = requests.get(record.url)
-        if response.status_code == requests.codes.NOT_FOUND:  # pylint: disable=no-member
-            LOGGER.warning('Not found: %s', record.url)
-            record.update(active=False)
-        else:
-            LOGGER.warning('Still active: %s', record.url)
+    if saved_ids:
+        LOGGER.warning('Searching not found (404) among records that were not updated')
+        not_updated = model_class.query.filter(model_class.id.notin_(saved_ids))
+        for record in list(not_updated):
+            response = requests.get(record.url)
+            if response.status_code == requests.codes.NOT_FOUND:  # pylint: disable=no-member
+                LOGGER.warning('Not found: %s', record.url)
+                record.update(active=False)
+            else:
+                LOGGER.warning('Still active: %s', record.url)
 
     LOGGER.warning('Done.')
 
@@ -133,7 +135,7 @@ def calculate_distance():
     for pin in Pin.query.all():
         apartments = Apartment.query.outerjoin(Distance, and_(
             Apartment.id == Distance.apartment_id, Distance.pin_id == pin.id)) \
-            .filter(Distance.apartment_id.is_(None)).limit(50)
+            .filter(Distance.apartment_id.is_(None)).limit(20)
         search = {apartment.id: apartment.address for apartment in apartments.all()}
         if not search:
             LOGGER.warning('All distances already calculated for %s', pin)
@@ -141,8 +143,12 @@ def calculate_distance():
 
         ids = list(search.keys())
         origin_addresses = list(search.values())
-        result = maps.distance_matrix(
-            origin_addresses, [pin.address], mode='transit', units='metric', arrival_time=morning)
+        try:
+            result = maps.distance_matrix(
+                origin_addresses, [pin.address], mode='transit', units='metric', arrival_time=morning)
+        except HTTPError as err:
+            LOGGER.error('Error on Google Distance Matrix: %s', str(err))
+            continue
         for (duration, distance) in [(dd['duration'], dd['distance'])
                                      for dd in [row['elements'][0] for row in result['rows']]]:
             LOGGER.warning('Calculating %s', Distance.create(
