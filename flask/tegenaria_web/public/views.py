@@ -77,19 +77,21 @@ def apartments():
         """An HTML table for the apartments."""
 
         classes = ['table-bordered', 'table-striped']
+        allow_sort = True
 
-        title = Col('Title')
-        url = UrlCol('URL')
-        address = Col('Address')
-        neighborhood = Col('Neighborhood')
-        rooms = Col('Rooms')
-        cold_rent = Col('Cold Rent')
+        title = Col('Title', allow_sort=False)
+        url = UrlCol('URL', allow_sort=False)
+        address = Col('Address', allow_sort=False)
+        neighborhood = Col('Neighborhood', allow_sort=False)
+        rooms = Col('Rooms', allow_sort=False)
+        cold_rent = Col('Cold Rent', allow_sort=False)
         warm_rent = Col('Warm Rent')
-        warm_rent_notes = Col('Notes')
+        warm_rent_notes = Col('Notes', allow_sort=False)
 
-        def sort_url(self, col_id, reverse=False):
+        def sort_url(self, col_key, reverse=False):
             """Sort the table by clicking its headers."""
-            pass
+            direction = 'desc' if reverse else 'asc'
+            return url_for('public.apartments', sort=col_key, direction=direction)
 
     # pylint: disable=no-member
     query = db.session.query(
@@ -102,7 +104,7 @@ def apartments():
 
         distance_text_field = 'distance_text_{}'.format(pin.id)
         distance_value_field = 'distance_value_{}'.format(pin.id)
-        ApartmentTable.add_column(distance_text_field, Col('Distance to {}'.format(pin.name)))
+        ApartmentTable.add_column(distance_text_field, Col('Distance to {}'.format(pin.name), allow_sort=False))
 
         distance_alias = aliased(Distance)
         query = query.join(distance_alias, distance_alias.apartment_id == Apartment.id).add_columns(
@@ -113,11 +115,14 @@ def apartments():
         ).filter(distance_alias.pin_id == pin.id)
     query = query.filter(Apartment.active.is_(True))
 
-    # TODO Sort by column headers
-    if False:
+    sort = request.args.get('sort', 'warm_rent')
+    """:type: str"""
+    direction = request.args.get('direction', 'asc')
+
+    if sort.startswith('duration_text'):
+        query = query.order_by('duration_value_{} {}'.format(sort.split('_')[-1], direction))
+    elif sort == 'warm_rent':
         query = query.order_by(Apartment.warm_rent.cast(Numeric), Apartment.cold_rent.cast(Numeric))
-    else:
-        query = query.order_by('duration_value_2', 'duration_value_1')
 
     table = ApartmentTable(query.all())
     return render_template("public/apartments.html", table=table)
