@@ -98,12 +98,18 @@ def apartments():
     for pin in Pin.query.all():
         duration_text_field = 'duration_text_{}'.format(pin.id)
         duration_value_field = 'duration_value_{}'.format(pin.id)
+        ApartmentTable.add_column(duration_text_field, Col('Time to {}'.format(pin.name)))
 
-        ApartmentTable.add_column(duration_text_field, Col(pin.name))
+        distance_text_field = 'distance_text_{}'.format(pin.id)
+        distance_value_field = 'distance_value_{}'.format(pin.id)
+        ApartmentTable.add_column(distance_text_field, Col('Distance to {}'.format(pin.name)))
+
         distance_alias = aliased(Distance)
         query = query.join(distance_alias, distance_alias.apartment_id == Apartment.id).add_columns(
             distance_alias.duration_text.label(duration_text_field),
             distance_alias.duration_value.label(duration_value_field),
+            distance_alias.distance_text.label(distance_text_field),
+            distance_alias.distance_value.label(distance_value_field),
         ).filter(distance_alias.pin_id == pin.id)
     query = query.filter(Apartment.active.is_(True))
 
