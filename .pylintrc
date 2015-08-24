@@ -43,7 +43,7 @@ jobs=3
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
 #   W0511 - Warning for fix me and to;do
-disable=W0511,locally-disabled
+disable=W0511,locally-disabled,pointless-string-statement
 
 [REPORTS]
 
