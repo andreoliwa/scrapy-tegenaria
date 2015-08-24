@@ -85,6 +85,6 @@ footer .footer-nav {
   list-style: none;
 }
 
-td {
+td, th {
   padding: 5px;
 }
