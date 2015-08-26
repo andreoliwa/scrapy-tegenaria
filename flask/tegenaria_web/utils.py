@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Helper utilities and decorators."""
+# pylint: disable=no-name-in-module,import-error
 import logging
 import os
 import shutil
@@ -10,7 +11,6 @@ from uuid import uuid4
 import keyring
 import requests
 from flask import flash, json
-from flask.ext.table import Col  # pylint: disable=no-name-in-module,import-error
 from googlemaps import Client
 from googlemaps.exceptions import HTTPError
 from sqlalchemy import and_
@@ -157,12 +157,3 @@ def calculate_distance():
                 distance_value=distance['value'],
                 duration_text=duration['text'],
                 duration_value=duration['value']))
-
-
-class UrlCol(Col):  # pylint: disable=no-init
-
-    """A column that displays a URL."""
-
-    def td_format(self, content):  # pylint: disable=no-self-use
-        """Format the content as a URL targeting a blank page."""
-        return '<a href="{url}" target="_blank">{url}</a>'.format(url=content)

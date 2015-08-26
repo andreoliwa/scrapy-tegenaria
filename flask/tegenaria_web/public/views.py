@@ -3,18 +3,19 @@
 # pylint: disable=no-name-in-module,import-error
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask.ext.login import login_required, login_user, logout_user
-from flask_table import Col, Table
 from sqlalchemy import Numeric
 from sqlalchemy.orm import aliased
 
 from tegenaria_web.extensions import db, login_manager
+from tegenaria_web.flask_table_ex import Col, Table
 from tegenaria_web.models import Apartment, Distance, Pin
 from tegenaria_web.public.forms import LoginForm
 from tegenaria_web.user.forms import RegisterForm
 from tegenaria_web.user.models import User
-from tegenaria_web.utils import UrlCol, flash_errors
+from tegenaria_web.utils import flash_errors
 
 blueprint = Blueprint('public', __name__, static_folder="../static")  # pylint: disable=invalid-name
+MAPS_PLACE_URL = 'https://www.google.de/maps/place/{address}/'
 
 
 @login_manager.user_loader
@@ -79,19 +80,22 @@ def apartments():
         classes = ['table-bordered', 'table-striped']
         allow_sort = True
 
-        title = Col('Title', allow_sort=False)
-        url = UrlCol('URL', allow_sort=False)
-        address = Col('Address', allow_sort=False)
-        neighborhood = Col('Neighborhood', allow_sort=False)
-        rooms = Col('Rooms', allow_sort=False)
-        cold_rent = Col('Cold Rent', allow_sort=False)
-        warm_rent = Col('Warm Rent')
-        warm_rent_notes = Col('Notes', allow_sort=False)
+        title = Col(
+            'Title',
+            cell=lambda row, value: '<a href="{}" target="_blank">{}</a>'.format(row.url, value))
+        address = Col(
+            'Address',
+            cell=lambda row, value: '<a href="{href}" target="_blank">{text}</a>'.format(
+                href=MAPS_PLACE_URL.format(address=value.replace(' ', '+')), text=value))
+        neighborhood = Col('Neighborhood')
+        rooms = Col('Rooms')
+        cold_rent = Col('Cold Rent')
+        warm_rent = Col('Warm Rent', allow_sort=True)
+        warm_rent_notes = Col('Notes')
 
         def sort_url(self, col_key, reverse=False):
             """Sort the table by clicking its headers."""
-            direction = 'desc' if reverse else 'asc'
-            return url_for('public.apartments', sort=col_key, direction=direction)
+            return url_for('public.apartments', sort=col_key, direction='desc' if reverse else 'asc')
 
     # pylint: disable=no-member
     query = db.session.query(
@@ -100,11 +104,11 @@ def apartments():
     for pin in Pin.query.all():
         duration_text_field = 'duration_text_{}'.format(pin.id)
         duration_value_field = 'duration_value_{}'.format(pin.id)
-        ApartmentTable.add_column(duration_text_field, Col('Time to {}'.format(pin.name)))
+        ApartmentTable.add_column(duration_text_field, Col('Time to {}'.format(pin.name), allow_sort=True))
 
         distance_text_field = 'distance_text_{}'.format(pin.id)
         distance_value_field = 'distance_value_{}'.format(pin.id)
-        ApartmentTable.add_column(distance_text_field, Col('Distance to {}'.format(pin.name), allow_sort=False))
+        ApartmentTable.add_column(distance_text_field, Col('Distance to {}'.format(pin.name)))
 
         distance_alias = aliased(Distance)
         query = query.join(distance_alias, distance_alias.apartment_id == Apartment.id).add_columns(

@@ -45,7 +45,10 @@ def data():
     save_json_to_db(json_dir, os.path.join(json_dir, 'out'), Apartment)
     calculate_distance()
 
-manager.add_command('server', Server())
+# Server available in the local network:
+# http://flask.pocoo.org/docs/0.10/api/#flask.Flask.run
+manager.add_command('server', Server(host='0.0.0.0'))
+
 manager.add_command('shell', Shell(make_context=_make_context))
 manager.add_command('db', MigrateCommand)
 
