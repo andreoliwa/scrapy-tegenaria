@@ -32,3 +32,9 @@ Maybe Git submodules could also be used here; that can be tried later.
   pip install -U -r requirements/dev.txt
   ./manage.py server
   ```
+
+## Metrics
+
+[![Stories in Ready](https://badge.waffle.io/andreoliw/python-tegenaria.svg?label=ready&title=Ready)](http://waffle.io/andreoliw/python-tegenaria)
+
+[![Throughput Graph](https://graphs.waffle.io/andreoliw/python-tegenaria/throughput.svg)](https://waffle.io/andreoliw/python-tegenaria/metrics)
