@@ -14,6 +14,7 @@ Maybe Git submodules could also be used here; that can be tried later.
 
 1. Clone this repo.
 1. Create a Python 2 virtual env for the Scrapy project and test it.
+
   ```shell
   cd ~/some/path/python-tegenaria/scrapy
   mkvirtualenv tegenaria-scrapy --python=/usr/bin/python2.7
@@ -23,7 +24,9 @@ Maybe Git submodules could also be used here; that can be tried later.
   scrapy
   deactivate
   ```
+
 1. Create a virtual env for the Flask project and test if it's working.
+
   ```shell
   cd ~/some/path/python-tegenaria/flask
   mkvirtualenv tegenaria-flask
