@@ -16,7 +16,8 @@ class Table(OriginalTable):
 
     def tr(self, item):
         """Inject a row attribute in every column, then call the parent method."""
-        for _, column in self._cols.items():  # pylint: disable=no-member
+        for field, column in self._cols.items():  # pylint: disable=no-member
+            column.field = field
             column.row = item
         return super(Table, self).tr(item)
 
@@ -32,17 +33,23 @@ class Col(OriginalCol):
         """Create a column.
 
         :param args: Positional arguments.
-        :param cell: A function that receives two arguments: row and value.
+        :param cell: A function that receives 3 arguments: row, col and value.
             This can be a lambda to be used in the declaration of the column.
             This function replaces the ``td_format`` function.
         :type cell: lambda
         :param allow_sort: Flag to allow sorting in the column header.
         :param kwargs: Key value arguments.
         """
+        self.field = None
         self.row = None
         if callable(cell):
             self.td_format = self._replace_td_format(cell)
         super(Col, self).__init__(*args, allow_sort=allow_sort, **kwargs)
+
+    @property
+    def index(self):
+        """Return the numeric index of the column in the table."""
+        return self._counter
 
     def _replace_td_format(self, cell_lambda):
         """Replace the original td_format function by a lambda provided at column creation.
@@ -51,8 +58,8 @@ class Col(OriginalCol):
         :return: A function with the original td_format signature.
         """
         def original_td_format(content):
-            """Call the lambda function passing row and current value of the cell."""
-            return cell_lambda(self.row, content)
+            """Call the lambda function passing row, col and current value of the cell."""
+            return cell_lambda(self.row, self, content)
         return original_td_format
 
 
