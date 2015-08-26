@@ -16,6 +16,7 @@ from tegenaria_web.utils import flash_errors
 
 blueprint = Blueprint('public', __name__, static_folder="../static")  # pylint: disable=invalid-name
 MAPS_PLACE_URL = 'https://www.google.de/maps/place/{address}/'
+MAPS_DIRECTIONS_URL = 'https://www.google.de/maps/dir/{origin}/{destination}/'
 
 
 @login_manager.user_loader
@@ -82,10 +83,10 @@ def apartments():
 
         title = Col(
             'Title',
-            cell=lambda row, value: '<a href="{}" target="_blank">{}</a>'.format(row.url, value))
+            cell=lambda row, col, value: '<a href="{}" target="_blank">{}</a>'.format(row.url, value))
         address = Col(
             'Address',
-            cell=lambda row, value: '<a href="{href}" target="_blank">{text}</a>'.format(
+            cell=lambda row, col, value: '<a href="{href}" target="_blank">{text}</a>'.format(
                 href=MAPS_PLACE_URL.format(address=value.replace(' ', '+')), text=value))
         neighborhood = Col('Neighborhood')
         rooms = Col('Rooms')
@@ -101,21 +102,40 @@ def apartments():
     query = db.session.query(
         Apartment.title, Apartment.url, Apartment.address, Apartment.neighborhood, Apartment.rooms,
         Apartment.cold_rent, Apartment.warm_rent, Apartment.warm_rent_notes)
+
     for pin in Pin.query.all():
+        pin_address_field = 'pin_address_{}'.format(pin.id)
+
         duration_text_field = 'duration_text_{}'.format(pin.id)
         duration_value_field = 'duration_value_{}'.format(pin.id)
         ApartmentTable.add_column(duration_text_field, Col('Time to {}'.format(pin.name), allow_sort=True))
 
+        def show_directions(row, col, value):
+            """Show the Google Maps link with directions from the address to the pin."""
+            pin_address = getattr(row, 'pin_address_' + col.field.split('_')[-1])
+            return '<a href="{href}" target="_blank">{text}</a>'.format(
+                href=MAPS_DIRECTIONS_URL.format(
+                    origin=row.address.replace(' ', '+'),
+                    destination=pin_address.replace(' ', '+')),
+                text=value)
+
         distance_text_field = 'distance_text_{}'.format(pin.id)
         distance_value_field = 'distance_value_{}'.format(pin.id)
-        ApartmentTable.add_column(distance_text_field, Col('Distance to {}'.format(pin.name)))
+        ApartmentTable.add_column(distance_text_field,
+                                  Col('Distance to {}'.format(pin.name), cell=show_directions))
 
         distance_alias = aliased(Distance)
-        query = query.join(distance_alias, distance_alias.apartment_id == Apartment.id).add_columns(
+        pin_alias = aliased(Pin)
+        query = query.join(
+            distance_alias, Apartment.id == distance_alias.apartment_id
+        ).join(
+            pin_alias, distance_alias.pin_id == pin_alias.id
+        ).add_columns(
             distance_alias.duration_text.label(duration_text_field),
             distance_alias.duration_value.label(duration_value_field),
             distance_alias.distance_text.label(distance_text_field),
             distance_alias.distance_value.label(distance_value_field),
+            pin_alias.address.label(pin_address_field)
         ).filter(distance_alias.pin_id == pin.id)
     query = query.filter(Apartment.active.is_(True))
 
