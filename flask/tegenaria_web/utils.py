@@ -116,7 +116,7 @@ def save_json_to_db(input_dir, output_dir, model_class):  # pylint: disable=too-
     LOGGER.warning('Done.')
 
 
-def calculate_distance():
+def calculate_distance():  # pylint: disable=too-many-locals
     """Calculate the distance for all apartments that were not calculated yet.
 
     - Query all pins;
@@ -131,29 +131,35 @@ def calculate_distance():
     LOGGER.warning('Next morning: %s', morning)
 
     # pylint: disable=no-member
+    empty = dict(text='ERROR', value=-1)
     for pin in Pin.query.all():
-        apartments = Apartment.query.outerjoin(Distance, and_(
-            Apartment.id == Distance.apartment_id, Distance.pin_id == pin.id)) \
-            .filter(Distance.apartment_id.is_(None)).limit(20)
-        search = {apartment.id: apartment.address for apartment in apartments.all()}
-        if not search:
-            LOGGER.warning('All distances already calculated for %s', pin)
-            continue
+        while True:
+            apartments = Apartment.query.outerjoin(Distance, and_(
+                Apartment.id == Distance.apartment_id, Distance.pin_id == pin.id)) \
+                .filter(Distance.apartment_id.is_(None)).limit(20)
+            search = {apartment.id: apartment.address for apartment in apartments.all()}
+            if not search:
+                LOGGER.warning('All distances already calculated for %s', pin)
+                break
 
-        ids = list(search.keys())
-        origin_addresses = list(search.values())
-        try:
-            result = maps.distance_matrix(
-                origin_addresses, [pin.address], mode='transit', units='metric', arrival_time=morning)
-        except HTTPError as err:
-            LOGGER.error('Error on Google Distance Matrix: %s', str(err))
-            continue
-        for (duration, distance) in [(dd['duration'], dd['distance'])
-                                     for dd in [row['elements'][0] for row in result['rows']]]:
-            LOGGER.warning('Calculating %s', Distance.create(
-                apartment_id=ids.pop(0),
-                pin_id=pin.id,
-                distance_text=distance['text'],
-                distance_value=distance['value'],
-                duration_text=duration['text'],
-                duration_value=duration['value']))
+            ids = list(search.keys())
+            origin_addresses = list(search.values())
+            LOGGER.warning('Calling Google Maps for %s', pin)
+            try:
+                result = maps.distance_matrix(
+                    origin_addresses, [pin.address], mode='transit', units='metric', arrival_time=morning)
+            except HTTPError as err:
+                LOGGER.error('Error on Google Distance Matrix: %s', str(err))
+                continue
+            LOGGER.warning('Processing results from Google Maps for %s', pin)
+            for one in [row['elements'][0] for row in result['rows']]:
+                duration, distance = one.get('duration', empty), one.get('distance', empty)
+                apt_id = ids.pop(0)
+                model = Distance.create(
+                    apartment_id=apt_id, pin_id=pin.id,
+                    distance_text=distance.get('text'), distance_value=distance.get('value'),
+                    duration_text=duration.get('text'), duration_value=duration.get('value'))
+                if distance.get('value') <= 0:
+                    LOGGER.error('Error calculating %s: %s', model, json.dumps(one))
+                else:
+                    LOGGER.warning('Calculating %s', model)
