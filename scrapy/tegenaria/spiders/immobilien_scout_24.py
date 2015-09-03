@@ -1,12 +1,22 @@
 # -*- coding: utf-8 -*-
 """A spider to crawl the Immobilien Scout 24 website."""
+import itertools
 import re
+from getpass import getpass
 
+import keyring
 import scrapy
+from imapclient import IMAPClient
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 
 from tegenaria.items import ApartmentItem, json_config
+
+IMAP_HOST = json_config(__file__, 'imap_host')
+IMAP_USERNAME = json_config(__file__, 'imap_username')
+IMAP_FOLDER = json_config(__file__, 'imap_folder')
+AD_URL_TEMPLATE = 'http://www.immobilienscout24.de/expose/{id}'
+REGEX = re.compile(r'expose/([0-9]+)')
 
 
 class ImmobilienScout24Spider(scrapy.Spider):
@@ -27,6 +37,13 @@ class ImmobilienScout24Spider(scrapy.Spider):
         'other': 'is24qa-sonstiges'
     }
     WARM_RENT_RE = re.compile(r'(?P<warm_rent>[0-9,.]+)[\s(]*(?P<warm_rent_notes>[^)]*)')
+
+    def start_requests(self):
+        """Read e-mails (if any) and then crawl URLs."""
+        self.start_urls = json_config(__file__, 'start_urls')
+        return itertools.chain(
+            self.read_emails(),
+            super(ImmobilienScout24Spider, self).start_requests())
 
     def parse(self, response):
         """Parse a search results HTML page."""
@@ -62,4 +79,53 @@ class ImmobilienScout24Spider(scrapy.Spider):
 
         yield item_dict
 
-ImmobilienScout24Spider.start_urls = json_config(__file__, 'start_urls')
+    def read_emails(self, ask_password=False):
+        """Read email messages.
+
+        :param ask_password: Force a prompt for the password.
+        :return: Yield Scrapy requests.
+        """
+        self.logger.info('Reading emails')
+        password = keyring.get_password(IMAP_HOST, IMAP_USERNAME)
+        if not password or ask_password:
+            password = getpass(prompt='Type your email password: ')
+        if not password:
+            self.logger.error('Empty password.')
+            return
+
+        server = IMAPClient(IMAP_HOST, use_uid=True, ssl=True)
+        server.login(IMAP_USERNAME, password)
+        keyring.set_password(IMAP_HOST, IMAP_USERNAME, password)
+        server.select_folder(IMAP_FOLDER)
+        messages = server.search('UNSEEN')
+        self.logger.info("%d unread messages in folder '%s'.", len(messages), IMAP_FOLDER)
+
+        response = server.fetch(messages, ['BODY[TEXT]', 'RFC822.SIZE'])
+        for msg_id, data in response.items():
+            size = data[b'RFC822.SIZE']
+            self.logger.info('Reading message ID %d (size %d).', msg_id, size)
+            raw_body = data[b'BODY[TEXT]']
+            try:
+                body = raw_body.decode(imap_charset(raw_body))
+            except LookupError as err:
+                self.logger.error(err)
+                body = ''
+            for url in [AD_URL_TEMPLATE.format(id=ad_id) for ad_id in set(REGEX.findall(body))]:
+                yield scrapy.Request(url, callback=self.parse_item)
+
+
+def imap_charset(raw_body):
+    """Find the charset from the body of a raw (bytes) email message.
+
+    :param raw_body: Raw text, byte string.
+    :return: Charset.
+
+    :type raw_body: bytes
+    :rtype: str
+    """
+    start = raw_body.find(b'charset')
+    end = start + raw_body[start:].find(b'\r')
+    charset = raw_body[start:end].split(b'=')[1].decode()
+    if ';' in charset:
+        charset = charset.split(';')[0]
+    return charset
