@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 """Tegenaria models."""
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.sql.functions import func
 
 from tegenaria_web.database import Column, Model, SurrogatePK, db, reference_column, relationship
+
+INTERESTING_NO = 'no'
+INTERESTING_MAYBE = 'maybe'
+INTERESTING_YES = 'yes'
+INTERESTING_ENUM = postgresql.ENUM(INTERESTING_NO, INTERESTING_MAYBE, INTERESTING_YES, name='interesting_enum')
 
 
 class Apartment(SurrogatePK, Model):
@@ -23,6 +29,9 @@ class Apartment(SurrogatePK, Model):
     warm_rent = Column(db.String())
     warm_rent_notes = Column(db.String())
     rooms = Column(db.String())
+    interesting = Column(INTERESTING_ENUM)
+    comments = Column(db.String())
+    created_at = Column(db.DateTime, default=func.now())
     updated_at = Column(db.DateTime, onupdate=func.now(), default=func.now())
     active = Column(db.Boolean, default=False)
 
