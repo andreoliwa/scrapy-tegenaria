@@ -1,4 +1,5 @@
 """Enhancements to the FlaskTable plugin."""
+from babel.dates import format_date, format_datetime
 from flask_table import Col as OriginalCol
 from flask_table import Table as OriginalTable
 
@@ -70,3 +71,37 @@ class UrlCol(Col):  # pylint: disable=no-init
     def td_format(self, content):  # pylint: disable=method-hidden
         """Format the content as a URL targeting a blank page."""
         return '<a href="{url}" target="_blank">{title}</a>'.format(url=self.row.url, title=self.row.title)
+
+
+class DateCol(Col):
+
+    """Format the content as a date, unless it is None, in which case, output empty."""
+
+    def __init__(self, name, date_format='short', **kwargs):
+        """Create a date column."""
+        Col.__init__(self, name, **kwargs)
+        self.date_format = date_format
+
+    def td_format(self, content):  # pylint: disable=method-hidden
+        """Format a date column."""
+        if content:
+            return format_date(content, self.date_format)
+        else:
+            return ''
+
+
+class DatetimeCol(Col):
+
+    """Format the content as a datetime, unless it is None, in which case, output empty."""
+
+    def __init__(self, name, **kwargs):
+        """Create a date time column."""
+        Col.__init__(self, name, **kwargs)
+        self.datetime_format = kwargs.get('datetime_format', 'short')
+
+    def td_format(self, content):  # pylint: disable=method-hidden
+        """Format a date time column."""
+        if content:
+            return format_datetime(content, self.datetime_format)
+        else:
+            return ''

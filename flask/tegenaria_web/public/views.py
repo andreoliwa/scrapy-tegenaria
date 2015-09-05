@@ -7,7 +7,7 @@ from sqlalchemy import Numeric
 from sqlalchemy.orm import aliased
 
 from tegenaria_web.extensions import db, login_manager
-from tegenaria_web.flask_table_ex import Col, Table
+from tegenaria_web.flask_table_ex import Col, DateCol, Table
 from tegenaria_web.models import Apartment, Distance, Pin
 from tegenaria_web.public.forms import LoginForm
 from tegenaria_web.user.forms import RegisterForm
@@ -92,7 +92,9 @@ def apartments():
         rooms = Col('Rooms')
         cold_rent = Col('Cold Rent')
         warm_rent = Col('Warm Rent', allow_sort=True)
-        warm_rent_notes = Col('Notes')
+        warm_rent_notes = Col('Warm Rent Notes')
+        created_at = DateCol('Created')
+        updated_at = DateCol('Updated')
 
         def sort_url(self, col_key, reverse=False):
             """Sort the table by clicking its headers."""
@@ -101,7 +103,8 @@ def apartments():
     # pylint: disable=no-member
     query = db.session.query(
         Apartment.title, Apartment.url, Apartment.address, Apartment.neighborhood, Apartment.rooms,
-        Apartment.cold_rent, Apartment.warm_rent, Apartment.warm_rent_notes)
+        Apartment.cold_rent, Apartment.warm_rent, Apartment.warm_rent_notes,
+        Apartment.created_at, Apartment.updated_at)
 
     for pin in Pin.query.all():
         pin_address_field = 'pin_address_{}'.format(pin.id)
