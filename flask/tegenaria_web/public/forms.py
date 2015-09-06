@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Forms of the application."""
 from flask_wtf import Form
-from wtforms import PasswordField
+from wtforms import HiddenField, IntegerField, PasswordField
 from wtforms.fields.core import StringField
 from wtforms.validators import DataRequired
 
@@ -39,3 +39,11 @@ class LoginForm(Form):
             self.username.errors.append('User not activated')
             return False
         return True
+
+
+class ApartmentSearchForm(Form):
+
+    """Apartment search form."""
+
+    days = IntegerField('Days')
+    order_by = HiddenField()

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """Public section, including homepage and signup."""
 # pylint: disable=no-name-in-module,import-error
+from datetime import datetime, timedelta
+
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask.ext.login import login_required, login_user, logout_user
 from sqlalchemy import Numeric
@@ -9,7 +11,7 @@ from sqlalchemy.orm import aliased
 from tegenaria_web.extensions import db, login_manager
 from tegenaria_web.flask_table_ex import Col, DateCol, Table
 from tegenaria_web.models import Apartment, Distance, Pin
-from tegenaria_web.public.forms import LoginForm
+from tegenaria_web.public.forms import ApartmentSearchForm, LoginForm
 from tegenaria_web.user.forms import RegisterForm
 from tegenaria_web.user.models import User
 from tegenaria_web.utils import flash_errors
@@ -71,42 +73,46 @@ def about():
     return render_template("public/about.html", form=form)
 
 
+class ApartmentTable(Table):
+
+    """An HTML table for the apartments."""
+
+    classes = ['table-bordered', 'table-striped']
+    allow_sort = True
+
+    title = Col(
+        'Title',
+        cell=lambda row, col, value: '<a href="{}" target="_blank">{}</a>'.format(row.url, value))
+    address = Col(
+        'Address',
+        cell=lambda row, col, value: '<a href="{href}" target="_blank">{text}</a>'.format(
+            href=MAPS_PLACE_URL.format(address=value.replace(' ', '+')), text=value))
+    neighborhood = Col('Neighborhood')
+    rooms = Col('Rooms')
+    cold_rent = Col('Cold Rent')
+    warm_rent = Col('Warm Rent', allow_sort=True)
+    warm_rent_notes = Col('Warm Rent Notes')
+    created_at = DateCol('Created')
+    updated_at = DateCol('Updated')
+
+    def sort_url(self, col_key, reverse=False):
+        """Sort the table by clicking its headers."""
+        args = request.args.copy()
+        if 'order_by' in args:
+            args.pop('order_by')
+        return url_for('public.apartments', order_by=col_key, **args)
+
+
 @blueprint.route("/apartments/")
 def apartments():
     """List all apartments."""
-    class ApartmentTable(Table):
-
-        """An HTML table for the apartments."""
-
-        classes = ['table-bordered', 'table-striped']
-        allow_sort = True
-
-        title = Col(
-            'Title',
-            cell=lambda row, col, value: '<a href="{}" target="_blank">{}</a>'.format(row.url, value))
-        address = Col(
-            'Address',
-            cell=lambda row, col, value: '<a href="{href}" target="_blank">{text}</a>'.format(
-                href=MAPS_PLACE_URL.format(address=value.replace(' ', '+')), text=value))
-        neighborhood = Col('Neighborhood')
-        rooms = Col('Rooms')
-        cold_rent = Col('Cold Rent')
-        warm_rent = Col('Warm Rent', allow_sort=True)
-        warm_rent_notes = Col('Warm Rent Notes')
-        created_at = DateCol('Created')
-        updated_at = DateCol('Updated')
-
-        def sort_url(self, col_key, reverse=False):
-            """Sort the table by clicking its headers."""
-            return url_for('public.apartments', sort=col_key, direction='desc' if reverse else 'asc')
-
     # pylint: disable=no-member
     query = db.session.query(
         Apartment.title, Apartment.url, Apartment.address, Apartment.neighborhood, Apartment.rooms,
         Apartment.cold_rent, Apartment.warm_rent, Apartment.warm_rent_notes,
         Apartment.created_at, Apartment.updated_at)
 
-    for pin in Pin.query.all():
+    for pin in Pin.query.order_by(Pin.id).all():
         pin_address_field = 'pin_address_{}'.format(pin.id)
 
         duration_text_field = 'duration_text_{}'.format(pin.id)
@@ -142,17 +148,20 @@ def apartments():
         ).filter(distance_alias.pin_id == pin.id)
     query = query.filter(Apartment.active.is_(True))
 
-    sort = request.args.get('sort', 'warm_rent')
-    """:type: str"""
-    direction = request.args.get('direction', 'asc')
+    search_form = ApartmentSearchForm(request.args, csrf_enabled=False)
+    if search_form.days.data:
+        past_date = datetime.now() - timedelta(int(search_form.days.data))
+        query = query.filter(Apartment.created_at >= past_date)
 
-    if sort.startswith('duration_text'):
-        query = query.order_by('duration_value_{} {}'.format(sort.split('_')[-1], direction))
-    elif sort == 'warm_rent':
+    order_by = search_form.order_by.data or 'warm_rent'
+
+    if order_by.startswith('duration_text'):
+        query = query.order_by('duration_value_{} {}'.format(order_by.split('_')[-1], 'asc'))
+    elif order_by == 'warm_rent':
         query = query.order_by(Apartment.warm_rent.cast(Numeric), Apartment.cold_rent.cast(Numeric))
 
     table = ApartmentTable(query.all())
-    return render_template("public/apartments.html", table=table)
+    return render_template("public/apartments.html", table=table, search_form=search_form)
 
 
 @blueprint.route("/pins/")
