@@ -1,12 +1,23 @@
-
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="body-content">
-    <div class="row">
-      <h1>Apartments</h1>
-        {{ table }}
+    <div class="body-content">
+        <h1>Apartments</h1>
+
+        <form method="GET" action="" role="form">
+            {{ search_form.hidden_tag() }}
+            <div class="form-group">
+                {{ search_form.days.label }}
+                {{ search_form.days(placeholder="Last days", class_="form-control") }}
+            </div>
+            {{ search_form.direction }}
+            {{ search_form.order_by }}
+            <p><input class="btn btn-default btn-submit" type="submit" value="Filter"></p>
+        </form>
+
+        <div class="row">
+            {{ table }}
+        </div>
     </div>
-</div>
 {% endblock %}
 
