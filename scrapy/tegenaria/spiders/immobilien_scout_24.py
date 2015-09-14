@@ -28,6 +28,7 @@ class ImmobilienScout24Spider(scrapy.Spider):
     start_urls = (
         'http://www.immobilienscout24.de/',
     )
+    searched_pages = set()
 
     CITY = ' Berlin,'
     DIV_PRE_MAPPING = {
@@ -47,6 +48,12 @@ class ImmobilienScout24Spider(scrapy.Spider):
 
     def parse(self, response):
         """Parse a search results HTML page."""
+        # TODO These spiders should inherit from CrawlSpider, which already implements something like this.
+        for link in LinkExtractor(allow='/Suche/S-T/P-').extract_links(response):
+            if link.url not in (self.searched_pages, self.start_urls):
+                self.searched_pages.add(link.url)
+                yield scrapy.Request(link.url, callback=self.parse)
+
         for link in LinkExtractor(allow=r'expose/[0-9]+$').extract_links(response):
             yield scrapy.Request(link.url, callback=self.parse_item)
 
