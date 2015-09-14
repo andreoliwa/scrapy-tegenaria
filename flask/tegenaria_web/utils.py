@@ -102,18 +102,25 @@ def save_json_to_db(input_dir, output_dir, model_class):  # pylint: disable=too-
         LOGGER.warning('Moving file to %s', destination_name)
         shutil.move(full_name, destination_name)
 
-    if saved_ids:
-        LOGGER.warning('Searching not found (404) among records that were not updated')
-        not_updated = model_class.query.filter(model_class.id.notin_(saved_ids))
-        for record in list(not_updated):
-            response = requests.get(record.url)
-            if response.status_code == requests.codes.NOT_FOUND:  # pylint: disable=no-member
-                LOGGER.warning('Not found: %s', record.url)
-                record.update(active=False)
-            else:
-                LOGGER.warning('Still active: %s', record.url)
+    remove_not_found(model_class, saved_ids)
 
     LOGGER.warning('Done.')
+
+
+def remove_not_found(model_class, saved_ids):
+    """Remove 404 links."""
+    if True or not saved_ids:  # TODO Enable this and turn it into a manage.py command.
+        return
+
+    LOGGER.warning('Searching not found (404) among records that were not updated')
+    not_updated = model_class.query.filter(model_class.id.notin_(saved_ids))
+    for record in list(not_updated):
+        response = requests.get(record.url)
+        if response.status_code == requests.codes.NOT_FOUND:  # pylint: disable=no-member
+            LOGGER.warning('Not found: %s', record.url)
+            record.update(active=False)
+        else:
+            LOGGER.warning('Still active: %s', record.url)
 
 
 def calculate_distance():  # pylint: disable=too-many-locals
