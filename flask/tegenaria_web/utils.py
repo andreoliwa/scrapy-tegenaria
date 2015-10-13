@@ -143,7 +143,7 @@ def calculate_distance():  # pylint: disable=too-many-locals
         while True:
             apartments = Apartment.query.outerjoin(Distance, and_(
                 Apartment.id == Distance.apartment_id, Distance.pin_id == pin.id)) \
-                .filter(Distance.apartment_id.is_(None)).limit(20)
+                .filter(Apartment.active.is_(True), Distance.apartment_id.is_(None)).limit(20)
             search = {apartment.id: apartment.address for apartment in apartments.all()}
             if not search:
                 LOGGER.warning('All distances already calculated for %s', pin)
