@@ -11,6 +11,7 @@ Flask-Table==0.2.8
 # Database
 Flask-SQLAlchemy==2.0
 SQLAlchemy==1.0.8
+psycopg2==2.6.1
 
 # Migrations
 Flask-Migrate==1.5.0
