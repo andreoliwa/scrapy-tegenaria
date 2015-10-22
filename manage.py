@@ -10,7 +10,8 @@ from tegenaria_web.database import db
 from tegenaria_web.models import Apartment
 from tegenaria_web.settings import DevConfig, ProdConfig
 from tegenaria_web.user.models import User
-from tegenaria_web.utils import calculate_distance, read_from_keyring, save_json_to_db
+from tegenaria_web.utils import (calculate_distance, read_from_keyring, remove_inactive_apartments,
+                                 reprocess_invalid_apartments, save_json_to_db)
 
 if os.environ.get("TEGENARIA_WEB_ENV") == 'prod':
     app = create_app(ProdConfig)
@@ -39,11 +40,18 @@ def test():
 
 
 @manager.command
-def data():
-    """Process data: import JSON files, calculate distances, etc."""
+def add():
+    """Add and update data: import JSON files, calculate distances, etc."""
     json_dir = read_from_keyring("json_dir", secret=False)
     save_json_to_db(json_dir, os.path.join(json_dir, 'out'), Apartment)
     calculate_distance()
+
+
+@manager.command
+def clean():
+    """Clean apartments: deactivate 404 pages, reprocess records with empty addresses."""
+    remove_inactive_apartments()
+    reprocess_invalid_apartments(read_from_keyring("json_dir", secret=False))
 
 # Server available in the local network:
 # http://flask.pocoo.org/docs/0.10/api/#flask.Flask.run
