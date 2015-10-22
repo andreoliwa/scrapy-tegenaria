@@ -66,7 +66,7 @@ class ImmobilienScout24Spider(scrapy.Spider):
         for field, css_class in self.DIV_PRE_MAPPING.items():
             item.add_xpath(field, "//div/pre[contains(@class, '{}')]/text()".format(css_class))
 
-        full_address = ''.join(response.xpath("//span[@data-qa='is24-expose-address']/span//text()").extract()).strip()
+        full_address = ''.join(response.xpath("//span[@data-qa='is24-expose-address']/div//text()").extract()).strip()
         parts = full_address.split(self.CITY)
         if len(parts) == 1:
             item.add_value('address', full_address)
