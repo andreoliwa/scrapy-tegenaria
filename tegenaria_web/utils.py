@@ -70,7 +70,7 @@ def save_json_to_db(input_dir, output_dir, model_class):  # pylint: disable=too-
     saved_ids = []
     for name in os.listdir(input_dir):
         full_name = os.path.join(input_dir, name)
-        if not os.path.isfile(full_name):
+        if not os.path.isfile(full_name) or not full_name.endswith('.json'):
             continue
 
         LOGGER.warning('Reading %s', full_name)
@@ -102,25 +102,28 @@ def save_json_to_db(input_dir, output_dir, model_class):  # pylint: disable=too-
         LOGGER.warning('Moving file to %s', destination_name)
         shutil.move(full_name, destination_name)
 
-    remove_not_found(model_class, saved_ids)
-
     LOGGER.warning('Done.')
 
 
-def remove_not_found(model_class, saved_ids):
+def remove_inactive_apartments():
     """Remove 404 links."""
-    if True or not saved_ids:  # TODO Enable this and turn it into a manage.py command.
-        return
-
-    LOGGER.warning('Searching not found (404) among records that were not updated')
-    not_updated = model_class.query.filter(model_class.id.notin_(saved_ids))
-    for record in list(not_updated):
-        response = requests.get(record.url)
+    LOGGER.warning('Searching not found (404) among records that are still active')
+    for record in Apartment.query.filter_by(active=True).all():   # pylint: disable=no-member
+        response = requests.get(record.url)  # HEAD didn't work for some reason.
         if response.status_code == requests.codes.NOT_FOUND:  # pylint: disable=no-member
             LOGGER.warning('Not found: %s', record.url)
             record.update(active=False)
         else:
             LOGGER.warning('Still active: %s', record.url)
+
+
+def reprocess_invalid_apartments(output_dir):
+    """Generate a text file with invalid apartments, so they can be reprocessed by Scrapy on the next run."""
+    os.makedirs(output_dir, exist_ok=True)
+    LOGGER.warning('Searching active apartments with empty addresses')
+    query = db.session.query(Apartment.url).filter_by(active=True, address='')
+    with open(os.path.join(output_dir, 'invalid.txt'), 'w') as handle:
+        handle.writelines(['{}\n'.format(record.url) for record in query.all()])
 
 
 def calculate_distance():  # pylint: disable=too-many-locals
