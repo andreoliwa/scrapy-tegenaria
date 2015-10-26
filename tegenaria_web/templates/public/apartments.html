@@ -21,3 +21,20 @@
     </div>
 {% endblock %}
 
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            $('select.opinion').change(function () {
+                $.ajax({
+                    method: 'POST',
+                    url: '{{ url_for('public.apartments_opinion') }}',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        apartment_id: $(this).data('apartment-id'),
+                        opinion_id: $(this).val()
+                    })
+                });
+            });
+        });
+    </script>
+{% endblock %}
