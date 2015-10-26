@@ -111,7 +111,7 @@ class ApartmentTable(Table):
 def apartments():
     """List all apartments."""
     # pylint: disable=no-member
-    ApartmentTable.opinions = {opinion.id: opinion.title for opinion in Opinion.query.order_by(Opinion.title).all()}
+    ApartmentTable.opinions = [(opinion.id, opinion.title) for opinion in Opinion.query.order_by(Opinion.title).all()]
     query = db.session.query(
         Apartment.title, Apartment.url, Apartment.address, Apartment.neighborhood, Apartment.rooms,
         Apartment.cold_rent, Apartment.warm_rent, Apartment.warm_rent_notes,
