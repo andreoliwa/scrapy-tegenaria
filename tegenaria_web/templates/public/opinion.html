@@ -1,0 +1,6 @@
+<select class="opinion" name="opinion_{{ apartment_id }}" data-apartment-id="{{ apartment_id }}">
+    <option value="0">(choose)</option>
+    {% for id, title in opinions.items() %}
+        <option value="{{ id }}"{% if id == opinion_id %} selected="selected"{% endif %}>{{ title }}</option>
+    {% endfor %}
+</select>

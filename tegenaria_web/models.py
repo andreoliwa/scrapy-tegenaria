@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-
 """Tegenaria models."""
-from sqlalchemy.dialects import postgresql
 from sqlalchemy.sql.functions import func
 
 from tegenaria_web.database import Column, Model, SurrogatePK, db, reference_column, relationship
-
-INTERESTING_NO = 'no'
-INTERESTING_MAYBE = 'maybe'
-INTERESTING_YES = 'yes'
-INTERESTING_ENUM = postgresql.ENUM(INTERESTING_NO, INTERESTING_MAYBE, INTERESTING_YES, name='interesting_enum')
 
 
 class Apartment(SurrogatePK, Model):
@@ -29,17 +23,28 @@ class Apartment(SurrogatePK, Model):
     warm_rent = Column(db.String())
     warm_rent_notes = Column(db.String())
     rooms = Column(db.String())
-    interesting = Column(INTERESTING_ENUM)
     comments = Column(db.String())
     created_at = Column(db.DateTime, default=func.now())
     updated_at = Column(db.DateTime, onupdate=func.now(), default=func.now())
     active = Column(db.Boolean, default=False)
 
-    distances = db.relationship('Distance')
+    opinion_id = reference_column('opinion', True)
+    opinion = relationship('Opinion')
+
+    distances = relationship('Distance')
 
     def __repr__(self):
         """Represent the object as a unique string."""
-        return '<Apartment({id}: {url})>'.format(id=self.id, url=self.url)
+        return '<Apartment({}: {} {})>'.format(self.id, self.url, self.opinion.title if self.opinion else '')
+
+
+class Opinion(SurrogatePK, Model):
+
+    """An opinion about an apartment."""
+
+    __tablename__ = 'opinion'
+
+    title = Column(db.String())
 
 
 class Pin(SurrogatePK, Model):

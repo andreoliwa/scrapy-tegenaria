@@ -10,7 +10,7 @@ from sqlalchemy.orm import aliased
 
 from tegenaria_web.extensions import db, login_manager
 from tegenaria_web.flask_table_ex import Col, DateCol, Table
-from tegenaria_web.models import Apartment, Distance, Pin
+from tegenaria_web.models import Apartment, Distance, Opinion, Pin
 from tegenaria_web.public.forms import ApartmentSearchForm, LoginForm
 from tegenaria_web.user.forms import RegisterForm
 from tegenaria_web.user.models import User
@@ -79,6 +79,7 @@ class ApartmentTable(Table):
 
     classes = ['table-bordered', 'table-striped']
     allow_sort = True
+    opinions = {}
 
     title = Col(
         'Title',
@@ -92,6 +93,9 @@ class ApartmentTable(Table):
     cold_rent = Col('Cold Rent')
     warm_rent = Col('Warm Rent', allow_sort=True)
     warm_rent_notes = Col('Warm Rent Notes')
+    opinion_id = Col('Opinion', cell=lambda row, col, value: render_template(
+        'public/opinion.html', apartment_id=row.id, opinion_id=value,
+        opinions=ApartmentTable.opinions))  # pylint: disable=undefined-variable
     created_at = DateCol('Created')
     updated_at = DateCol('Updated')
 
@@ -107,10 +111,11 @@ class ApartmentTable(Table):
 def apartments():
     """List all apartments."""
     # pylint: disable=no-member
+    ApartmentTable.opinions = {opinion.id: opinion.title for opinion in Opinion.query.order_by(Opinion.title).all()}
     query = db.session.query(
         Apartment.title, Apartment.url, Apartment.address, Apartment.neighborhood, Apartment.rooms,
         Apartment.cold_rent, Apartment.warm_rent, Apartment.warm_rent_notes,
-        Apartment.created_at, Apartment.updated_at)
+        Apartment.created_at, Apartment.updated_at, Apartment.id, Apartment.opinion_id)
 
     for pin in Pin.query.order_by(Pin.id).all():
         pin_address_field = 'pin_address_{}'.format(pin.id)
@@ -162,6 +167,17 @@ def apartments():
 
     table = ApartmentTable(query.all())
     return render_template("public/apartments.html", table=table, search_form=search_form)
+
+
+@blueprint.route('/apartments/opinion/', methods=['POST'])
+def apartments_opinion():
+    """Set an opinion for an apartment."""
+    apartment = Apartment.get_by_id(request.json.get('apartment_id', 0))
+    """:type: Apartment"""
+    apartment.opinion_id = int(request.json.get('opinion_id', 0))
+    db.session.add(apartment)
+    db.session.commit()
+    return 'Opinion updated'
 
 
 @blueprint.route("/pins/")
