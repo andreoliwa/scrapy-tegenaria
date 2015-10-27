@@ -158,6 +158,15 @@ def apartments():
         past_date = datetime.now() - timedelta(int(search_form.days.data))
         query = query.filter(Apartment.created_at >= past_date)
 
+    search_form.opinion.choices = [(-1, '(all)'), (0, '(none)')] + ApartmentTable.opinions
+    if search_form.opinion.data is not None:
+        opinion_id = int(search_form.opinion.data)
+        if opinion_id > -1:
+            if opinion_id == 0:
+                query = query.filter(Apartment.opinion_id.is_(None))
+            else:
+                query = query.filter(Apartment.opinion_id == opinion_id)
+
     order_by = search_form.order_by.data or 'warm_rent'
 
     if order_by.startswith('duration_text'):
@@ -166,7 +175,7 @@ def apartments():
         query = query.order_by(Apartment.warm_rent.cast(Numeric), Apartment.cold_rent.cast(Numeric))
 
     table = ApartmentTable(query.all())
-    return render_template("public/apartments.html", table=table, search_form=search_form)
+    return render_template("public/apartments.html", table=table, search_form=search_form, count=query.count())
 
 
 @blueprint.route('/apartments/opinion/', methods=['POST'])
@@ -174,7 +183,10 @@ def apartments_opinion():
     """Set an opinion for an apartment."""
     apartment = Apartment.get_by_id(request.json.get('apartment_id', 0))
     """:type: Apartment"""
-    apartment.opinion_id = int(request.json.get('opinion_id', 0))
+    opinion_id = int(request.json.get('opinion_id', 0))
+    if opinion_id <= 0:
+        opinion_id = None
+    apartment.opinion_id = opinion_id
     db.session.add(apartment)
     db.session.commit()
     return 'Opinion updated'
