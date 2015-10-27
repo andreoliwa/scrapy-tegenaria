@@ -2,7 +2,7 @@
 """Forms of the application."""
 from flask_wtf import Form
 from wtforms import HiddenField, IntegerField, PasswordField
-from wtforms.fields.core import StringField
+from wtforms.fields.core import SelectField, StringField
 from wtforms.validators import DataRequired
 
 from tegenaria_web.user.models import User
@@ -46,4 +46,5 @@ class ApartmentSearchForm(Form):
     """Apartment search form."""
 
     days = IntegerField('Days')
+    opinion = SelectField('Opinion', coerce=int)
     order_by = HiddenField()

@@ -45,7 +45,7 @@ setup(
     long_description=readme + '\n\n' + history,
     author="Wagner Augusto Andreoli",
     author_email='wagnerandreoli@gmail.com',
-    url='https://github.com/wagnerandreoli/python-tegenaria',
+    url='https://github.com/andreoliw/python-tegenaria',
     packages=[
         'tegenaria',
     ],
@@ -61,21 +61,12 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
-        "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
     ],
     cmdclass={'test': PyTest},
     test_suite='tests',
     tests_require=test_requirements,
     entry_points={
-        'console_scripts': [
-            # TODO: Put command line scripts here
-            # 'my-cli-script = tegenaria.my_module:MyClass.main',
-            # 'my-other-cli-script = tegenaria.another_module:some_function'
-        ],
+        'console_scripts': [],
     }
 )

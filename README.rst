@@ -2,7 +2,7 @@
 Tegenaria
 =========
 
-Browse items that were collected by https://github.com/wagnerandreoli/python-tegenaria.
+Collect and browse items (so far, apartment ads).
 
 This repository contains two twin projects:
 
@@ -69,7 +69,7 @@ Then run the following commands to bootstrap your environment.
 
 ::
 
-    git clone https://github.com/wagnerandreoli/tegenaria_web
+    git clone https://github.com/andreoliw/tegenaria_web
     cd tegenaria_web
     pip install -r requirements/dev.txt
     python manage.py server
