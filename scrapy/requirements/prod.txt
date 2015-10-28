@@ -1,6 +1,7 @@
 # Everything needed in production
 
-Scrapy==1.0.2
-wheel==0.24.0
-keyring==5.4
+Scrapy==1.0.3
+wheel==0.26.0
+keyring==5.6
 IMAPClient==0.13
+requests==2.8.1

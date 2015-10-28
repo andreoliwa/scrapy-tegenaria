@@ -39,6 +39,8 @@ class ApartmentItem(Item):  # pylint: disable=too-many-ancestors
     warm_rent = Field(input_processor=MapCompose(sanitize_price), output_processor=Join())
     warm_rent_notes = Field(output_processor=Join())
     rooms = Field(output_processor=Join())
+    size = Field(output_processor=Join())
+    availability = Field(output_processor=Join())
 
 
 def json_config(current_file, key):
