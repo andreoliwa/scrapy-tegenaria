@@ -13,7 +13,7 @@ import requests
 from flask import flash, json
 from googlemaps import Client
 from googlemaps.exceptions import HTTPError
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 from sqlalchemy.exc import IntegrityError
 
 from tegenaria_web.extensions import db
@@ -107,8 +107,10 @@ def save_json_to_db(input_dir, output_dir, model_class):  # pylint: disable=too-
 
 def remove_inactive_apartments():
     """Remove 404 links."""
-    LOGGER.warning('Searching not found (404) among records that are still active')
-    for record in Apartment.query.filter_by(active=True).all():   # pylint: disable=no-member
+    LOGGER.warning('Searching not found (404) among active records that were not updated in the last 24h')
+    last_24h = datetime.now() - timedelta(days=1)
+    # pylint: disable=no-member
+    for record in Apartment.query.filter_by(active=True).filter(Apartment.updated_at <= last_24h).all():
         response = requests.get(record.url)  # HEAD didn't work for some reason.
         if response.status_code == requests.codes.NOT_FOUND:  # pylint: disable=no-member
             LOGGER.warning('Not found: %s', record.url)
@@ -121,7 +123,8 @@ def reprocess_invalid_apartments(output_dir):
     """Generate a text file with invalid apartments, so they can be reprocessed by Scrapy on the next run."""
     os.makedirs(output_dir, exist_ok=True)
     LOGGER.warning('Searching active apartments with empty addresses')
-    query = db.session.query(Apartment.url).filter_by(active=True, address='')
+    query = db.session.query(Apartment.url).filter_by(active=True).filter(
+        or_(Apartment.address == '', Apartment.rooms == ''))
     with open(os.path.join(output_dir, 'invalid.txt'), 'w') as handle:
         handle.writelines(['{}\n'.format(record.url) for record in query.all()])
 
