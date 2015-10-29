@@ -15,12 +15,16 @@ from scrapy.loader.processors import Join, MapCompose
 def sanitize_price(value):
     """Remove the euro symbol and thousands separator.
 
-    :param value: Value to sanitize.
-    :type value: str
+    Some prices already have a decimal point, so we don't mess with them.
+
+    :param str value: Value to sanitize.
 
     :return: Clean value.
     """
-    return value.replace(u'\u20ac', '').replace('.', '').replace(',', '.').strip()
+    value = value.replace(u'\u20ac', '').replace(u'EUR', '')
+    if ',' in value:
+        value = value.replace('.', '').replace(',', '.')
+    return value.strip()
 
 
 class ApartmentItem(Item):  # pylint: disable=too-many-ancestors
@@ -29,18 +33,18 @@ class ApartmentItem(Item):  # pylint: disable=too-many-ancestors
 
     url = Field(output_processor=Join())
     title = Field(output_processor=Join())
+    address = Field(output_processor=Join())
+    neighborhood = Field(output_processor=Join())
+    rooms = Field(output_processor=Join())
+    size = Field(output_processor=Join())
+    warm_rent = Field(input_processor=MapCompose(sanitize_price), output_processor=Join())
+    warm_rent_notes = Field(output_processor=Join())
     description = Field(output_processor=Join())
     equipment = Field(output_processor=Join())
     location = Field(output_processor=Join())
-    other = Field(output_processor=Join())
-    address = Field(output_processor=Join())
-    neighborhood = Field(output_processor=Join())
     cold_rent = Field(input_processor=MapCompose(sanitize_price), output_processor=Join())
-    warm_rent = Field(input_processor=MapCompose(sanitize_price), output_processor=Join())
-    warm_rent_notes = Field(output_processor=Join())
-    rooms = Field(output_processor=Join())
-    size = Field(output_processor=Join())
     availability = Field(output_processor=Join())
+    other = Field(output_processor=Join())
 
 
 def json_config(current_file, key):
