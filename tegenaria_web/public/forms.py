@@ -9,7 +9,6 @@ from tegenaria_web.user.models import User
 
 
 class LoginForm(Form):
-
     """Login form."""
 
     username = StringField('Username', validators=[DataRequired()])
@@ -42,7 +41,6 @@ class LoginForm(Form):
 
 
 class ApartmentSearchForm(Form):
-
     """Apartment search form."""
 
     days = IntegerField('Days')

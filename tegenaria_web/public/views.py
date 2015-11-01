@@ -74,7 +74,6 @@ def about():
 
 
 class ApartmentTable(Table):
-
     """An HTML table for the apartments."""
 
     classes = ['table-bordered', 'table-striped']
@@ -196,7 +195,6 @@ def apartments_opinion():
 def pins():
     """List all pins."""
     class PinTable(Table):
-
         """An HTML table for the pins."""
 
         name = Col('Name')

@@ -7,7 +7,6 @@ from tegenaria.items import ApartmentItem
 
 
 class MerkurSpider(CrawlSpider):
-
     """Apartments from the Merkur Berlin real estate agency."""
 
     name = 'merkur'

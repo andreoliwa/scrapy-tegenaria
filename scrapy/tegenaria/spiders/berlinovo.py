@@ -9,7 +9,6 @@ from tegenaria.items import ApartmentItem
 
 
 class BerlinovoSpider(scrapy.Spider):
-
     """A spider to crawl the Berlinovo website."""
 
     name = "berlinovo"
@@ -38,10 +37,10 @@ class BerlinovoSpider(scrapy.Spider):
         item.add_xpath('location', '//div[contains(@class, field-name-field-position)]/div/div[5]/div[2]/div/text()')
 
         zipcode = response.xpath(
-            '//*[@id="block-views-aktuelle-wohnung-block-3"]/div/div/div/div/div[3]/div/span/text()[1]')\
+            '//*[@id="block-views-aktuelle-wohnung-block-3"]/div/div/div/div/div[3]/div/span/text()[1]') \
             .extract()[0].strip()
         street = response.xpath(
-            '//*[@id="block-views-aktuelle-wohnung-block-3"]/div/div/div/div/div[3]/div/span/text()[2]')\
+            '//*[@id="block-views-aktuelle-wohnung-block-3"]/div/div/div/div/div[3]/div/span/text()[2]') \
             .extract()[0].strip()
         item.add_value('address', u'{}, {}'.format(street, zipcode))
 

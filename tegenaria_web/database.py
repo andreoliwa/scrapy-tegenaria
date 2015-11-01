@@ -12,7 +12,6 @@ relationship = relationship  # pylint: disable=invalid-name
 
 
 class CRUDMixin(object):
-
     """Mixin that adds convenience methods for CRUD (create, read, update, delete) operations."""
 
     @classmethod
@@ -41,14 +40,12 @@ class CRUDMixin(object):
 
 
 class Model(CRUDMixin, db.Model):
-
     """Base model class that includes CRUD convenience methods."""
 
     __abstract__ = True
 
 
 class SurrogatePK(object):
-
     """A mixin that adds a surrogate integer 'primary key' column named ``id`` to any declarative-mapped class.
 
     From Mike Bayer's "Building the app" talk

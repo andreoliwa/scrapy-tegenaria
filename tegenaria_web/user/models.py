@@ -9,7 +9,6 @@ from tegenaria_web.extensions import bcrypt
 
 
 class Role(SurrogatePK, Model):
-
     """A role."""
 
     __tablename__ = 'roles'
@@ -27,7 +26,6 @@ class Role(SurrogatePK, Model):
 
 
 class User(UserMixin, SurrogatePK, Model):
-
     """An user."""
 
     __tablename__ = 'users'

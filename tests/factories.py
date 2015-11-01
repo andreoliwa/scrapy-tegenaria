@@ -10,11 +10,9 @@ from tegenaria_web.user.models import User
 
 
 class BaseFactory(SQLAlchemyModelFactory):
-
     """Base class for all factories."""
 
     class Meta:
-
         """Configuration of this factory."""
 
         abstract = True
@@ -22,7 +20,6 @@ class BaseFactory(SQLAlchemyModelFactory):
 
 
 class UserFactory(BaseFactory):
-
     """User factory."""
 
     username = Sequence(lambda n: "user{0}".format(n))
@@ -31,21 +28,18 @@ class UserFactory(BaseFactory):
     active = True
 
     class Meta:
-
         """Configuration of this factory."""
 
         model = User
 
 
 class PinFactory(BaseFactory):
-
     """Pin factory."""
 
     name = Sequence(lambda n: "name{0}".format(n))
     address = Sequence(lambda n: "address {0}".format(n))
 
     class Meta:
-
         """Configuration of this factory."""
 
         model = Pin
