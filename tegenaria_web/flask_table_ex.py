@@ -5,7 +5,6 @@ from flask_table import Table as OriginalTable
 
 
 class Table(OriginalTable):
-
     """An enhanced table based on the original from FlaskTable.
 
     This table injects a ``row`` attribute in every column, so they can read other data from the same record.
@@ -24,7 +23,6 @@ class Table(OriginalTable):
 
 
 class Col(OriginalCol):
-
     """An enhanced column based on the original from FlaskTable.
 
     This column has a ``row`` attribute to read other data from the same record.
@@ -61,11 +59,11 @@ class Col(OriginalCol):
         def original_td_format(content):
             """Call the lambda function passing row, col and current value of the cell."""
             return cell_lambda(self.row, self, content)
+
         return original_td_format
 
 
 class UrlCol(Col):  # pylint: disable=no-init
-
     """A column that displays a URL."""
 
     def td_format(self, content):  # pylint: disable=method-hidden
@@ -74,7 +72,6 @@ class UrlCol(Col):  # pylint: disable=no-init
 
 
 class DateCol(Col):
-
     """Format the content as a date, unless it is None, in which case, output empty."""
 
     def __init__(self, name, date_format='short', **kwargs):
@@ -91,7 +88,6 @@ class DateCol(Col):
 
 
 class DatetimeCol(Col):
-
     """Format the content as a datetime, unless it is None, in which case, output empty."""
 
     def __init__(self, name, **kwargs):

@@ -28,7 +28,6 @@ def sanitize_price(value):
 
 
 class ApartmentItem(Item):  # pylint: disable=too-many-ancestors
-
     """An apartment item."""
 
     url = Field(output_processor=Join())

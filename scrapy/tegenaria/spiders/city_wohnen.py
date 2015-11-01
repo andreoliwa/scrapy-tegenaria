@@ -14,7 +14,6 @@ from tegenaria.items import ApartmentItem
 
 
 class CityWohnenSpider(CrawlSpider):
-
     """Furnished apartments from City Wohnen."""
 
     name = 'city_wohnen'

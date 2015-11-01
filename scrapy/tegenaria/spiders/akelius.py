@@ -11,7 +11,6 @@ from tegenaria.items import ApartmentItem
 
 
 class AkeliusSpider(CrawlSpider):
-
     """Apartments from the Akelius real estate agency."""
 
     name = 'akelius'

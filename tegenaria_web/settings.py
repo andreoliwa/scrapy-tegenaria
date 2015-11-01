@@ -4,7 +4,6 @@ import os
 
 
 class Config(object):
-
     """App configuration."""
 
     SECRET_KEY = os.environ.get('TEGENARIA_WEB_SECRET', 'secret-key')  # TODO: Change me
@@ -18,7 +17,6 @@ class Config(object):
 
 
 class ProdConfig(Config):
-
     """Production configuration."""
 
     ENV = 'prod'
@@ -28,7 +26,6 @@ class ProdConfig(Config):
 
 
 class DevConfig(Config):
-
     """Development configuration."""
 
     ENV = 'dev'
@@ -42,11 +39,10 @@ class DevConfig(Config):
 
 
 class TestConfig(Config):
-
     """Testing configuration."""
 
     TESTING = True
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
-    BCRYPT_LOG_ROUNDS = 1  # For faster tests
+    BCRYPT_LOG_ROUNDS = 4  # For faster tests; a different value might raise "ValueError: Invalid rounds".
     WTF_CSRF_ENABLED = False  # Allows form testing

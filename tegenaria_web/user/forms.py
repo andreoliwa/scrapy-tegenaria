@@ -8,7 +8,6 @@ from .models import User
 
 
 class RegisterForm(Form):
-
     """Register user form."""
 
     username = StringField('Username',

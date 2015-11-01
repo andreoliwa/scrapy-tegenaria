@@ -20,7 +20,6 @@ REGEX = re.compile(r'expose/([0-9]+)')
 
 
 class ImmobilienScout24Spider(scrapy.Spider):
-
     """A spider to crawl the Immobilien Scout 24 website."""
 
     name = "immobilien_scout_24"

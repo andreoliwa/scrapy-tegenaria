@@ -6,7 +6,6 @@ from tegenaria_web.database import Column, Model, SurrogatePK, db, reference_col
 
 
 class Apartment(SurrogatePK, Model):
-
     """A home (apartment, flat, etc.)."""
 
     __tablename__ = 'apartment'
@@ -41,7 +40,6 @@ class Apartment(SurrogatePK, Model):
 
 
 class Opinion(SurrogatePK, Model):
-
     """An opinion about an apartment."""
 
     __tablename__ = 'opinion'
@@ -50,7 +48,6 @@ class Opinion(SurrogatePK, Model):
 
 
 class Pin(SurrogatePK, Model):
-
     """A pin in the map, a reference address to be used when calculating distances."""
 
     __tablename__ = 'pin'
@@ -64,7 +61,6 @@ class Pin(SurrogatePK, Model):
 
 
 class Distance(SurrogatePK, Model):
-
     """Distance from a pin to an apartment."""
 
     __tablename__ = 'distance'
