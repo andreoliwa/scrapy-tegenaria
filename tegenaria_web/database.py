@@ -2,7 +2,6 @@
 """Database module, including the SQLAlchemy database object and DB-related utilities."""
 from sqlalchemy.orm import relationship
 
-from .compat import basestring
 from .extensions import db
 
 # Alias common SQLAlchemy names
@@ -59,7 +58,7 @@ class SurrogatePK(object):
     @classmethod
     def get_by_id(cls, id):  # pylint: disable=redefined-builtin
         """Get a record by its ID."""
-        if any((isinstance(id, basestring) and id.isdigit(),
+        if any((isinstance(id, (str, bytes)) and id.isdigit(),
                 isinstance(id, (int, float))), ):
             return cls.query.get(int(id))  # pylint: disable=no-member
         return None

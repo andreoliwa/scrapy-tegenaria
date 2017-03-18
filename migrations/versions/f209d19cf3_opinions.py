@@ -5,7 +5,6 @@ Create Date: 2015-10-26 01:03:59.737396
 """
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.dialects import postgresql
 
 revision = 'f209d19cf3'
 down_revision = '4af9b2e2cd5'
@@ -28,7 +27,7 @@ def upgrade():
 
 def downgrade():
     """Reverse actions performed during upgrade."""
-    interesting_enum = postgresql.ENUM('no', 'maybe', 'yes', name='interesting_enum')
+    interesting_enum = sa.dialects.postgresql.ENUM('no', 'maybe', 'yes', name='interesting_enum')
     interesting_enum.create(bind=op.get_bind())
 
     op.add_column('apartment',

@@ -5,11 +5,11 @@ import urllib
 from datetime import datetime
 
 import requests
-
 from scrapy import Request
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
+
 from tegenaria.items import ApartmentItem
 
 

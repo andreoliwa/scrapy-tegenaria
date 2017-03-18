@@ -3,10 +3,10 @@
 import re
 
 import requests
-
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
+
 from tegenaria.items import ApartmentItem
 
 

@@ -5,6 +5,7 @@ import re
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
+
 from tegenaria.items import ApartmentItem
 
 

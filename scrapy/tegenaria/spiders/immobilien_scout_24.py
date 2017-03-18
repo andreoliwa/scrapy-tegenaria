@@ -5,11 +5,11 @@ import re
 from getpass import getpass
 
 import keyring
-
 import scrapy
-from imapclient import IMAPClient
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
+
+from imapclient import IMAPClient
 from tegenaria.items import ApartmentItem, json_config
 
 IMAP_HOST = json_config(__file__, 'imap_host')
