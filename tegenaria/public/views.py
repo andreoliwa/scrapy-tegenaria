@@ -4,17 +4,17 @@
 from datetime import datetime, timedelta
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-from flask.ext.login import login_required, login_user, logout_user
+from flask_login import login_required, login_user, logout_user
 from sqlalchemy import Numeric
 from sqlalchemy.orm import aliased
 
-from tegenaria_web.extensions import db, login_manager
-from tegenaria_web.flask_table_ex import Col, DateCol, Table
-from tegenaria_web.models import Apartment, Distance, Opinion, Pin
-from tegenaria_web.public.forms import ApartmentSearchForm, LoginForm
-from tegenaria_web.user.forms import RegisterForm
-from tegenaria_web.user.models import User
-from tegenaria_web.utils import flash_errors
+from tegenaria.extensions import db, login_manager
+from tegenaria.flask_table_ex import Col, DateCol, Table
+from tegenaria.models import Apartment, Distance, Opinion, Pin
+from tegenaria.public.forms import ApartmentSearchForm, LoginForm
+from tegenaria.user.forms import RegisterForm
+from tegenaria.user.models import User
+from tegenaria.utils import flash_errors
 
 blueprint = Blueprint('public', __name__, static_folder="../static")  # pylint: disable=invalid-name
 MAPS_PLACE_URL = 'https://www.google.de/maps/place/{address}/'

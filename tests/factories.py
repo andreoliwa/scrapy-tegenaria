@@ -4,9 +4,9 @@
 from factory import PostGenerationMethodCall, Sequence
 from factory.alchemy import SQLAlchemyModelFactory
 
-from tegenaria_web.database import db
-from tegenaria_web.models import Pin
-from tegenaria_web.user.models import User
+from tegenaria.database import db
+from tegenaria.models import Pin
+from tegenaria.user.models import User
 
 
 class BaseFactory(SQLAlchemyModelFactory):

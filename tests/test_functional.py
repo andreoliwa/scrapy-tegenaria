@@ -6,7 +6,7 @@ See: http://webtest.readthedocs.org/
 # pylint: disable=missing-docstring,invalid-name,no-self-use
 from flask import url_for
 
-from tegenaria_web.user.models import User
+from tegenaria.user.models import User
 
 from .factories import UserFactory
 

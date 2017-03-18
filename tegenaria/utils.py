@@ -16,8 +16,8 @@ from googlemaps.exceptions import HTTPError
 from sqlalchemy import and_, or_
 from sqlalchemy.exc import IntegrityError
 
-from tegenaria_web.extensions import db
-from tegenaria_web.models import Apartment, Distance, Pin
+from tegenaria.extensions import db
+from tegenaria.models import Apartment, Distance, Pin
 
 PROJECT_NAME = 'tegenaria'
 LOGGER = logging.getLogger(__name__)

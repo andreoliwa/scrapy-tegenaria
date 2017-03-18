@@ -2,7 +2,7 @@
 """Tegenaria models."""
 from sqlalchemy.sql.functions import func
 
-from tegenaria_web.database import Column, Model, SurrogatePK, db, reference_column, relationship
+from tegenaria.database import Column, Model, SurrogatePK, db, reference_column, relationship
 
 
 class Apartment(SurrogatePK, Model):

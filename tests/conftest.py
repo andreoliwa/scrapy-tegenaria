@@ -4,9 +4,9 @@
 import pytest
 from webtest import TestApp
 
-from tegenaria_web.app import create_app
-from tegenaria_web.database import db as _db
-from tegenaria_web.settings import TestConfig
+from tegenaria.app import create_app
+from tegenaria.database import db as _db
+from tegenaria.settings import TestConfig
 
 from .factories import UserFactory
 

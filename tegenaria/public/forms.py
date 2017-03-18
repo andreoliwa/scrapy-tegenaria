@@ -5,7 +5,7 @@ from wtforms import HiddenField, IntegerField, PasswordField
 from wtforms.fields.core import SelectField, StringField
 from wtforms.validators import DataRequired
 
-from tegenaria_web.user.models import User
+from tegenaria.user.models import User
 
 
 class LoginForm(Form):

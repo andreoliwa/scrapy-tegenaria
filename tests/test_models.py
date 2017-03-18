@@ -5,7 +5,7 @@ import datetime as dt
 
 import pytest
 
-from tegenaria_web.user.models import Role, User
+from tegenaria.user.models import Role, User
 
 from .factories import UserFactory
 

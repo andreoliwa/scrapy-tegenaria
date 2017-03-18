@@ -5,15 +5,15 @@ import os
 from flask_migrate import MigrateCommand
 from flask_script import Manager, Server, Shell
 
-from tegenaria_web.app import create_app
-from tegenaria_web.database import db
-from tegenaria_web.models import Apartment
-from tegenaria_web.settings import DevConfig, ProdConfig
-from tegenaria_web.user.models import User
-from tegenaria_web.utils import (calculate_distance, read_from_keyring, remove_inactive_apartments,
-                                 reprocess_invalid_apartments, save_json_to_db)
+from tegenaria.app import create_app
+from tegenaria.database import db
+from tegenaria.models import Apartment
+from tegenaria.settings import DevConfig, ProdConfig
+from tegenaria.user.models import User
+from tegenaria.utils import (calculate_distance, read_from_keyring, remove_inactive_apartments,
+                             reprocess_invalid_apartments, save_json_to_db)
 
-if os.environ.get("TEGENARIA_WEB_ENV") == 'prod':
+if os.environ.get("TEGENARIA_ENV") == 'prod':
     app = create_app(ProdConfig)
 else:
     app = create_app(DevConfig)

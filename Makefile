@@ -5,13 +5,13 @@ help:
 	@echo "test - run tests quickly with the default Python"
 
 fix-isort:
-	isort --recursive --settings-path . *.py tegenaria_web migrations tests scrapy/tegenaria scrapy/tests
+	isort --recursive --settings-path . *.py tegenaria migrations tests scrapy/tegenaria scrapy/tests
 
 lint:
-	isort --recursive --settings-path . --check *.py tegenaria_web migrations tests scrapy/tegenaria scrapy/tests
-	flake8 tegenaria_web migrations tests scrapy/tegenaria scrapy/tests
-	pep257 tegenaria_web migrations tests scrapy/tegenaria scrapy/tests
-	pylint --rcfile=.pylintrc tegenaria_web migrations tests
+	isort --recursive --settings-path . --check *.py tegenaria migrations tests scrapy/tegenaria scrapy/tests
+	flake8 tegenaria migrations tests scrapy/tegenaria scrapy/tests
+	pep257 tegenaria migrations tests scrapy/tegenaria scrapy/tests
+	pylint --rcfile=.pylintrc tegenaria migrations tests
 
 lt: lint test
 

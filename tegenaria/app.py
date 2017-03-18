@@ -2,10 +2,10 @@
 """The app module, containing the app factory function."""
 from flask import Flask, render_template
 
-from tegenaria_web import public, user
-from tegenaria_web.assets import assets
-from tegenaria_web.extensions import bcrypt, cache, db, debug_toolbar, login_manager, migrate
-from tegenaria_web.settings import ProdConfig
+from tegenaria import public, user
+from tegenaria.assets import assets
+from tegenaria.extensions import bcrypt, cache, db, debug_toolbar, login_manager, migrate
+from tegenaria.settings import ProdConfig
 
 
 def create_app(config_object=ProdConfig):

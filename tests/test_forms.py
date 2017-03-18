@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=missing-docstring,invalid-name,no-self-use
-from tegenaria_web.public.forms import LoginForm
-from tegenaria_web.user.forms import RegisterForm
+from tegenaria.public.forms import LoginForm
+from tegenaria.user.forms import RegisterForm
 
 
 class TestRegisterForm:

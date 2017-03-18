@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=missing-docstring,invalid-name
-from tegenaria_web.app import create_app
-from tegenaria_web.settings import DevConfig, ProdConfig
+from tegenaria.app import create_app
+from tegenaria.settings import DevConfig, ProdConfig
 
 
 def test_production_config():

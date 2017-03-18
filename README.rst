@@ -61,7 +61,7 @@ First, set your app's secret key as an environment variable. For example, exampl
 
 .. code-block:: bash
 
-    export TEGENARIA_WEB_SECRET='something-really-secret'
+    export TEGENARIA_SECRET='something-really-secret'
 
 
 Then run the following commands to bootstrap your environment.
@@ -69,8 +69,8 @@ Then run the following commands to bootstrap your environment.
 
 ::
 
-    git clone https://github.com/andreoliw/tegenaria_web
-    cd tegenaria_web
+    git clone https://github.com/andreoliw/python-tegenaria
+    cd tegenaria
     pip install -r requirements/dev.txt
     python manage.py server
 
@@ -90,7 +90,7 @@ Once you have installed your DBMS, run the following to create your app's databa
 Deployment
 ----------
 
-In your production environment, make sure the ``TEGENARIA_WEB_ENV`` environment variable is set to ``"prod"``.
+In your production environment, make sure the ``TEGENARIA_ENV`` environment variable is set to ``"prod"``.
 
 
 Shell
