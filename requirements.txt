@@ -47,6 +47,8 @@ requests==2.13.0
 
 # Development and testing
 pytest==3.0.7
+coverage==4.3.4
+pytest-cov==2.4.0
 webtest
 factory-boy==2.8.1
 Flask-Script

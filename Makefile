@@ -1,19 +1,19 @@
 help:
-	@echo "fix-isort - fix import order with isort"
-	@echo "lint - check style with isort, flake8, pep257 and pylint"
-	@echo "lt - lint and test"
+	@echo "isort - fix import order with isort"
+	@echo "lint - check style with flake8 and pylint"
 	@echo "test - run tests quickly with the default Python"
+	@echo "ilt - isort, lint and test"
+	@exit 1
 
-fix-isort:
-	isort --recursive --settings-path . *.py tegenaria migrations tests scrapy/tegenaria scrapy/tests
+isort:
+	isort -rc .
 
 lint:
-	isort --recursive --settings-path . --check *.py tegenaria migrations tests scrapy/tegenaria scrapy/tests
 	flake8 tegenaria migrations tests scrapy/tegenaria scrapy/tests
 	pep257 tegenaria migrations tests scrapy/tegenaria scrapy/tests
 	pylint --rcfile=.pylintrc tegenaria migrations tests
 
-lt: lint test
-
 test:
-	./manage.py test
+	py.test --verbose --cov tegenaria
+
+ilt: isort lint test
