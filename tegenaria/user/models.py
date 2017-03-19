@@ -58,7 +58,7 @@ class User(UserMixin, SurrogatePK, Model):
     @property
     def full_name(self):
         """Full name of the user."""
-        return "{0} {1}".format(self.first_name, self.last_name)
+        return '{0} {1}'.format(self.first_name, self.last_name)
 
     def __repr__(self):
         """Represent the object as a unique string."""

@@ -16,7 +16,7 @@ from tegenaria.user.forms import RegisterForm
 from tegenaria.user.models import User
 from tegenaria.utils import flash_errors
 
-blueprint = Blueprint('public', __name__, static_folder="../static")  # pylint: disable=invalid-name
+blueprint = Blueprint('public', __name__, static_folder='../static')  # pylint: disable=invalid-name
 MAPS_PLACE_URL = 'https://www.google.de/maps/place/{address}/'
 MAPS_DIRECTIONS_URL = 'https://www.google.de/maps/dir/{origin}/{destination}/'
 
@@ -27,7 +27,7 @@ def load_user(id):  # pylint: disable=redefined-builtin
     return User.get_by_id(int(id))
 
 
-@blueprint.route("/", methods=["GET", "POST"])
+@blueprint.route('/', methods=['GET', 'POST'])
 def home():
     """Home page."""
     form = LoginForm(request.form)
@@ -35,12 +35,12 @@ def home():
     if request.method == 'POST':
         if form.validate_on_submit():
             login_user(form.user)
-            flash("You are logged in.", 'success')
-            redirect_url = request.args.get("next") or url_for("user.members")
+            flash('You are logged in.', 'success')
+            redirect_url = request.args.get('next') or url_for('user.members')
             return redirect(redirect_url)
         else:
             flash_errors(form)
-    return render_template("public/home.html", form=form)
+    return render_template('public/home.html', form=form)
 
 
 @blueprint.route('/logout/')
@@ -52,25 +52,25 @@ def logout():
     return redirect(url_for('public.home'))
 
 
-@blueprint.route("/register/", methods=['GET', 'POST'])
+@blueprint.route('/register/', methods=['GET', 'POST'])
 def register():
     """Register user page."""
     form = RegisterForm(request.form, csrf_enabled=False)
     if form.validate_on_submit():
         User.create(username=form.username.data, email=form.email.data,
                     password=form.password.data, active=True)
-        flash("Thank you for registering. You can now log in.", 'success')
+        flash('Thank you for registering. You can now log in.', 'success')
         return redirect(url_for('public.home'))
     else:
         flash_errors(form)
     return render_template('public/register.html', form=form)
 
 
-@blueprint.route("/about/")
+@blueprint.route('/about/')
 def about():
     """About page."""
     form = LoginForm(request.form)
-    return render_template("public/about.html", form=form)
+    return render_template('public/about.html', form=form)
 
 
 class ApartmentTable(Table):
@@ -106,7 +106,7 @@ class ApartmentTable(Table):
         return url_for('public.apartments', order_by=col_key, **args)
 
 
-@blueprint.route("/apartments/")
+@blueprint.route('/apartments/')
 def apartments():
     """List all apartments."""
     # pylint: disable=no-member
@@ -174,7 +174,7 @@ def apartments():
         query = query.order_by(Apartment.warm_rent.cast(Numeric), Apartment.cold_rent.cast(Numeric))
 
     table = ApartmentTable(query.all())
-    return render_template("public/apartments.html", table=table, search_form=search_form, count=query.count())
+    return render_template('public/apartments.html', table=table, search_form=search_form, count=query.count())
 
 
 @blueprint.route('/apartments/opinion/', methods=['POST'])
@@ -191,7 +191,7 @@ def apartments_opinion():
     return 'Opinion updated'
 
 
-@blueprint.route("/pins/")
+@blueprint.route('/pins/')
 def pins():
     """List all pins."""
     class PinTable(Table):
@@ -207,4 +207,4 @@ def pins():
     # pylint: disable=no-member
     items = Pin.query.all()
     table = PinTable(items, classes=['table-bordered', 'table-striped'])
-    return render_template("public/pins.html", table=table)
+    return render_template('public/pins.html', table=table)

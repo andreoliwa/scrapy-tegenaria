@@ -12,10 +12,12 @@ from .factories import UserFactory
 
 
 class TestLoggingIn:
+    """Login."""
 
     def test_can_log_in_returns_200(self, user, testapp):
+        """Log in with success."""
         # Goes to homepage
-        res = testapp.get("/")
+        res = testapp.get('/')
         # Fills out login form in navbar
         form = res.forms['loginForm']
         form['username'] = user.username
@@ -25,7 +27,8 @@ class TestLoggingIn:
         assert res.status_code == 200
 
     def test_sees_alert_on_log_out(self, user, testapp):
-        res = testapp.get("/")
+        """Log out."""
+        res = testapp.get('/')
         # Fills out login form in navbar
         form = res.forms['loginForm']
         form['username'] = user.username
@@ -37,8 +40,9 @@ class TestLoggingIn:
         assert 'You are logged out.' in res
 
     def test_sees_error_message_if_password_is_incorrect(self, user, testapp):
+        """Wrong password."""
         # Goes to homepage
-        res = testapp.get("/")
+        res = testapp.get('/')
         # Fills out login form, password incorrect
         form = res.forms['loginForm']
         form['username'] = user.username
@@ -46,11 +50,12 @@ class TestLoggingIn:
         # Submits
         res = form.submit()
         # sees error
-        assert "Invalid password" in res
+        assert 'Invalid password' in res
 
     def test_sees_error_message_if_username_doesnt_exist(self, user, testapp):  # pylint: disable=unused-argument
+        """User does not exist."""
         # Goes to homepage
-        res = testapp.get("/")
+        res = testapp.get('/')
         # Fills out login form, password incorrect
         form = res.forms['loginForm']
         form['username'] = 'unknown'
@@ -58,19 +63,21 @@ class TestLoggingIn:
         # Submits
         res = form.submit()
         # sees error
-        assert "Unknown user" in res
+        assert 'Unknown user' in res
 
 
 class TestRegistering:
+    """Registration."""
 
     def test_can_register(self, user, testapp):  # pylint: disable=unused-argument
+        """User can register."""
         old_count = len(User.query.all())  # pylint: disable=no-member
         # Goes to homepage
-        res = testapp.get("/")
+        res = testapp.get('/')
         # Clicks Create Account button
-        res = res.click("Create account")
+        res = res.click('Create account')
         # Fills out the form
-        form = res.forms["registerForm"]
+        form = res.forms['registerForm']
         form['username'] = 'foobar'
         form['email'] = 'foo@bar.com'
         form['password'] = 'secret'
@@ -82,10 +89,11 @@ class TestRegistering:
         assert len(User.query.all()) == old_count + 1  # pylint: disable=no-member
 
     def test_sees_error_message_if_passwords_dont_match(self, user, testapp):  # pylint: disable=unused-argument
+        """Error message when password is wrong."""
         # Goes to registration page
-        res = testapp.get(url_for("public.register"))
+        res = testapp.get(url_for('public.register'))
         # Fills out form, but passwords don't match
-        form = res.forms["registerForm"]
+        form = res.forms['registerForm']
         form['username'] = 'foobar'
         form['email'] = 'foo@bar.com'
         form['password'] = 'secret'
@@ -93,15 +101,16 @@ class TestRegistering:
         # Submits
         res = form.submit()
         # sees error message
-        assert "Passwords must match" in res
+        assert 'Passwords must match' in res
 
     def test_sees_error_message_if_user_already_registered(self, user, testapp):
+        """Error if already registered."""
         user = UserFactory(active=True)  # A registered user
         user.save()  # pylint: disable=no-member
         # Goes to registration page
-        res = testapp.get(url_for("public.register"))
+        res = testapp.get(url_for('public.register'))
         # Fills out form, but username is already registered
-        form = res.forms["registerForm"]
+        form = res.forms['registerForm']
         form['username'] = user.username
         form['email'] = 'foo@bar.com'
         form['password'] = 'secret'
@@ -109,4 +118,4 @@ class TestRegistering:
         # Submits
         res = form.submit()
         # sees error
-        assert "Username already registered" in res
+        assert 'Username already registered' in res

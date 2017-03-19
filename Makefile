@@ -9,13 +9,7 @@ isort:
 	isort -rc .
 
 lint:
-	flake8 tegenaria migrations tests scrapy/tegenaria scrapy/tests
-	pep257 tegenaria migrations tests scrapy/tegenaria scrapy/tests
-	pylint --rcfile=.pylintrc tegenaria migrations tests
-
-# FIXME
-#lint:
-#	./manage.py lint --pylint
+	./manage.py lint  # FIXME --pylint
 
 test:
 	py.test --verbose --cov tegenaria

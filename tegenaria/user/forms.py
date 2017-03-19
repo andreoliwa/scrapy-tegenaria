@@ -31,10 +31,10 @@ class RegisterForm(Form):
             return False
         user = User.query.filter_by(username=self.username.data).first()  # pylint: disable=no-member
         if user:
-            self.username.errors.append("Username already registered")
+            self.username.errors.append('Username already registered')
             return False
         user = User.query.filter_by(email=self.email.data).first()  # pylint: disable=no-member
         if user:
-            self.email.errors.append("Email already registered")
+            self.email.errors.append('Email already registered')
             return False
         return True

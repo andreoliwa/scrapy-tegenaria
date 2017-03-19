@@ -23,11 +23,11 @@ PROJECT_NAME = 'tegenaria'
 LOGGER = logging.getLogger(__name__)
 
 
-def flash_errors(form, category="warning"):
+def flash_errors(form, category='warning'):
     """Flash all errors for a form."""
     for field, errors in form.errors.items():
         for error in errors:
-            flash("{0} - {1}"
+            flash('{0} - {1}'
                   .format(getattr(form, field).label.text, error), category)
 
 
@@ -44,7 +44,7 @@ def read_from_keyring(key, secret=True, always_ask=False):
         prompt_function = getpass if secret else input
         value = prompt_function("Type a value for the key '{}.{}': ".format(PROJECT_NAME, key))
     if not value:
-        raise ValueError("{}.{} is not set in the keyring.".format(PROJECT_NAME, key))
+        raise ValueError('{}.{} is not set in the keyring.'.format(PROJECT_NAME, key))
     keyring.set_password(PROJECT_NAME, key, value)
     return value
 
@@ -137,7 +137,7 @@ def calculate_distance():  # pylint: disable=too-many-locals
     - Call Google Maps Distance Matrix;
     - Save the results.
     """
-    maps = Client(key=read_from_keyring("google_maps_api_key"))
+    maps = Client(key=read_from_keyring('google_maps_api_key'))
     assert maps
     tomorrow = date.today() + timedelta(0 if datetime.now().hour < 9 else 1)
     morning = datetime(tomorrow.year, tomorrow.month, tomorrow.day, 9, 0)

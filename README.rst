@@ -46,13 +46,13 @@ How to setup the dev environment
 Metrics
 -------
 
-.. image:: https://badge.waffle.io/andreoliw/python-tegenaria.svg?label=ready&title=Ready
+.. image:: https://badge.waffle.io/andreoliwa/python-tegenaria.svg?label=ready&title=Ready
    :alt: Stories in Ready
-   :target: http://waffle.io/andreoliw/python-tegenaria
+   :target: http://waffle.io/andreoliwa/python-tegenaria
 
-.. image:: https://graphs.waffle.io/andreoliw/python-tegenaria/throughput.svg
+.. image:: https://graphs.waffle.io/andreoliwa/python-tegenaria/throughput.svg
    :alt: Throughput Graph
-   :target: https://waffle.io/andreoliw/python-tegenaria/metrics
+   :target: https://waffle.io/andreoliwa/python-tegenaria/metrics
 
 Quickstart
 ----------
@@ -69,7 +69,7 @@ Then run the following commands to bootstrap your environment.
 
 ::
 
-    git clone https://github.com/andreoliw/python-tegenaria
+    git clone https://github.com/andreoliwa/python-tegenaria
     cd tegenaria
     pip install -r requirements/dev.txt
     python manage.py server

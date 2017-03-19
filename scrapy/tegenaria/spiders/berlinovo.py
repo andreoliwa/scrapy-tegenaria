@@ -12,8 +12,8 @@ from tegenaria.items import ApartmentItem
 class BerlinovoSpider(scrapy.Spider):
     """A spider to crawl the Berlinovo website."""
 
-    name = "berlinovo"
-    allowed_domains = ["berlinovo.de"]
+    name = 'berlinovo'
+    allowed_domains = ['berlinovo.de']
     start_urls = (
         'https://www.berlinovo.de/en/suche-apartments',
     )

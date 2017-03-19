@@ -12,7 +12,6 @@ from .factories import UserFactory
 
 @pytest.mark.usefixtures('db')
 class TestUser:
-
     """User tests."""
 
     def test_get_by_id(self):
@@ -38,7 +37,7 @@ class TestUser:
 
     def test_factory(self, db):
         """User factory."""
-        user = UserFactory(password="myprecious")
+        user = UserFactory(password='myprecious')
         db.session.commit()
         assert bool(user.username)
         assert bool(user.email)
@@ -49,18 +48,18 @@ class TestUser:
 
     def test_check_password(self):
         """Check password."""
-        user = User.create(username="foo", email="foo@bar.com",
-                           password="foobarbaz123")
+        user = User.create(username='foo', email='foo@bar.com',
+                           password='foobarbaz123')
         assert user.check_password('foobarbaz123') is True
-        assert user.check_password("barfoobaz") is False
+        assert user.check_password('barfoobaz') is False
 
     def test_full_name(self):
         """Full name."""
-        user = UserFactory(first_name="Foo", last_name="Bar")
-        assert user.full_name == "Foo Bar"
+        user = UserFactory(first_name='Foo', last_name='Bar')
+        assert user.full_name == 'Foo Bar'
 
     def test_roles(self):
-        """Roles of the user."""
+        """Test roles of the user."""
         role = Role(name='admin')
         role.save()
         u = UserFactory()

@@ -73,5 +73,5 @@ def reference_column(table_name, nullable=False, pk_name='id', **kwargs):
         category = relationship('Category', backref='categories')
     """
     return db.Column(
-        db.ForeignKey("{0}.{1}".format(table_name, pk_name)),
+        db.ForeignKey('{0}.{1}'.format(table_name, pk_name)),
         nullable=nullable, **kwargs)

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""Setup script."""
 import tegenaria
 
 try:
@@ -25,27 +26,34 @@ test_requirements.extend(requirements)
 
 
 class PyTest(Command):
+    """Command to run py.test."""
+
     user_options = []
+
     def initialize_options(self):
+        """Init options."""
         pass
 
     def finalize_options(self):
+        """Finalise options."""
         pass
 
     def run(self):
+        """Run."""
         import subprocess
         import sys
         errno = subprocess.call([sys.executable, 'runtests.py'])
         raise SystemExit(errno)
 
+
 setup(
     name='tegenaria',
     version=tegenaria.__version__,
-    description="Scrapy spiders to collect different items.",
+    description='Scrapy spiders to collect different items.',
     long_description=readme + '\n\n' + history,
-    author="Wagner Augusto Andreoli",
-    author_email='wagnerandreoli@gmail.com',
-    url='https://github.com/andreoliw/python-tegenaria',
+    author='Wagner Augusto Andreoli',
+    author_email='andreoliwa@gmail.com',
+    url='https://github.com/andreoliwa/python-tegenaria',
     packages=[
         'tegenaria',
     ],
@@ -53,7 +61,7 @@ setup(
                  'tegenaria'},
     include_package_data=True,
     install_requires=requirements,
-    license="BSD",
+    license='BSD',
     zip_safe=False,
     keywords='tegenaria',
     classifiers=[

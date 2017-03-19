@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=missing-docstring,invalid-name,no-self-use
+"""Test forms."""
 from tegenaria.public.forms import LoginForm
 from tegenaria.user.forms import RegisterForm
 
 
 class TestRegisterForm:
+    """Register form."""
 
     def test_validate_user_already_registered(self, user):
-        # Enters username that is already registered
+        """Enter username that is already registered."""
         form = RegisterForm(username=user.username, email='foo@bar.com',
                             password='example', confirm='example')
 
@@ -15,7 +17,7 @@ class TestRegisterForm:
         assert 'Username already registered' in form.username.errors
 
     def test_validate_email_already_registered(self, user):
-        # enters email that is already registered
+        """E-mail that is already registered."""
         form = RegisterForm(username='unique', email=user.email,
                             password='example', confirm='example')
 
@@ -23,14 +25,17 @@ class TestRegisterForm:
         assert 'Email already registered' in form.email.errors
 
     def test_validate_success(self, db):  # pylint: disable=unused-argument
+        """Success."""
         form = RegisterForm(username='newusername', email='new@test.test',
                             password='example', confirm='example')
         assert form.validate() is True
 
 
 class TestLoginForm:
+    """Login form."""
 
     def test_validate_success(self, user):
+        """Success."""
         user.set_password('example')
         user.save()
         form = LoginForm(username=user.username, password='example')
@@ -38,12 +43,14 @@ class TestLoginForm:
         assert form.user == user
 
     def test_validate_unknown_username(self, db):  # pylint: disable=unused-argument
+        """Unknown username."""
         form = LoginForm(username='unknown', password='example')
         assert form.validate() is False
         assert 'Unknown username' in form.username.errors
         assert form.user is None
 
     def test_validate_invalid_password(self, user):
+        """Invalid password."""
         user.set_password('example')
         user.save()
         form = LoginForm(username=user.username, password='wrongpassword')
@@ -51,6 +58,7 @@ class TestLoginForm:
         assert 'Invalid password' in form.password.errors
 
     def test_validate_inactive_user(self, user):
+        """Inactive user."""
         user.active = False
         user.set_password('example')
         user.save()

@@ -20,10 +20,7 @@ before_script:
   - psql -U postgres -c 'CREATE DATABASE tegenaria_test;'
   - psql -U postgres -c 'GRANT ALL PRIVILEGES ON DATABASE tegenaria_test TO tegenaria;'
 script:
-  - flake8 tegenaria migrations tests scrapy/tegenaria scrapy/tests
-  - pep257 tegenaria migrations tests scrapy/tegenaria scrapy/tests
-  - pylint --rcfile=.pylintrc tegenaria migrations tests
-# FIXME  - ./manage.py lint --pylint
+  - ./manage.py lint # FIXME --pylint
   - py.test --verbose --cov tegenaria
 after_success:
   - codecov
