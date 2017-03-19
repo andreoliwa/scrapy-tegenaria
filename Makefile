@@ -13,6 +13,10 @@ lint:
 	pep257 tegenaria migrations tests scrapy/tegenaria scrapy/tests
 	pylint --rcfile=.pylintrc tegenaria migrations tests
 
+# FIXME
+#lint:
+#	./manage.py lint --pylint
+
 test:
 	py.test --verbose --cov tegenaria
 

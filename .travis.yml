@@ -1,11 +1,31 @@
 # Config file for automatic testing at travis-ci.org
-
+sudo: false  # http://docs.travis-ci.com/user/migrating-from-legacy/
+dist: trusty
 language: python
-
+cache: pip
 python:
-  - "3.3"
-  - "2.7"
-
-install: pip install -r requirements/dev.txt
-
-script: py.test tests
+  - 3.5
+services:
+  - postgresql
+addons:
+  postgresql: "9.6"
+  hosts:
+  - postgresql
+install:
+  - pip install codecov
+  - pip install -r requirements.txt
+before_script:
+  - pip freeze
+  - psql -U postgres -c 'CREATE USER tegenaria;'
+  - psql -U postgres -c 'CREATE DATABASE tegenaria_test;'
+  - psql -U postgres -c 'GRANT ALL PRIVILEGES ON DATABASE tegenaria_test TO tegenaria;'
+script:
+  - flake8 tegenaria migrations tests scrapy/tegenaria scrapy/tests
+  - pep257 tegenaria migrations tests scrapy/tegenaria scrapy/tests
+  - pylint --rcfile=.pylintrc tegenaria migrations tests
+# FIXME  - ./manage.py lint --pylint
+  - py.test --verbose --cov tegenaria
+after_success:
+  - codecov
+after_failure:
+  - dmesg | tail -n 100
