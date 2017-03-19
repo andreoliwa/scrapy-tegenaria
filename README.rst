@@ -2,18 +2,28 @@
 Tegenaria
 =========
 
-Collect and browse items (so far, apartment ads).
+.. image:: https://img.shields.io/travis/andreoliwa/python-tegenaria.svg
+        :target: https://travis-ci.org/andreoliwa/python-tegenaria
+
+.. image:: https://img.shields.io/pypi/v/tegenaria.svg
+        :target: https://pypi.python.org/pypi/tegenaria
+
+Scrapy spiders to collect and browse different items (so far, apartment ads).
 
 This repository contains two twin projects:
 
-1. A `Scrapy<http://scrapy.org/>`_ project with spiders to collect different items;
-1. A `Flask<http://flask.pocoo.org/>`_ app to browse and manipulate the items that were collected by the spiders.
+1. A `Scrapy <https://scrapy.org/>`_ project with spiders to collect different items;
+1. A `Flask <http://flask.pocoo.org/>`_ app to browse and manipulate the items that were collected by the spiders.
 
 Scrapy is still using Python 2, while Flask is already on Python 3.
 As soon as Scrapy gets a Python 3 version, this can become a single project with two modules.
 
 Flask is the main project, while Scrapy is all contained in a sub directory.
 Maybe Git submodules could also be used here; that can be tried later.
+
+
+* Free software: BSD license
+* Documentation: https://tegenaria.readthedocs.org.
 
 How to setup the dev environment
 --------------------------------

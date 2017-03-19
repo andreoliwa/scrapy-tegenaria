@@ -18,13 +18,12 @@ serve to show the default.
 import os
 import sys
 
-import tegenaria
-
 # If extensions (or modules to document with autodoc) are in another
 # directory, add these directories to sys.path here. If the directory is
 # relative to the documentation root, use os.path.abspath to make it
 # absolute, like shown here.
-# sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('..'))
+import tegenaria  # noqa
 
 # Get the project root dir, which is the parent dir of this
 cwd = os.getcwd()
@@ -276,3 +275,5 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 # texinfo_no_detailmenu = False
+
+suppress_warnings = ['image.nonlocal_uri']

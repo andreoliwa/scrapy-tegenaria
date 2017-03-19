@@ -53,7 +53,7 @@ def json_config(current_file, key):
     :param key: Key to search in the JSON config file.
     :return: The configuration value.
     """
-    config_dir = os.path.abspath(os.path.join(os.path.dirname(current_file), '../../var/config'))
+    config_dir = os.path.abspath(os.path.join(os.path.dirname(current_file), '../../_sandbox/config'))
     basename_no_ext = os.path.splitext(os.path.basename(current_file))[0]
     full_name = os.path.join(config_dir, '{}.json'.format(basename_no_ext))
     with open(full_name) as handle:
