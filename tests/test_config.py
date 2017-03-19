@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=missing-docstring,invalid-name
-from tegenaria_web.app import create_app
-from tegenaria_web.settings import DevConfig, ProdConfig
+"""Test configurations."""
+from tegenaria.app import create_app
+from tegenaria.settings import DevConfig, ProdConfig
 
 
 def test_production_config():
+    """Production."""
     app = create_app(ProdConfig)
     assert app.config['ENV'] == 'prod'
     assert app.config['DEBUG'] is False
@@ -13,6 +15,7 @@ def test_production_config():
 
 
 def test_dev_config():
+    """Development."""
     app = create_app(DevConfig)
     assert app.config['ENV'] == 'dev'
     assert app.config['DEBUG'] is True

@@ -2,18 +2,28 @@
 Tegenaria
 =========
 
-Collect and browse items (so far, apartment ads).
+.. image:: https://img.shields.io/travis/andreoliwa/python-tegenaria.svg
+        :target: https://travis-ci.org/andreoliwa/python-tegenaria
+
+.. image:: https://img.shields.io/pypi/v/tegenaria.svg
+        :target: https://pypi.python.org/pypi/tegenaria
+
+Scrapy spiders to collect and browse different items (so far, apartment ads).
 
 This repository contains two twin projects:
 
-1. A `Scrapy<http://scrapy.org/>`_ project with spiders to collect different items;
-1. A `Flask<http://flask.pocoo.org/>`_ app to browse and manipulate the items that were collected by the spiders.
+1. A `Scrapy <https://scrapy.org/>`_ project with spiders to collect different items;
+1. A `Flask <http://flask.pocoo.org/>`_ app to browse and manipulate the items that were collected by the spiders.
 
 Scrapy is still using Python 2, while Flask is already on Python 3.
 As soon as Scrapy gets a Python 3 version, this can become a single project with two modules.
 
 Flask is the main project, while Scrapy is all contained in a sub directory.
 Maybe Git submodules could also be used here; that can be tried later.
+
+
+* Free software: BSD license
+* Documentation: https://tegenaria.readthedocs.org.
 
 How to setup the dev environment
 --------------------------------
@@ -46,13 +56,13 @@ How to setup the dev environment
 Metrics
 -------
 
-.. image:: https://badge.waffle.io/andreoliw/python-tegenaria.svg?label=ready&title=Ready
+.. image:: https://badge.waffle.io/andreoliwa/python-tegenaria.svg?label=ready&title=Ready
    :alt: Stories in Ready
-   :target: http://waffle.io/andreoliw/python-tegenaria
+   :target: http://waffle.io/andreoliwa/python-tegenaria
 
-.. image:: https://graphs.waffle.io/andreoliw/python-tegenaria/throughput.svg
+.. image:: https://graphs.waffle.io/andreoliwa/python-tegenaria/throughput.svg
    :alt: Throughput Graph
-   :target: https://waffle.io/andreoliw/python-tegenaria/metrics
+   :target: https://waffle.io/andreoliwa/python-tegenaria/metrics
 
 Quickstart
 ----------
@@ -61,7 +71,7 @@ First, set your app's secret key as an environment variable. For example, exampl
 
 .. code-block:: bash
 
-    export TEGENARIA_WEB_SECRET='something-really-secret'
+    export TEGENARIA_SECRET='something-really-secret'
 
 
 Then run the following commands to bootstrap your environment.
@@ -69,8 +79,8 @@ Then run the following commands to bootstrap your environment.
 
 ::
 
-    git clone https://github.com/andreoliw/tegenaria_web
-    cd tegenaria_web
+    git clone https://github.com/andreoliwa/python-tegenaria
+    cd tegenaria
     pip install -r requirements/dev.txt
     python manage.py server
 
@@ -90,7 +100,7 @@ Once you have installed your DBMS, run the following to create your app's databa
 Deployment
 ----------
 
-In your production environment, make sure the ``TEGENARIA_WEB_ENV`` environment variable is set to ``"prod"``.
+In your production environment, make sure the ``TEGENARIA_ENV`` environment variable is set to ``"prod"``.
 
 
 Shell
