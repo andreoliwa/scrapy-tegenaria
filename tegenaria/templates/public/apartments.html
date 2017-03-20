@@ -11,11 +11,18 @@
                     {{ search_form.days.label }}
                     {{ search_form.days(placeholder="Last days", class_="form-control") }}
                     {{ search_form.direction }}
-                    {{ search_form.order_by }}
                 </div>
                 <div class="form-group col-md-4">
                     {{ search_form.opinion.label }}
                     {{ search_form.opinion(class_="form-control") }}
+                </div>
+                <div class="form-group col-md-3">
+                    {% for subfield in search_form.preset_sort %}
+                        <tr>
+                            <td>{{ subfield }}</td>
+                            <td>{{ subfield.label }}</td>
+                        </tr>
+                    {% endfor %}
                 </div>
                 <div class="form-group col-md-2">
                     <input class="btn btn-default btn-submit" type="submit" value="Filter">
@@ -42,6 +49,11 @@
                         opinion_id: $(this).val()
                     })
                 });
+            });
+
+            // Submit form when radio button is clicked.
+            $('input[type=radio]').on('change', function () {
+                $(this).closest("form").submit();
             });
         });
     </script>
