@@ -77,7 +77,7 @@ class ApartmentTable(Table):
     """An HTML table for the apartments."""
 
     classes = ['table-bordered', 'table-striped']
-    allow_sort = True
+    allow_sort = False
     opinions = {}
 
     title = Col(
@@ -90,7 +90,7 @@ class ApartmentTable(Table):
     neighborhood = Col('Neighborhood')
     rooms = Col('Rooms')
     cold_rent = Col('Cold Rent')
-    warm_rent = Col('Warm Rent', allow_sort=True)
+    warm_rent = Col('Warm Rent', allow_sort=False)
     warm_rent_notes = Col('Warm Rent Notes')
     opinion_id = Col('Opinion', cell=lambda row, col, value: render_template(
         'public/opinion.html', apartment_id=row.id, opinion_id=value,
@@ -121,7 +121,7 @@ def apartments():
 
         duration_text_field = 'duration_text_{}'.format(pin.id)
         duration_value_field = 'duration_value_{}'.format(pin.id)
-        ApartmentTable.add_column(duration_text_field, Col('Time to {}'.format(pin.name), allow_sort=True))
+        ApartmentTable.add_column(duration_text_field, Col('Time to {}'.format(pin.name), allow_sort=False))
 
         def show_directions(row, col, value):
             """Show the Google Maps link with directions from the address to the pin."""
@@ -166,14 +166,11 @@ def apartments():
             else:
                 query = query.filter(Apartment.opinion_id == opinion_id)
 
-    order_by = search_form.order_by.data or 'warm_rent'
     order_warm_rent = [Apartment.warm_rent.cast(Numeric), Apartment.cold_rent.cast(Numeric)]
-
-    if order_by.startswith('duration_text'):
-        order_duration = ['duration_value_{} {}'.format(order_by.split('_')[-1], 'asc')]
-        final_order = order_duration + order_warm_rent
-    elif order_by == 'warm_rent':
+    if search_form.preset_sort.data == search_form.SORT_WARM_RENT:
         final_order = order_warm_rent
+    else:
+        final_order = ['duration_value_1 asc'] + order_warm_rent  # TODO This should not be fixed
     query = query.order_by(*final_order)
 
     table = ApartmentTable(query.all())
