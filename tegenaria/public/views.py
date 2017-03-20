@@ -167,11 +167,14 @@ def apartments():
                 query = query.filter(Apartment.opinion_id == opinion_id)
 
     order_by = search_form.order_by.data or 'warm_rent'
+    order_warm_rent = [Apartment.warm_rent.cast(Numeric), Apartment.cold_rent.cast(Numeric)]
 
     if order_by.startswith('duration_text'):
-        query = query.order_by('duration_value_{} {}'.format(order_by.split('_')[-1], 'asc'))
+        order_duration = ['duration_value_{} {}'.format(order_by.split('_')[-1], 'asc')]
+        final_order = order_duration + order_warm_rent
     elif order_by == 'warm_rent':
-        query = query.order_by(Apartment.warm_rent.cast(Numeric), Apartment.cold_rent.cast(Numeric))
+        final_order = order_warm_rent
+    query = query.order_by(*final_order)
 
     table = ApartmentTable(query.all())
     return render_template('public/apartments.html', table=table, search_form=search_form, count=query.count())
