@@ -83,8 +83,8 @@ def add():
 
 
 @manager.command
-def clean():
-    """Clean apartments: deactivate 404 pages, reprocess records with empty addresses."""
+def vacuum():
+    """Vacuum clean apartments: deactivate 404 pages, reprocess records with empty addresses."""
     remove_inactive_apartments()
     reprocess_invalid_apartments(read_from_keyring('json_dir', secret=False))
 
