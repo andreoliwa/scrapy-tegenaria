@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Forms of the application."""
 from flask_wtf import Form
-from wtforms import HiddenField, IntegerField, PasswordField
+from wtforms import IntegerField, PasswordField, RadioField
 from wtforms.fields.core import SelectField, StringField
 from wtforms.validators import DataRequired
 
@@ -43,6 +43,11 @@ class LoginForm(Form):
 class ApartmentSearchForm(Form):
     """Apartment search form."""
 
+    SORT_TIME = 'time'
+    SORT_WARM_RENT = 'warm_rent'
+
     days = IntegerField('Days')
     opinion = SelectField('Opinion', coerce=int)
-    order_by = HiddenField()
+    preset_sort = RadioField('Sort options', choices=[
+        (SORT_TIME, 'Time to work'),
+        (SORT_WARM_RENT, 'Warm rent')])
