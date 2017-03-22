@@ -7,20 +7,30 @@
         <form method="GET" action="" role="form">
             {{ search_form.hidden_tag() }}
             <div class="row">
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-1">
                     {{ search_form.days.label }}
-                    {{ search_form.days(placeholder="Last days", class_="form-control") }}
-                    {{ search_form.direction }}
+                    {{ search_form.days(class_="form-control") }}
                 </div>
-                <div class="form-group col-md-4">
-                    {{ search_form.opinion.label }}
-                    {{ search_form.opinion(class_="form-control") }}
+                <div class="form-group col-md-1">
+                    {{ search_form.min_rooms.label }}
+                    {{ search_form.min_rooms(class_="form-control") }}
                 </div>
-                <div class="form-group col-md-3">
-                    {% for subfield in search_form.preset_sort %}
+                <div class="form-group col-md-1">
+                    {{ search_form.max_rooms.label }}
+                    {{ search_form.max_rooms(class_="form-control") }}
+                </div>
+                <div class="form-group col-md-2">
+                    {{ search_form.max_warm_rent.label }}
+                    {{ search_form.max_warm_rent(class_="form-control") }}
+                </div>
+                <div class="form-group col-md-2">
+                    {{ search_form.max_time_to_pin.label }}
+                    {{ search_form.max_time_to_pin(class_="form-control") }}
+                </div>
+                <div class="form-group col-md-2">
+                    {% for radio in search_form.preset_sort %}
                         <tr>
-                            <td>{{ subfield }}</td>
-                            <td>{{ subfield.label }}</td>
+                            <td>{{ radio }} {{ radio.label }}</td>
                         </tr>
                     {% endfor %}
                 </div>

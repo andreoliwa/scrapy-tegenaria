@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 """Public section, including homepage and signup."""
-# pylint: disable=no-name-in-module,import-error
-from datetime import datetime, timedelta
+from typing import List, Tuple  # noqa
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required, login_user, logout_user
-from sqlalchemy import Numeric
 from sqlalchemy.orm import aliased
 
 from tegenaria.extensions import db, login_manager
@@ -78,7 +76,7 @@ class ApartmentTable(Table):
 
     classes = ['table-bordered', 'table-striped']
     allow_sort = False
-    opinions = {}
+    opinions = []  # type: List[Tuple[int, str]]
 
     title = Col(
         'Title',
@@ -139,13 +137,14 @@ def apartments():
 
         distance_alias = aliased(Distance)
         pin_alias = aliased(Pin)
+        dv_column = distance_alias.duration_value.label(duration_value_field)
         query = query.join(
             distance_alias, Apartment.id == distance_alias.apartment_id
         ).join(
             pin_alias, distance_alias.pin_id == pin_alias.id
         ).add_columns(
             distance_alias.duration_text.label(duration_text_field),
-            distance_alias.duration_value.label(duration_value_field),
+            dv_column,
             distance_alias.distance_text.label(distance_text_field),
             distance_alias.distance_value.label(distance_value_field),
             pin_alias.address.label(pin_address_field)
@@ -153,26 +152,8 @@ def apartments():
     query = query.filter(Apartment.active.is_(True))
 
     search_form = ApartmentSearchForm(request.args, csrf_enabled=False)
-    if search_form.days.data:
-        past_date = datetime.now() - timedelta(int(search_form.days.data))
-        query = query.filter(Apartment.created_at >= past_date)
-
     search_form.opinion.choices = [(-1, '(all)'), (0, '(none)')] + ApartmentTable.opinions
-    if search_form.opinion.data is not None:
-        opinion_id = int(search_form.opinion.data)
-        if opinion_id > -1:
-            if opinion_id == 0:
-                query = query.filter(Apartment.opinion_id.is_(None))
-            else:
-                query = query.filter(Apartment.opinion_id == opinion_id)
-
-    order_warm_rent = [Apartment.warm_rent.cast(Numeric), Apartment.cold_rent.cast(Numeric)]
-    if search_form.preset_sort.data == search_form.SORT_WARM_RENT:
-        final_order = order_warm_rent
-    else:
-        final_order = ['duration_value_1 asc'] + order_warm_rent  # TODO This should not be fixed
-    query = query.order_by(*final_order)
-
+    query = search_form.apply_where_order_by(query, dv_column)
     table = ApartmentTable(query.all())
     return render_template('public/apartments.html', table=table, search_form=search_form, count=query.count())
 
