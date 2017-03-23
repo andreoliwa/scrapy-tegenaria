@@ -21,10 +21,10 @@ class BerlinovoSpider(scrapy.Spider):
 
     def parse(self, response):
         """Parse a search result HTML page.
-        
+
         @url https://www.berlinovo.de/en/suche-apartments
         @returns items 0 0
-        @returns requests 1 20
+        @returns requests 15 15
         """
         for link in LinkExtractor(allow=r'/en/suche-apartments.+page=', unique=True).extract_links(response):
             if link.url not in (self.searched_pages, self.start_urls):
@@ -36,7 +36,7 @@ class BerlinovoSpider(scrapy.Spider):
 
     def parse_item(self, response):  # pylint: disable=no-self-use
         """Parse an ad page, with an apartment.
-        
+
         @url https://www.berlinovo.de/en/apartment/2-room-suite-house-heinrich-heine-stra-e-18-24-berlin-mitte
         @returns items 1 1
         @scrapes url title description location address other neighborhood rooms

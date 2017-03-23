@@ -111,7 +111,7 @@ def remove_inactive_apartments():
     last_24h = datetime.now() - timedelta(days=1)
     # pylint: disable=no-member
     for record in Apartment.query.filter_by(active=True).filter(Apartment.updated_at <= last_24h).all():
-        response = requests.get(record.url)  # HEAD didn't work for some reason.
+        response = requests.head(record.url)
         if response.status_code == requests.codes.NOT_FOUND:  # pylint: disable=no-member
             LOGGER.warning('Not found: %s', record.url)
             record.update(active=False)
