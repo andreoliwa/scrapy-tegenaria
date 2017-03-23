@@ -7,6 +7,7 @@ from subprocess import call
 
 from flask_migrate import MigrateCommand
 from flask_script import Command, Manager, Option, Server, Shell
+from marshmallow import Schema, fields, pre_load, pprint
 
 from tegenaria.app import create_app
 from tegenaria.database import db
@@ -100,6 +101,32 @@ manager.add_command('server', Server(host='0.0.0.0'))
 manager.add_command('shell', Shell(make_context=_make_context))
 manager.add_command('db', MigrateCommand)
 manager.add_command('lint', Lint())
+
+
+class ApartmentSchema(Schema):
+
+    @pre_load
+    def clean_data(self, in_data):
+        in_data['address'] = in_data['address'].replace(' (zur Karte) ', '')
+        in_data['rooms'] = in_data['rooms'].replace(',', '.')
+        return in_data
+
+    address = fields.String()
+    rooms = fields.Float()
+
+
+@manager.command
+def marsh():
+    apto = ApartmentSchema(strict=True).load(dict(
+        address='Weinbergsweg 10, (zur Karte)  10119 Berlin',
+        rooms=' 2,5 '
+    ))
+    pprint(apto.data)
+
+
+# @manager.command
+# def xxx():
+#     apto = ApartmentSchema().load(rooms="2,5")
 
 if __name__ == '__main__':
     manager.run()
