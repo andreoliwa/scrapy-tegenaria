@@ -75,10 +75,15 @@ def test():
 
 
 @manager.command
-def add():
-    """Add and update data: import JSON files, calculate distances, etc."""
+def json():
+    """Import JSON files, calculate distances, etc."""
     json_dir = read_from_keyring('json_dir', secret=False)
     save_json_to_db(json_dir, os.path.join(json_dir, 'out'), Apartment)
+
+
+@manager.command
+def distance():
+    """Calculate distances."""
     calculate_distance()
 
 

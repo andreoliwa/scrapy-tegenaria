@@ -25,7 +25,7 @@ class ImmobilienScout24Spider(scrapy.Spider):
     name = 'immobilien_scout_24'
     allowed_domains = ['immobilienscout24.de']
     start_urls = (
-        'http://www.immobilienscout24.de/',
+        'https://www.immobilienscout24.de/',
     )
     searched_pages = set()
 
@@ -46,7 +46,12 @@ class ImmobilienScout24Spider(scrapy.Spider):
             super(ImmobilienScout24Spider, self).start_requests())
 
     def parse(self, response):
-        """Parse a search results HTML page."""
+        """Parse a search results HTML page.
+
+        @url https://www.immobilienscout24.de/Suche/S-T/Wohnung-Miete/Berlin/Berlin?enteredFrom=one_step_search
+        @returns items 0 0
+        @returns requests 21 26
+        """
         # TODO These spiders should inherit from CrawlSpider, which already implements something like this.
         for link in LinkExtractor(allow='/Suche/S-T/P-').extract_links(response):
             if link.url not in (self.searched_pages, self.start_urls):
@@ -57,7 +62,12 @@ class ImmobilienScout24Spider(scrapy.Spider):
             yield scrapy.Request(link.url, callback=self.parse_item)
 
     def parse_item(self, response):
-        """Parse an ad page, with an apartment."""
+        """Parse an ad page with an apartment.
+
+        @url https://www.immobilienscout24.de/expose/93354819
+        @returns items 1 1
+        @scrapes url title address neighborhood cold_rent warm_rent rooms
+        """
         item = ItemLoader(ApartmentItem(), response=response)
         item.add_value('url', response.url)
         item.add_css('title', 'h1#expose-title::text')
@@ -70,7 +80,8 @@ class ImmobilienScout24Spider(scrapy.Spider):
         if len(parts) == 1:
             item.add_value('address', full_address)
         else:
-            item.add_value('address', (parts[0] + self.CITY).strip(' ,'))
+            street_zip = (parts[0] + self.CITY).strip(' ,').replace(' (zur Karte) ', '')
+            item.add_value('address', street_zip)
             item.add_value('neighborhood', ''.join(parts[1:]).strip(' ,'))
 
         item.add_css('cold_rent', 'div.is24qa-kaltmiete::text')
@@ -92,6 +103,10 @@ class ImmobilienScout24Spider(scrapy.Spider):
         :return: Yield Scrapy requests.
         """
         self.logger.info('Reading emails')
+        if not IMAP_HOST:
+            self.logger.info('Empty host')
+            return
+
         password = keyring.get_password(IMAP_HOST, IMAP_USERNAME)
         if not password or ask_password:
             password = getpass(prompt='Type your email password: ')
