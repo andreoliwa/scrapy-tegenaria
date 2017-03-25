@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 """The app module, containing the app factory function."""
 from flask import Flask, render_template
+from flask_admin.contrib.sqla import ModelView
 
 from tegenaria import public, user
 from tegenaria.assets import assets
-from tegenaria.extensions import bcrypt, cache, db, debug_toolbar, login_manager, migrate
+from tegenaria.extensions import admin, bcrypt, cache, db, debug_toolbar, login_manager, migrate
+from tegenaria.models import Apartment, Pin
 from tegenaria.settings import ProdConfig
+from tegenaria.views import ApartmentModelView
 
 
 def create_app(config_object=ProdConfig):
@@ -32,6 +35,7 @@ def register_extensions(app):
     login_manager.init_app(app)
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)
+    admin.init_app(app)
     return None
 
 
@@ -39,6 +43,9 @@ def register_blueprints(app):
     """Register routes (blueprints)."""
     app.register_blueprint(public.views.blueprint)
     app.register_blueprint(user.views.blueprint)
+
+    admin.add_view(ModelView(Pin, db.session))
+    admin.add_view(ApartmentModelView(Apartment, db.session))
     return None
 
 
