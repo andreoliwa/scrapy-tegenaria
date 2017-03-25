@@ -42,11 +42,11 @@ isort:
 	isort -rc .
 
 lint:
-	./manage.py lint  # FIXME --pylint
+	./manage.py lint
 
 test:
 	py.test --verbose --cov tegenaria
-	# FIXME python setup.py test
+	# TODO python setup.py test
 
 test-all:
 	tox

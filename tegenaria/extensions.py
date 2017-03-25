@@ -3,7 +3,6 @@
 
 Each extension is initialized in the app factory located in app.py
 """
-from flask_admin import Admin
 # pylint: disable=invalid-name
 from flask_bcrypt import Bcrypt
 from flask_cache import Cache
@@ -23,5 +22,3 @@ migrate = Migrate()
 cache = Cache()
 
 debug_toolbar = DebugToolbarExtension()
-
-admin = Admin(name='Tegenaria', template_mode='bootstrap3')
