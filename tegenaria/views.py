@@ -7,8 +7,9 @@ import arrow as arrow
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.model import typefmt
 from markupsafe import Markup
+from sqlalchemy import func, lateral, true
 
-from tegenaria.models import Apartment
+from tegenaria.models import Apartment, Distance, Pin
 from tegenaria.public.views import MAPS_PLACE_URL
 
 FIELDS_REGEX = re.compile(r'{([^}]+)}')
@@ -95,25 +96,58 @@ class ApartmentModelView(ModelView):
     can_delete = False
     can_view_details = True
 
-    form_columns = (Apartment.url, Apartment.active, Apartment.title, Apartment.address, Apartment.neighborhood,
-                    Apartment.rooms, Apartment.size, Apartment.cold_rent, Apartment.warm_rent,
-                    Apartment.warm_rent_notes, 'opinion', Apartment.description,
-                    Apartment.equipment, Apartment.location, Apartment.other, Apartment.availability,
-                    Apartment.comments, Apartment.created_at, Apartment.updated_at)
+    form_columns = ('url', 'active', 'title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent', 'warm_rent',
+                    'warm_rent_notes', 'opinion', 'description', 'equipment', 'location', 'other', 'availability',
+                    'comments', 'created_at', 'updated_at')
 
-    column_list = ('title', Apartment.address, Apartment.neighborhood, Apartment.rooms, Apartment.size,
-                   Apartment.cold_rent, Apartment.warm_rent, Apartment.updated_at)
+    column_list = ('title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent', 'warm_rent', 'updated_at',
+                   'duration_text', 'distance_text')
     column_formatters = dict(
         title=format_hyperlink(href_column=Apartment.url),
-        address=format_hyperlink(href=MAPS_PLACE_URL)
+        address=format_hyperlink(href=MAPS_PLACE_URL),
+        duration_text=lambda view, context, model, name: context['row'].duration_text,
+        distance_text=lambda view, context, model, name: context['row'].distance_text,
+    )
+    column_labels = dict(
+        duration_text='Time to pin',
+        distance_text='Distance to pin',
     )
 
     column_type_formatters = MY_DEFAULT_FORMATTERS
-    column_searchable_list = (Apartment.url, Apartment.address, Apartment.neighborhood, Apartment.comments,
-                              Apartment.description, Apartment.equipment, Apartment.location, Apartment.other)
-    column_details_list = form_columns
-    column_default_sort = (Apartment.warm_rent, False)
-    column_filters = column_list
+    column_searchable_list = ('url', 'address', 'neighborhood', 'comments', 'description', 'equipment', 'location',
+                              'other')
+    column_details_list = ('url', 'active', 'title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent',
+                           'warm_rent', 'warm_rent_notes', 'opinion', 'description', 'equipment', 'location', 'other',
+                           'availability', 'comments', 'created_at', 'updated_at', 'duration_text', 'distance_text')
+    column_default_sort = ('warm_rent', False)
+    column_filters = ('title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent', 'warm_rent', 'updated_at')
 
     details_modal = True
     edit_modal = True
+
+    def get_query(self):
+        """Return a query for apartments and their distances to pins."""
+        lateral_pin = lateral(
+            Pin.query.with_entities(Pin.id.label('id'), Pin.name.label('name'), Pin.address.label('address')),
+            name='pin')
+        lateral_distance = lateral(Distance.query.with_entities(
+            Distance.duration_text.label('duration_text'),
+            Distance.duration_value.label('duration_value'),
+            Distance.distance_text.label('distance_text'),
+            Distance.distance_value.label('distance_value')).filter(
+            Distance.apartment_id == Apartment.id, Distance.pin_id == lateral_pin.c.id), name='distance')
+
+        # We need all apartment columns expanded.
+        # If the query has only `Apartment` plus the columns, this error is raised:
+        # AttributeError: 'result' object has no attribute 'id'
+        columns = [c for c in Apartment.__table__.columns] + \
+                  [lateral_distance.c.duration_text, lateral_distance.c.duration_value,
+                   lateral_distance.c.distance_text, lateral_distance.c.distance_value]
+        query = self.session.query(*columns)
+
+        # All pins that might have a distance or not.
+        return query.join(lateral_pin, true()).outerjoin(lateral_distance, true())
+
+    def get_count_query(self):
+        """Return the count query for the query above."""
+        return self.get_query().with_entities(func.count('*'))
