@@ -5,10 +5,8 @@ import logging
 import os
 import shutil
 from datetime import date, datetime, timedelta
-from getpass import getpass
 from uuid import uuid4
 
-import keyring
 import requests
 from flask import flash, json
 from googlemaps import Client
@@ -17,6 +15,7 @@ from sqlalchemy import and_, or_
 from sqlalchemy.exc import IntegrityError
 
 from tegenaria.extensions import db
+from tegenaria.generic import read_from_keyring
 from tegenaria.models import Apartment, Distance, Pin
 
 PROJECT_NAME = 'tegenaria'
@@ -29,24 +28,6 @@ def flash_errors(form, category='warning'):
         for error in errors:
             flash('{0} - {1}'
                   .format(getattr(form, field).label.text, error), category)
-
-
-def read_from_keyring(key, secret=True, always_ask=False):
-    """Read a key from the keyring.
-
-    :param key: Name of the key.
-    :param secret: If True, don't show characters while typing in the prompt.
-    :param always_ask: Always ask for the value in a prompt.
-    :return: Value stored in the keyring.
-    """
-    value = keyring.get_password(PROJECT_NAME, key)
-    if not value or always_ask:
-        prompt_function = getpass if secret else input
-        value = prompt_function("Type a value for the key '{}.{}': ".format(PROJECT_NAME, key))
-    if not value:
-        raise ValueError('{}.{} is not set in the keyring.'.format(PROJECT_NAME, key))
-    keyring.set_password(PROJECT_NAME, key, value)
-    return value
 
 
 def save_json_to_db(input_dir, output_dir, model_class):  # pylint: disable=too-many-locals
@@ -137,7 +118,7 @@ def calculate_distance():  # pylint: disable=too-many-locals
     - Call Google Maps Distance Matrix;
     - Save the results.
     """
-    maps = Client(key=read_from_keyring('google_maps_api_key'))
+    maps = Client(key=read_from_keyring(PROJECT_NAME, 'google_maps_api_key'))
     assert maps
     tomorrow = date.today() + timedelta(0 if datetime.now().hour < 9 else 1)
     morning = datetime(tomorrow.year, tomorrow.month, tomorrow.day, 9, 0)

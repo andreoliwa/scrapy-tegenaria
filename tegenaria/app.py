@@ -37,12 +37,12 @@ def register_extensions(app):
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)
 
-    # This extension doesn't behave like the others:
+    # This extension doesn't behave like the others; that's why we had to initialise it here, not outside:
     # https://github.com/flask-admin/flask-admin/issues/910
     admin = Admin(name='Tegenaria', template_mode='bootstrap3')
     admin.init_app(app)
-    admin.add_view(ModelView(Pin, db.session))
     admin.add_view(ApartmentModelView(Apartment, db.session))
+    admin.add_view(ModelView(Pin, db.session))
     return None
 
 

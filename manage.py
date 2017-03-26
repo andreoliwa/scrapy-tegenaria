@@ -10,11 +10,12 @@ from flask_script import Command, Manager, Option, Server, Shell
 
 from tegenaria.app import create_app
 from tegenaria.database import db
+from tegenaria.generic import read_from_keyring
 from tegenaria.models import Apartment
 from tegenaria.settings import DevConfig, ProdConfig
 from tegenaria.user.models import User
-from tegenaria.utils import (calculate_distance, read_from_keyring, remove_inactive_apartments,
-                             reprocess_invalid_apartments, save_json_to_db)
+from tegenaria.utils import (PROJECT_NAME, calculate_distance, remove_inactive_apartments, reprocess_invalid_apartments,
+                             save_json_to_db)
 
 if os.environ.get('TEGENARIA_ENV') == 'prod':
     app = create_app(ProdConfig)
@@ -77,7 +78,7 @@ def test():
 @manager.command
 def json():
     """Import JSON files, calculate distances, etc."""
-    json_dir = read_from_keyring('json_dir', secret=False)
+    json_dir = read_from_keyring(PROJECT_NAME, 'json_dir', secret=False)
     save_json_to_db(json_dir, os.path.join(json_dir, 'out'), Apartment)
 
 
@@ -91,7 +92,7 @@ def distance():
 def vacuum():
     """Vacuum clean apartments: deactivate 404 pages, reprocess records with empty addresses."""
     remove_inactive_apartments()
-    reprocess_invalid_apartments(read_from_keyring('json_dir', secret=False))
+    reprocess_invalid_apartments(read_from_keyring(PROJECT_NAME, 'json_dir', secret=False))
 
 
 # Server available in the local network:
