@@ -11,26 +11,27 @@ class Apartment(SurrogatePK, Model):
     __tablename__ = 'apartment'
 
     url = Column(db.String(), unique=True, nullable=False)
+    active = Column(db.Boolean, default=False)
     title = Column(db.String())
+    address = Column(db.String())
+    neighborhood = Column(db.String())
+    rooms = Column(db.String())
+    size = Column(db.String())
+    cold_rent = Column(db.String())
+    warm_rent = Column(db.String())
+    warm_rent_notes = Column(db.String())
+
+    opinion_id = reference_column('opinion', True)
+    opinion = relationship('Opinion')
+
     description = Column(db.String())
     equipment = Column(db.String())
     location = Column(db.String())
     other = Column(db.String())
-    address = Column(db.String())
-    neighborhood = Column(db.String())
-    cold_rent = Column(db.String())
-    warm_rent = Column(db.String())
-    warm_rent_notes = Column(db.String())
-    rooms = Column(db.String())
-    size = Column(db.String())
     availability = Column(db.Date)
     comments = Column(db.String())
     created_at = Column(db.DateTime, default=func.now())
     updated_at = Column(db.DateTime, onupdate=func.now(), default=func.now())
-    active = Column(db.Boolean, default=False)
-
-    opinion_id = reference_column('opinion', True)
-    opinion = relationship('Opinion')
 
     distances = relationship('Distance')
 

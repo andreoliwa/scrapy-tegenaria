@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 """Helper utilities and decorators."""
-# pylint: disable=no-name-in-module,import-error
 import logging
 import os
 import shutil
 from datetime import date, datetime, timedelta
-from getpass import getpass
 from uuid import uuid4
 
-import keyring
 import requests
 from flask import flash, json
 from googlemaps import Client
@@ -17,6 +14,7 @@ from sqlalchemy import and_, or_
 from sqlalchemy.exc import IntegrityError
 
 from tegenaria.extensions import db
+from tegenaria.generic import read_from_keyring
 from tegenaria.models import Apartment, Distance, Pin
 
 PROJECT_NAME = 'tegenaria'
@@ -31,25 +29,7 @@ def flash_errors(form, category='warning'):
                   .format(getattr(form, field).label.text, error), category)
 
 
-def read_from_keyring(key, secret=True, always_ask=False):
-    """Read a key from the keyring.
-
-    :param key: Name of the key.
-    :param secret: If True, don't show characters while typing in the prompt.
-    :param always_ask: Always ask for the value in a prompt.
-    :return: Value stored in the keyring.
-    """
-    value = keyring.get_password(PROJECT_NAME, key)
-    if not value or always_ask:
-        prompt_function = getpass if secret else input
-        value = prompt_function("Type a value for the key '{}.{}': ".format(PROJECT_NAME, key))
-    if not value:
-        raise ValueError('{}.{} is not set in the keyring.'.format(PROJECT_NAME, key))
-    keyring.set_password(PROJECT_NAME, key, value)
-    return value
-
-
-def save_json_to_db(input_dir, output_dir, model_class):  # pylint: disable=too-many-locals
+def save_json_to_db(input_dir, output_dir, model_class):
     """Save JSON records in a database model.
 
     :param input_dir: Input directory (must exist).
@@ -109,10 +89,9 @@ def remove_inactive_apartments():
     """Remove 404 links."""
     LOGGER.warning('Searching not found (404) among active records that were not updated in the last 24h')
     last_24h = datetime.now() - timedelta(days=1)
-    # pylint: disable=no-member
     for record in Apartment.query.filter_by(active=True).filter(Apartment.updated_at <= last_24h).all():
         response = requests.head(record.url)
-        if response.status_code == requests.codes.NOT_FOUND:  # pylint: disable=no-member
+        if response.status_code == requests.codes.NOT_FOUND:
             LOGGER.warning('Not found: %s', record.url)
             record.update(active=False)
         else:
@@ -129,7 +108,7 @@ def reprocess_invalid_apartments(output_dir):
         handle.writelines(['{}\n'.format(record.url) for record in query.all()])
 
 
-def calculate_distance():  # pylint: disable=too-many-locals
+def calculate_distance():
     """Calculate the distance for all apartments that were not calculated yet.
 
     - Query all pins;
@@ -137,13 +116,12 @@ def calculate_distance():  # pylint: disable=too-many-locals
     - Call Google Maps Distance Matrix;
     - Save the results.
     """
-    maps = Client(key=read_from_keyring('google_maps_api_key'))
+    maps = Client(key=read_from_keyring(PROJECT_NAME, 'google_maps_api_key'))
     assert maps
     tomorrow = date.today() + timedelta(0 if datetime.now().hour < 9 else 1)
     morning = datetime(tomorrow.year, tomorrow.month, tomorrow.day, 9, 0)
     LOGGER.warning('Next morning: %s', morning)
 
-    # pylint: disable=no-member
     empty = dict(text='ERROR', value=-1)
     for pin in Pin.query.all():
         while True:

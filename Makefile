@@ -6,7 +6,7 @@ help:
 	@echo "clean-pyc - remove Python file artifacts"
 	@echo "clean-test - remove test and coverage artifacts"
 	@echo "isort - fix import order with isort"
-	@echo "lint - check style with flake8 and pylint"
+	@echo "lint - check style with flake8"
 	@echo "test - run tests quickly with the default Python"
 	@echo "test-all - run tests on every Python version with tox"
 	@echo "docs - generate Sphinx HTML documentation, including API docs"
@@ -42,11 +42,11 @@ isort:
 	isort -rc .
 
 lint:
-	./manage.py lint  # FIXME --pylint
+	./manage.py lint
 
 test:
 	py.test --verbose --cov tegenaria
-	# FIXME python setup.py test
+	# TODO python setup.py test
 
 test-all:
 	tox

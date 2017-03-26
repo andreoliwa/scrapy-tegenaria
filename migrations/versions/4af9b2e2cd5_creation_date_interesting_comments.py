@@ -1,4 +1,3 @@
-# pylint: disable=invalid-name,no-member
 """Creation date, interesting, comments.
 
 Create Date: 2015-09-05 23:53:52.621665

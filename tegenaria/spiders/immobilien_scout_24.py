@@ -50,7 +50,7 @@ class ImmobilienScout24Spider(scrapy.Spider):
 
         @url https://www.immobilienscout24.de/Suche/S-T/Wohnung-Miete/Berlin/Berlin?enteredFrom=one_step_search
         @returns items 0 0
-        @returns requests 21 21
+        @returns requests 21 26
         """
         # TODO These spiders should inherit from CrawlSpider, which already implements something like this.
         for link in LinkExtractor(allow='/Suche/S-T/P-').extract_links(response):

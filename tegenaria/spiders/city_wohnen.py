@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Furnished apartments from City Wohnen."""
 import re
-import urllib
 from datetime import datetime
+from urllib.parse import unquote_plus
 
 import requests
 from scrapy import Request
@@ -38,11 +38,17 @@ class CityWohnenSpider(CrawlSpider):
     field_regex = dict(
         availability=re.compile(r'.*from (?P<availability>[0-9/]+).*', re.MULTILINE),
         neighborhood=re.compile(r'furnished apartment in (?P<neighborhood>[^\t]+)\t+'),
+        # The address is hidden on a Google Maps link, and there is only the street, not the number.
         address=re.compile(r'.+/maps/search/(?P<address>.+)/@[0-9.,]+')
     )
 
     def start_requests(self):
-        """Parse the results from the hidden AJAX call, and start requests to parse the ads."""
+        """Parse the results from the hidden AJAX call, and start requests to parse the ads.
+
+        @url https://www.city-wohnen.de
+        @returns items 0 0
+        @returns requests 1 200
+        """
         for url in self.start_urls:
             response = requests.get(url)
             results = response.json().get('results')
@@ -50,7 +56,12 @@ class CityWohnenSpider(CrawlSpider):
                 yield Request('https://www.city-wohnen.de{}'.format(link), callback=self.parse_item)
 
     def parse_item(self, response):
-        """Parse a page with an apartment."""
+        """Parse a page with an apartment.
+
+        @url https://www.city-wohnen.de/eng/berlin/32608-furnished-apartment-berlin-friedrichshain-pettenkoferstrasse
+        @returns items 1 1
+        @scrapes url title availability description neighborhood address warm_rent size rooms
+        """
         item = ItemLoader(ApartmentItem(), response=response)
         item.add_value('url', response.url)
 
@@ -59,13 +70,7 @@ class CityWohnenSpider(CrawlSpider):
         item.add_css('description', 'div.object_details div.col_left p::text')
         item.add_value('neighborhood',
                        response.css('div.object_meta div.container div.text_data p strong::text').extract()[0])
-
-        # The address is hidden on a Google Maps link, and there is only the street, not the number.
-        street = urllib.unquote_plus(response.xpath("//li[@class='map']/a/@href").extract()[0])
-
-        # And the encoding is wrong, so it needs fixing.
-        # http://stackoverflow.com/questions/4267019/double-decoding-unicode-in-python
-        item.add_value('address', street.encode('raw_unicode_escape').decode('utf-8'))
+        item.add_xpath('address', "//li[@class='map']/a/@href")
 
         keys = response.css('div.object_meta table.object_meta_data th::text').extract()
         values = response.css('div.object_meta table.object_meta_data td::text').extract()
@@ -76,14 +81,17 @@ class CityWohnenSpider(CrawlSpider):
 
         item_dict = item.load_item()
 
-        # After loading: clean availability date.
+        # After loading: clean fields.
         for field, regex in self.field_regex.items():
             clean_field = item_dict.get(field, '').strip(' \t\n')
             match = regex.match(clean_field)
             if match:
                 item_dict.update(match.groupdict())
 
-        # Must be an ISO date for the database.
+        # Must be an ISO date for the database. TODO: remove on #69
         item_dict['availability'] = datetime.strptime(item_dict.get('availability'), '%d/%m/%Y').date().isoformat()
+
+        # Decode the URL. TODO: remove on #69
+        item_dict['address'] = unquote_plus(item_dict['address'])
 
         return item_dict

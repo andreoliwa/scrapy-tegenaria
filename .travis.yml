@@ -5,24 +5,25 @@ language: python
 cache: pip
 python:
   - 3.5
-services:
-  - postgresql
-addons:
-  postgresql: "9.6"
-  hosts:
-  - postgresql
+# TODO Database and code coverage later
+#services:
+#  - postgresql
+#addons:
+#  postgresql: "9.6"
+#  hosts:
+#  - postgresql
 install:
-  - pip install codecov
+#  - pip install codecov
   - pip install -r requirements.txt
 before_script:
   - pip freeze
-  - psql -U postgres -c 'CREATE USER tegenaria;'
-  - psql -U postgres -c 'CREATE DATABASE tegenaria_test;'
-  - psql -U postgres -c 'GRANT ALL PRIVILEGES ON DATABASE tegenaria_test TO tegenaria;'
+#  - psql -U postgres -c 'CREATE USER tegenaria;'
+#  - psql -U postgres -c 'CREATE DATABASE tegenaria_test;'
+#  - psql -U postgres -c 'GRANT ALL PRIVILEGES ON DATABASE tegenaria_test TO tegenaria;'
 script:
-  - ./manage.py lint # FIXME --pylint
-  - py.test --verbose --cov tegenaria
-after_success:
-  - codecov
+  - ./manage.py lint
+  - py.test --verbose # --cov tegenaria
+#after_success:
+#  - codecov
 after_failure:
   - dmesg | tail -n 100

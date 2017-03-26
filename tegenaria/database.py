@@ -6,8 +6,8 @@ from .extensions import db
 
 # Alias common SQLAlchemy names
 
-Column = db.Column  # pylint: disable=invalid-name
-relationship = relationship  # pylint: disable=invalid-name
+Column = db.Column
+relationship = relationship
 
 
 class CRUDMixin(object):
@@ -56,11 +56,11 @@ class SurrogatePK(object):
     id = db.Column(db.Integer, primary_key=True)
 
     @classmethod
-    def get_by_id(cls, id):  # pylint: disable=redefined-builtin
+    def get_by_id(cls, id):
         """Get a record by its ID."""
         if any((isinstance(id, (str, bytes)) and id.isdigit(),
                 isinstance(id, (int, float))), ):
-            return cls.query.get(int(id))  # pylint: disable=no-member
+            return cls.query.get(int(id))
         return None
 
 

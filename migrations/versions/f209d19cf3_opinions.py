@@ -1,4 +1,3 @@
-# pylint: disable=invalid-name,no-member
 """Opinions.
 
 Create Date: 2015-10-26 01:03:59.737396

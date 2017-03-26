@@ -1,4 +1,3 @@
-# pylint: disable=invalid-name,no-member
 """${message}.
 
 Create Date: ${create_date}
