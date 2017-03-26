@@ -5,8 +5,7 @@ from flask_admin import Admin
 from flask_admin.base import AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 
-from tegenaria.assets import assets
-from tegenaria.extensions import bcrypt, cache, db, debug_toolbar, login_manager, migrate
+from tegenaria.extensions import db, debug_toolbar, migrate
 from tegenaria.models import Apartment, Opinion, Pin
 from tegenaria.settings import ProdConfig
 from tegenaria.views import ApartmentModelView, PinModelView
@@ -29,11 +28,7 @@ def create_app(config_object=ProdConfig):
 
 def register_extensions(app):
     """Register app extensions."""
-    assets.init_app(app)
-    bcrypt.init_app(app)
-    cache.init_app(app)
     db.init_app(app)
-    login_manager.init_app(app)
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)
 
