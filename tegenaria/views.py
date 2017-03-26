@@ -7,7 +7,9 @@ from sqlalchemy import func, lateral, true
 
 from tegenaria.generic import format_as_human_date, render_link, when_none
 from tegenaria.models import Apartment, Distance, Pin
-from tegenaria.public.views import MAPS_DIRECTIONS_URL, MAPS_PLACE_URL
+
+MAPS_PLACE_URL = 'https://www.google.de/maps/place/{address}/'
+MAPS_DIRECTIONS_URL = 'https://www.google.de/maps/dir/{origin}/{destination}/'
 
 MY_DEFAULT_FORMATTERS = dict(typefmt.BASE_FORMATTERS)
 MY_DEFAULT_FORMATTERS.update({

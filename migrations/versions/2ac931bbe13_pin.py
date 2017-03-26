@@ -4,7 +4,6 @@ Revision ID: 2ac931bbe13
 Revises: 18c4460b11c
 Create Date: 2015-08-23 02:31:31.170542
 """
-# pylint: disable=invalid-name,no-member
 import sqlalchemy as sa
 from alembic import op
 

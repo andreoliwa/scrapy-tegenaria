@@ -13,7 +13,6 @@ from tegenaria.database import db
 from tegenaria.generic import read_from_keyring
 from tegenaria.models import Apartment
 from tegenaria.settings import DevConfig, ProdConfig
-from tegenaria.user.models import User
 from tegenaria.utils import (PROJECT_NAME, calculate_distance, remove_inactive_apartments, reprocess_invalid_apartments,
                              save_json_to_db)
 
@@ -29,18 +28,16 @@ manager = Manager(app)
 
 
 class Lint(Command):
-    """Lint and check code style with flake8, isort and, optionally, pylint."""
+    """Lint and check code style with flake8."""
 
     def get_options(self):
         """Command line options."""
         return (
             Option('-f', '--fix-imports', action='store_true', dest='fix_imports', default=False,
                    help='Fix imports using isort, before linting'),
-            Option('-p', '--pylint', action='store_true', dest='use_pylint', default=False,
-                   help='Use pylint after flake8, for an extended strict check'),
         )
 
-    def run(self, fix_imports, use_pylint):  # pylint: disable=arguments-differ,method-hidden
+    def run(self, fix_imports):  # pylint: disable=arguments-differ,method-hidden
         """Run command."""
         skip = ['requirements', 'docker']
         root_files = glob('*.py')
@@ -58,13 +55,11 @@ class Lint(Command):
         if fix_imports:
             execute_tool('Fixing import order', 'isort', '-rc')
         execute_tool('Checking code style', 'flake8')
-        if use_pylint:
-            execute_tool('Checking code style', 'pylint', '--rcfile=.pylintrc')
 
 
 def _make_context():
     """Return context dict for a shell session so you can access app, db, and the User model by default."""
-    return dict(app=app, db=db, User=User)
+    return dict(app=app, db=db)
 
 
 @manager.command

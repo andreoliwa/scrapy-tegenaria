@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Helper utilities and decorators."""
-# pylint: disable=no-name-in-module,import-error
 import logging
 import os
 import shutil
@@ -30,7 +29,7 @@ def flash_errors(form, category='warning'):
                   .format(getattr(form, field).label.text, error), category)
 
 
-def save_json_to_db(input_dir, output_dir, model_class):  # pylint: disable=too-many-locals
+def save_json_to_db(input_dir, output_dir, model_class):
     """Save JSON records in a database model.
 
     :param input_dir: Input directory (must exist).
@@ -90,10 +89,9 @@ def remove_inactive_apartments():
     """Remove 404 links."""
     LOGGER.warning('Searching not found (404) among active records that were not updated in the last 24h')
     last_24h = datetime.now() - timedelta(days=1)
-    # pylint: disable=no-member
     for record in Apartment.query.filter_by(active=True).filter(Apartment.updated_at <= last_24h).all():
         response = requests.head(record.url)
-        if response.status_code == requests.codes.NOT_FOUND:  # pylint: disable=no-member
+        if response.status_code == requests.codes.NOT_FOUND:
             LOGGER.warning('Not found: %s', record.url)
             record.update(active=False)
         else:
@@ -110,7 +108,7 @@ def reprocess_invalid_apartments(output_dir):
         handle.writelines(['{}\n'.format(record.url) for record in query.all()])
 
 
-def calculate_distance():  # pylint: disable=too-many-locals
+def calculate_distance():
     """Calculate the distance for all apartments that were not calculated yet.
 
     - Query all pins;
@@ -124,7 +122,6 @@ def calculate_distance():  # pylint: disable=too-many-locals
     morning = datetime(tomorrow.year, tomorrow.month, tomorrow.day, 9, 0)
     LOGGER.warning('Next morning: %s', morning)
 
-    # pylint: disable=no-member
     empty = dict(text='ERROR', value=-1)
     for pin in Pin.query.all():
         while True:

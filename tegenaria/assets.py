@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Assets of the app."""
-# pylint: disable=invalid-name
 from flask_assets import Bundle, Environment
 
 css = Bundle(

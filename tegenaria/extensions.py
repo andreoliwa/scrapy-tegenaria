@@ -3,7 +3,6 @@
 
 Each extension is initialized in the app factory located in app.py
 """
-# pylint: disable=invalid-name
 from flask_bcrypt import Bcrypt
 from flask_cache import Cache
 from flask_debugtoolbar import DebugToolbarExtension
