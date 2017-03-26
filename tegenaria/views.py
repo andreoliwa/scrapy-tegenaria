@@ -15,6 +15,13 @@ MY_DEFAULT_FORMATTERS.update({
 })
 
 
+class PinModelView(ModelView):
+    """Custom model view for pins."""
+
+    can_create = False
+    can_delete = False
+
+
 class ApartmentModelView(ModelView):
     """Custom model view for the apartments, times and distances."""
 
@@ -60,7 +67,7 @@ class ApartmentModelView(ModelView):
                            'availability', 'comments', 'created_at', 'updated_at')
     column_default_sort = ('warm_rent', False)
     column_filters = ('active', 'title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent', 'warm_rent',
-                      'updated_at')
+                      'updated_at', 'distances.duration_value')
 
     details_modal = True
     edit_modal = True

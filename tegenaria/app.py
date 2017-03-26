@@ -9,7 +9,7 @@ from tegenaria.assets import assets
 from tegenaria.extensions import bcrypt, cache, db, debug_toolbar, login_manager, migrate
 from tegenaria.models import Apartment, Pin
 from tegenaria.settings import ProdConfig
-from tegenaria.views import ApartmentModelView
+from tegenaria.views import ApartmentModelView, PinModelView
 
 
 def create_app(config_object=ProdConfig):
@@ -42,7 +42,7 @@ def register_extensions(app):
     admin = Admin(name='Tegenaria', template_mode='bootstrap3')
     admin.init_app(app)
     admin.add_view(ApartmentModelView(Apartment, db.session))
-    admin.add_view(ModelView(Pin, db.session))
+    admin.add_view(PinModelView(Pin, db.session))
     return None
 
 
