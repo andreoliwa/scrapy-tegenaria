@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Tegenaria models."""
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.sql.functions import func
 
 from tegenaria.database import Column, Model, SurrogatePK, db, reference_column, relationship
@@ -29,6 +30,9 @@ class Apartment(SurrogatePK, Model):
     other = Column(db.String())
     availability = Column(db.Date)
     comments = Column(db.String())
+
+    # Scrapy JSON
+    json = db.Column(postgresql.JSONB, nullable=False)
     created_at = Column(db.DateTime, default=func.now())
     updated_at = Column(db.DateTime, onupdate=func.now(), default=func.now())
 
@@ -65,17 +69,18 @@ class Distance(SurrogatePK, Model):
 
     __tablename__ = 'distance'
 
-    distance_text = Column(db.String(), nullable=False)
-    distance_value = Column(db.Integer(), nullable=False)
-    duration_text = Column(db.String(), nullable=False)
-    duration_value = Column(db.Integer(), nullable=False)
-    updated_at = Column(db.DateTime, nullable=False, onupdate=func.now(), default=func.now())
-
     apartment_id = reference_column('apartment')
     apartment = relationship('Apartment')
 
     pin_id = reference_column('pin')
     pin = relationship('Pin')
+
+    meters = Column(db.Integer(), nullable=False)
+    minutes = Column(db.Integer(), nullable=False)
+
+    # Google Matrix JSON
+    json = db.Column(postgresql.JSONB, nullable=False)
+    updated_at = Column(db.DateTime, nullable=False, onupdate=func.now(), default=func.now())
 
     def __repr__(self):
         """Represent the object as a unique string."""

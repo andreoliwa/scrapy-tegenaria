@@ -21,7 +21,7 @@ def create_app(config_object=ProdConfig):
     app = Flask(__name__)
     app.config.from_object(config_object)
     register_extensions(app)
-    register_admin(app)
+    # register_admin(app)  # FIXME:
     register_errorhandlers(app)
     return app
 

@@ -32,7 +32,7 @@ class ApartmentModelView(ModelView):
     can_view_details = True
 
     form_columns = ('url', 'active', 'title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent', 'warm_rent',
-                    'warm_rent_notes', 'opinion', 'description', 'equipment', 'location', 'other', 'availability',
+                    'opinion', 'description', 'equipment', 'location', 'other', 'availability',
                     'comments', 'created_at', 'updated_at')
 
     column_list = ('title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent', 'warm_rent',
@@ -63,9 +63,9 @@ class ApartmentModelView(ModelView):
 
     column_type_formatters = MY_DEFAULT_FORMATTERS
     column_searchable_list = ('address', 'neighborhood', 'comments', 'description', 'equipment', 'location', 'other')
-    column_details_list = ('title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent',
-                           'warm_rent', 'warm_rent_notes', 'opinion', 'description', 'equipment', 'location', 'other',
-                           'availability', 'comments', 'created_at', 'updated_at')
+    column_details_list = ('title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent', 'warm_rent', 'opinion',
+                           'description', 'equipment', 'location', 'other', 'availability', 'comments', 'created_at',
+                           'updated_at')
     column_default_sort = ('warm_rent', False)
     column_filters = ('url', 'active', 'title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent', 'warm_rent',
                       'updated_at', 'distances.duration_value')

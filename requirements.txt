@@ -5,6 +5,7 @@ keyring==10.3.1
 requests==2.13.0
 IMAPClient==1.0.2
 arrow==0.10.0
+marshmallow==2.13.4
 
 # Flask
 Flask==0.12
@@ -13,11 +14,13 @@ Werkzeug==0.12.1
 Jinja2==2.9.5
 itsdangerous==0.24
 Flask-Admin==1.5.0
+flask-marshmallow==0.7.0
 
 # Database
 Flask-SQLAlchemy==2.2
 SQLAlchemy==1.1.6
 psycopg2==2.7.1
+marshmallow-sqlalchemy==0.13.0
 
 # Migrations
 Flask-Migrate==2.0.3

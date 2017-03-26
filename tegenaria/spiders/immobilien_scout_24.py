@@ -36,7 +36,7 @@ class ImmobilienScout24Spider(scrapy.Spider):
         'location': 'is24qa-lage',
         'other': 'is24qa-sonstiges'
     }
-    WARM_RENT_RE = re.compile(r'(?P<warm_rent>[0-9,.]+)[\s(]*(?P<warm_rent_notes>[^)]*)')
+    WARM_RENT_RE = re.compile(r'(?P<warm_rent>[0-9,.]+)[\s(]*(?P<comments>[^)]*)')
 
     def start_requests(self):
         """Read e-mails (if any) and then crawl URLs."""
