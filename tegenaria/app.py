@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 """The app module, containing the app factory function."""
 from flask import Flask, render_template
+from flask_admin import Admin
 
 from tegenaria import public, user
 from tegenaria.assets import assets
 from tegenaria.extensions import bcrypt, cache, db, debug_toolbar, login_manager, migrate
+from tegenaria.models import Apartment, Pin
 from tegenaria.settings import ProdConfig
+from tegenaria.views import ApartmentModelView, PinModelView
 
 
 def create_app(config_object=ProdConfig):
@@ -32,6 +35,13 @@ def register_extensions(app):
     login_manager.init_app(app)
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)
+
+    # This extension doesn't behave like the others; that's why we had to initialise it here, not outside:
+    # https://github.com/flask-admin/flask-admin/issues/910
+    admin = Admin(name='Tegenaria', template_mode='bootstrap3')
+    admin.init_app(app)
+    admin.add_view(ApartmentModelView(Apartment, db.session))
+    admin.add_view(PinModelView(Pin, db.session))
     return None
 
 

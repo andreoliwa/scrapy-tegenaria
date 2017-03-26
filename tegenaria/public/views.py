@@ -114,7 +114,7 @@ def apartments():
         Apartment.cold_rent, Apartment.warm_rent, Apartment.warm_rent_notes,
         Apartment.created_at, Apartment.updated_at, Apartment.id, Apartment.opinion_id)
 
-    for pin in Pin.query.order_by(Pin.id).all():
+    for pin in Pin.query.filter_by(id=1).order_by(Pin.id).all():  # FIXME: hardcoded for now
         pin_address_field = 'pin_address_{}'.format(pin.id)
 
         duration_text_field = 'duration_text_{}'.format(pin.id)
@@ -170,22 +170,3 @@ def apartments_opinion():
     db.session.add(apartment)
     db.session.commit()
     return 'Opinion updated'
-
-
-@blueprint.route('/pins/')
-def pins():
-    """List all pins."""
-    class PinTable(Table):
-        """An HTML table for the pins."""
-
-        name = Col('Name')
-        address = Col('Address')
-
-        def sort_url(self, col_id, reverse=False):
-            """Sort the table by clicking its headers."""
-            pass
-
-    # pylint: disable=no-member
-    items = Pin.query.all()
-    table = PinTable(items, classes=['table-bordered', 'table-striped'])
-    return render_template('public/pins.html', table=table)
