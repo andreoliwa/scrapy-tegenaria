@@ -11,15 +11,14 @@ class Apartment(SurrogatePK, Model):
     __tablename__ = 'apartment'
 
     url = Column(db.String(), unique=True, nullable=False)
-    active = Column(db.Boolean, default=False)
+    active = Column(db.Boolean, default=True, nullable=False)
     title = Column(db.String())
     address = Column(db.String())
     neighborhood = Column(db.String())
-    rooms = Column(db.String())
-    size = Column(db.String())
-    cold_rent = Column(db.String())
-    warm_rent = Column(db.String())
-    warm_rent_notes = Column(db.String())
+    rooms = Column(db.Numeric(2, 1))
+    size = Column(db.Numeric(4, 1))
+    cold_rent = Column(db.Numeric(7, 2))
+    warm_rent = Column(db.Numeric(7, 2))
 
     opinion_id = reference_column('opinion', True)
     opinion = relationship('Opinion')
