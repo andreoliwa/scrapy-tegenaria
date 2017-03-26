@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 """Factories used in tests."""
-# pylint: disable=unnecessary-lambda
-from factory import PostGenerationMethodCall, Sequence
+from factory import Sequence
 from factory.alchemy import SQLAlchemyModelFactory
 
 from tegenaria.database import db
 from tegenaria.models import Pin
-from tegenaria.user.models import User
 
 
 class BaseFactory(SQLAlchemyModelFactory):
@@ -17,20 +15,6 @@ class BaseFactory(SQLAlchemyModelFactory):
 
         abstract = True
         sqlalchemy_session = db.session
-
-
-class UserFactory(BaseFactory):
-    """User factory."""
-
-    username = Sequence(lambda n: 'user{0}'.format(n))
-    email = Sequence(lambda n: 'user{0}@example.com'.format(n))
-    password = PostGenerationMethodCall('set_password', 'example')
-    active = True
-
-    class Meta:
-        """Configuration of this factory."""
-
-        model = User
 
 
 class PinFactory(BaseFactory):

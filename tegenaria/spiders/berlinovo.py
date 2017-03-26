@@ -34,7 +34,7 @@ class BerlinovoSpider(scrapy.Spider):
         for link in LinkExtractor(allow=r'/en/apartment/', unique=True).extract_links(response):
             yield scrapy.Request(link.url, callback=self.parse_item)
 
-    def parse_item(self, response):  # pylint: disable=no-self-use
+    def parse_item(self, response):
         """Parse an ad page, with an apartment.
 
         @url https://www.berlinovo.de/en/apartment/2-room-suite-house-heinrich-heine-stra-e-18-24-berlin-mitte

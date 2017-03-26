@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 """Defines fixtures available to all tests."""
-# pylint: disable=redefined-outer-name
 import pytest
 from webtest import TestApp
 
 from tegenaria.app import create_app
 from tegenaria.database import db as _db
 from tegenaria.settings import TestConfig
-
-from .factories import UserFactory
 
 
 @pytest.yield_fixture(scope='function')
@@ -39,11 +36,3 @@ def db(app):
     yield _db
 
     _db.drop_all()
-
-
-@pytest.fixture
-def user(db):
-    """Yield a new user."""
-    user = UserFactory(password='myprecious')
-    db.session.commit()
-    return user

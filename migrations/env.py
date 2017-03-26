@@ -1,5 +1,4 @@
 """Alembic environment configuration."""
-# pylint: disable=no-member
 from __future__ import with_statement
 
 from logging.config import fileConfig
@@ -14,14 +13,14 @@ from sqlalchemy import engine_from_config, pool
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
-config = context.config  # pylint: disable=invalid-name
+config = context.config
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
 
 config.set_main_option('sqlalchemy.url', current_app.config.get('SQLALCHEMY_DATABASE_URI'))
-target_metadata = current_app.extensions['migrate'].db.metadata  # pylint: disable=invalid-name
+target_metadata = current_app.extensions['migrate'].db.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

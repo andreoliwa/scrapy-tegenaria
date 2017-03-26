@@ -1,4 +1,3 @@
-# pylint: disable=invalid-name,no-member
 """Size and availability.
 
 Create Date: 2015-10-28 02:32:48.214820

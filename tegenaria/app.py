@@ -2,11 +2,11 @@
 """The app module, containing the app factory function."""
 from flask import Flask, render_template
 from flask_admin import Admin
+from flask_admin.base import AdminIndexView
+from flask_admin.contrib.sqla import ModelView
 
-from tegenaria import public, user
-from tegenaria.assets import assets
-from tegenaria.extensions import bcrypt, cache, db, debug_toolbar, login_manager, migrate
-from tegenaria.models import Apartment, Pin
+from tegenaria.extensions import db, debug_toolbar, migrate
+from tegenaria.models import Apartment, Opinion, Pin
 from tegenaria.settings import ProdConfig
 from tegenaria.views import ApartmentModelView, PinModelView
 
@@ -21,34 +21,29 @@ def create_app(config_object=ProdConfig):
     app = Flask(__name__)
     app.config.from_object(config_object)
     register_extensions(app)
-    register_blueprints(app)
+    register_admin(app)
     register_errorhandlers(app)
     return app
 
 
 def register_extensions(app):
     """Register app extensions."""
-    assets.init_app(app)
-    bcrypt.init_app(app)
-    cache.init_app(app)
     db.init_app(app)
-    login_manager.init_app(app)
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)
 
-    # This extension doesn't behave like the others; that's why we had to initialise it here, not outside:
-    # https://github.com/flask-admin/flask-admin/issues/910
-    admin = Admin(name='Tegenaria', template_mode='bootstrap3')
+
+def register_admin(app):
+    """Register Flask Admin.
+
+    This extension doesn't behave like the others; that's why we had to initialise it here, not outside.
+    See https://github.com/flask-admin/flask-admin/issues/910
+    """
+    admin = Admin(name='Tegenaria', template_mode='bootstrap3', index_view=AdminIndexView(url='/'))
     admin.init_app(app)
     admin.add_view(ApartmentModelView(Apartment, db.session))
+    admin.add_view(ModelView(Opinion, db.session))
     admin.add_view(PinModelView(Pin, db.session))
-    return None
-
-
-def register_blueprints(app):
-    """Register routes (blueprints)."""
-    app.register_blueprint(public.views.blueprint)
-    app.register_blueprint(user.views.blueprint)
     return None
 
 

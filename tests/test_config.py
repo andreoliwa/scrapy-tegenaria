@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=missing-docstring,invalid-name
 """Test configurations."""
 from tegenaria.app import create_app
 from tegenaria.settings import DevConfig, ProdConfig
