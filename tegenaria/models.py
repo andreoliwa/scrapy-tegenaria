@@ -84,5 +84,5 @@ class Distance(SurrogatePK, Model):
 
     def __repr__(self):
         """Represent the object as a unique string."""
-        return "<Distance('{}' to '{}', {}/{})>".format(
-            self.apartment.address, self.pin.address, self.distance_text, self.duration_text)
+        return "<Distance('{}' to '{}', {}m / {} min.)>".format(
+            self.apartment.address, self.pin.address, self.meters, self.minutes)

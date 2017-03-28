@@ -36,10 +36,10 @@ class ApartmentModelView(ModelView):
                     'comments', 'created_at', 'updated_at')
 
     column_list = ('title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent', 'warm_rent',
-                   'updated_at', 'duration_text', 'distance_text')
+                   'updated_at', 'minutes', 'meters')
     column_labels = dict(
-        duration_text='Time to pin',
-        distance_text='Distance to pin',
+        minutes='Minutes to pin',
+        meters='Meters to pin',
     )
 
     # https://flask-admin.readthedocs.io/en/latest/api/mod_model/#flask_admin.model.BaseModelView.column_formatters
@@ -49,14 +49,14 @@ class ApartmentModelView(ModelView):
             url=MAPS_PLACE_URL.format(address=m.address),
             text=m.address
         ),
-        duration_text=lambda v, c, m, n: render_link(
+        minutes=lambda v, c, m, n: render_link(
             url=MAPS_DIRECTIONS_URL.format(origin=m.address, destination=c['row'].pin_address),
-            text=when_none(c['row'].duration_text),
+            text=when_none(c['row'].minutes),
             title='from {} to {}'.format(m.address, c['row'].pin_address)
         ),
-        distance_text=lambda v, c, m, n: render_link(
+        meters=lambda v, c, m, n: render_link(
             url=MAPS_DIRECTIONS_URL.format(origin=m.address, destination=c['row'].pin_address),
-            text=when_none(c['row'].distance_text),
+            text=when_none(c['row'].meters),
             title='from {} to {}'.format(m.address, c['row'].pin_address)
         ),
     )
@@ -68,7 +68,7 @@ class ApartmentModelView(ModelView):
                            'updated_at')
     column_default_sort = ('warm_rent', False)
     column_filters = ('url', 'active', 'title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent', 'warm_rent',
-                      'updated_at', 'distances.duration_value')
+                      'updated_at', 'distances.minutes', 'distances.meters')
 
     details_modal = True
     edit_modal = True
@@ -78,19 +78,14 @@ class ApartmentModelView(ModelView):
         lateral_pin = lateral(
             Pin.query.with_entities(Pin.id.label('id'), Pin.address.label('pin_address')), name='pin')
         lateral_distance = lateral(Distance.query.with_entities(
-            Distance.duration_text.label('duration_text'),
-            Distance.duration_value.label('duration_value'),
-            Distance.distance_text.label('distance_text'),
-            Distance.distance_value.label('distance_value')).filter(
+            Distance.minutes.label('minutes'), Distance.meters.label('meters')).filter(
             Distance.apartment_id == Apartment.id, Distance.pin_id == lateral_pin.c.id), name='distance')
 
         # We need all apartment columns expanded.
         # If the query has only `Apartment` plus the columns, this error is raised:
         # AttributeError: 'result' object has no attribute 'id'
         columns = [c for c in Apartment.__table__.columns] + \
-                  [lateral_pin.c.pin_address,
-                   lateral_distance.c.duration_text, lateral_distance.c.duration_value,
-                   lateral_distance.c.distance_text, lateral_distance.c.distance_value]
+                  [lateral_pin.c.pin_address, lateral_distance.c.minutes, lateral_distance.c.meters]
         query = self.session.query(*columns).filter(Apartment.active.is_(True))
 
         # All pins that might have a distance or not.
