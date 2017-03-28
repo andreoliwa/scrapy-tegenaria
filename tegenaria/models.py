@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Tegenaria models."""
+"""SQLAlchemy models."""
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.sql.functions import func
 

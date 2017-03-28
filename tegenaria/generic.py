@@ -1,15 +1,13 @@
 """Generic utilities that can be reused by other projects."""
 import re
 from getpass import getpass
-
-from sqlalchemy import Column
 from typing import Any, Optional
-
-from alembic import op
 
 import arrow as arrow
 import keyring
+from alembic import op
 from markupsafe import Markup
+from sqlalchemy import Column
 
 FIELDS_REGEX = re.compile(r'{([^}]+)}')
 

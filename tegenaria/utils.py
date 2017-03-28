@@ -56,16 +56,16 @@ def save_json_to_db(input_dir, output_dir, model_class):
         LOGGER.warning('Reading %s', full_name)
         with open(full_name) as handle:
             for line in handle:
-                raw_json_record = json.loads(line)
+                original_raw_json = json.loads(line)
                 """:type: dict"""
 
                 # Remove all whitespace in every field, before inserting into the database.
-                json_record = {}
-                for key, value in raw_json_record.items():
-                    json_record[key] = value.strip()
-                json_record.update(dict(active=True, updated_at=datetime.now()))
+                json_dict = {}
+                for key, value in original_raw_json.items():
+                    json_dict[key] = value.strip()
+                json_dict.update(active=True, updated_at=datetime.now(), json=original_raw_json)
 
-                model = model_class(**json_record)
+                model = model_class(**json_dict)
                 try:
                     model.save()
                     saved_ids.append(model.id)
@@ -73,9 +73,9 @@ def save_json_to_db(input_dir, output_dir, model_class):
                 except IntegrityError:
                     db.session.rollback()
                     existing = model_class.query.filter_by(url=model.url).one()
-                    existing.update(**json_record)
+                    existing.update(**json_dict)
                     saved_ids.append(existing.id)
-                    LOGGER.warning('Updating %s', model)
+                    LOGGER.warning('Updating %s', existing)
 
         suffix, extension = os.path.splitext(name)
         destination_name = os.path.join(output_dir, '{}_{}{}'.format(suffix, str(uuid4()), extension))
