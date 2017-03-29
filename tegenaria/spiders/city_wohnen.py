@@ -11,9 +11,10 @@ from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
 
 from tegenaria.items import ApartmentItem
+from tegenaria.spiders import CleanMixin
 
 
-class CityWohnenSpider(CrawlSpider):
+class CityWohnenSpider(CrawlSpider, CleanMixin):
     """Furnished apartments from City Wohnen."""
 
     name = 'city_wohnen'

@@ -5,7 +5,9 @@ from typing import Any, Optional
 
 import arrow as arrow
 import keyring
+from alembic import op
 from markupsafe import Markup
+from sqlalchemy import Column
 
 FIELDS_REGEX = re.compile(r'{([^}]+)}')
 
@@ -45,3 +47,31 @@ def render_link(url: str, text: str = None, target: Optional[str] = '_blank', ti
 def when_none(value: Any, something: Any = '') -> str:
     """Return something when the value is None. Default: empty string."""
     return something if value is None else value
+
+
+def add_mandatory_column(table_name: str, column_name: str, column_type: Any, default_value: str = None,
+                         column_exists: bool = False, update_only_null: bool = False):
+    """Add a mandatory column to a table.
+
+    NOT NULL fields must be populated with some value before setting `nullable=False`.
+
+    :param table_name: Name of the table.
+    :param column_name: Name of the column.
+    :param column_type: Type of the column. E.g.: sqlalchemy.String().
+    :param default_value: The default value to be UPDATEd in the column.
+        If not informed, then generates UUIDs with `uuid_generate_v4()`.
+    :param column_exists: Flag to indicate if the column already exists (to skip creation).
+    :param update_only_null: Flag to only update values that are null and leave the others
+    """
+    if default_value is None:
+        default_value = 'uuid_generate_v4()'
+
+    if not column_exists:
+        op.add_column(table_name, Column(column_name, column_type, nullable=True))
+
+    sql = 'UPDATE "{table}" SET "{column}" = {default_value}'
+    if update_only_null:
+        sql += ' WHERE "{column}" IS NULL'
+
+    op.execute(sql.format(table=table_name, column=column_name, default_value=default_value))
+    op.alter_column(table_name, column_name, nullable=False)

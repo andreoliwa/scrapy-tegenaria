@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Tegenaria models."""
+"""SQLAlchemy models."""
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.sql.functions import func
 
 from tegenaria.database import Column, Model, SurrogatePK, db, reference_column, relationship
@@ -11,15 +12,14 @@ class Apartment(SurrogatePK, Model):
     __tablename__ = 'apartment'
 
     url = Column(db.String(), unique=True, nullable=False)
-    active = Column(db.Boolean, default=False)
+    active = Column(db.Boolean, default=True, nullable=False)
     title = Column(db.String())
     address = Column(db.String())
     neighborhood = Column(db.String())
-    rooms = Column(db.String())
-    size = Column(db.String())
-    cold_rent = Column(db.String())
-    warm_rent = Column(db.String())
-    warm_rent_notes = Column(db.String())
+    rooms = Column(db.Numeric(2, 1))
+    size = Column(db.Numeric(4, 1))
+    cold_rent = Column(db.Numeric(7, 2))
+    warm_rent = Column(db.Numeric(7, 2))
 
     opinion_id = reference_column('opinion', True)
     opinion = relationship('Opinion')
@@ -30,6 +30,10 @@ class Apartment(SurrogatePK, Model):
     other = Column(db.String())
     availability = Column(db.Date)
     comments = Column(db.String())
+
+    json = db.Column(postgresql.JSONB, nullable=False)
+    errors = db.Column(postgresql.JSONB)
+
     created_at = Column(db.DateTime, default=func.now())
     updated_at = Column(db.DateTime, onupdate=func.now(), default=func.now())
 
@@ -38,6 +42,15 @@ class Apartment(SurrogatePK, Model):
     def __repr__(self):
         """Represent the object as a unique string."""
         return '<Apartment({}: {} {})>'.format(self.id, self.url, self.opinion.title if self.opinion else '')
+
+    @classmethod
+    def get_or_create(cls, url: str):
+        """Get an apartment by its URL (which should be unique).
+
+        :return: An existing apartment or a new empty instance.
+        :rtype: Apartment
+        """
+        return cls.query.filter_by(url=url).first() or Apartment()
 
 
 class Opinion(SurrogatePK, Model):
@@ -66,19 +79,20 @@ class Distance(SurrogatePK, Model):
 
     __tablename__ = 'distance'
 
-    distance_text = Column(db.String(), nullable=False)
-    distance_value = Column(db.Integer(), nullable=False)
-    duration_text = Column(db.String(), nullable=False)
-    duration_value = Column(db.Integer(), nullable=False)
-    updated_at = Column(db.DateTime, nullable=False, onupdate=func.now(), default=func.now())
-
     apartment_id = reference_column('apartment')
     apartment = relationship('Apartment')
 
     pin_id = reference_column('pin')
     pin = relationship('Pin')
 
+    meters = Column(db.Integer(), nullable=False)
+    minutes = Column(db.Integer(), nullable=False)
+
+    # Google Matrix JSON
+    json = db.Column(postgresql.JSONB, nullable=False)
+    updated_at = Column(db.DateTime, nullable=False, onupdate=func.now(), default=func.now())
+
     def __repr__(self):
         """Represent the object as a unique string."""
-        return "<Distance('{}' to '{}', {}/{})>".format(
-            self.apartment.address, self.pin.address, self.distance_text, self.duration_text)
+        return "<Distance('{}' to '{}', {}m / {} min.)>".format(
+            self.apartment.address, self.pin.address, self.meters, self.minutes)

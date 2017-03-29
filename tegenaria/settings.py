@@ -59,8 +59,8 @@ BOT_NAME = 'tegenaria'
 SPIDER_MODULES = ['tegenaria.spiders']
 NEWSPIDER_MODULE = 'tegenaria.spiders'
 
-FEED_URI = 'file:///tmp/tegenaria/%(name)s.json'
-FEED_FORMAT = 'jsonlines'
+# FEED_URI = 'file:///tmp/tegenaria/%(name)s.json'
+# FEED_FORMAT = 'jsonlines'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'tegenaria (+http://www.yourdomain.com)'
@@ -109,9 +109,9 @@ FEED_FORMAT = 'jsonlines'
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-# ITEM_PIPELINES = {
-#    'tegenaria.pipelines.SomePipeline': 300,
-# }
+ITEM_PIPELINES = {
+   'tegenaria.pipelines.ApartmentPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html

@@ -37,7 +37,7 @@ class ApartmentItem(Item):
     rooms = Field(output_processor=Join())
     size = Field(output_processor=Join())
     warm_rent = Field(input_processor=MapCompose(sanitize_price), output_processor=Join())
-    warm_rent_notes = Field(output_processor=Join())
+    comments = Field(output_processor=Join())
     description = Field(output_processor=Join())
     equipment = Field(output_processor=Join())
     location = Field(output_processor=Join())
