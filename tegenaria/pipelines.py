@@ -6,7 +6,6 @@ Don't forget to add your pipeline to the ITEM_PIPELINES setting
 See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 """
 from flask import current_app
-from scrapy.exceptions import DropItem
 
 from tegenaria.app import create_app
 from tegenaria.extensions import db
@@ -25,16 +24,26 @@ class ApartmentPipeline(object):
 
     def process_item(self, item, spider):
         """Process an item through the pipeline."""
-        apartment = Apartment.query.filter_by(url=item['url']).first()
         schema = ApartmentSchema()
         schema.context['spider'] = spider
 
         json_data = dict(item)
         json_data['json'] = dict(item)
+        json_data['errors'] = None
+
+        apartment = Apartment.get_or_create(item['url'])
         result = schema.load(json_data, instance=apartment)
         if result.errors:
-            raise DropItem()  # FIXME: save apartment and errors to the database
+            # Save the errors and continue.
+            apartment.errors = result.errors
 
-        db.session.add(result.data)
+            # Apply all valid fields to the new instance.
+            for key, value in result.data.items():
+                setattr(apartment, key, value)
+            db.session.add(apartment)
+        else:
+            # On success, we will have a model instance on `result.data`.
+            db.session.add(result.data)
+
         db.session.commit()
         return item

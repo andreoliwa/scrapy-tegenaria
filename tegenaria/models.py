@@ -31,8 +31,9 @@ class Apartment(SurrogatePK, Model):
     availability = Column(db.Date)
     comments = Column(db.String())
 
-    # Scrapy JSON
     json = db.Column(postgresql.JSONB, nullable=False)
+    errors = db.Column(postgresql.JSONB)
+
     created_at = Column(db.DateTime, default=func.now())
     updated_at = Column(db.DateTime, onupdate=func.now(), default=func.now())
 
@@ -41,6 +42,15 @@ class Apartment(SurrogatePK, Model):
     def __repr__(self):
         """Represent the object as a unique string."""
         return '<Apartment({}: {} {})>'.format(self.id, self.url, self.opinion.title if self.opinion else '')
+
+    @classmethod
+    def get_or_create(cls, url: str):
+        """Get an apartment by its URL (which should be unique).
+
+        :return: An existing apartment or a new empty instance.
+        :rtype: Apartment
+        """
+        return cls.query.filter_by(url=url).first() or Apartment()
 
 
 class Opinion(SurrogatePK, Model):

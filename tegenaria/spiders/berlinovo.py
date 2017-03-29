@@ -2,14 +2,15 @@
 """A spider to crawl the Berlinovo website."""
 import re
 
-import scrapy
+from scrapy import Request, Spider
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 
 from tegenaria.items import ApartmentItem
+from tegenaria.spiders import CleanMixin
 
 
-class BerlinovoSpider(scrapy.Spider):
+class BerlinovoSpider(Spider, CleanMixin):
     """A spider to crawl the Berlinovo website."""
 
     name = 'berlinovo'
@@ -29,10 +30,10 @@ class BerlinovoSpider(scrapy.Spider):
         for link in LinkExtractor(allow=r'/en/suche-apartments.+page=', unique=True).extract_links(response):
             if link.url not in (self.searched_pages, self.start_urls):
                 self.searched_pages.add(link.url)
-                yield scrapy.Request(link.url, callback=self.parse)
+                yield Request(link.url, callback=self.parse)
 
         for link in LinkExtractor(allow=r'/en/apartment/', unique=True).extract_links(response):
-            yield scrapy.Request(link.url, callback=self.parse_item)
+            yield Request(link.url, callback=self.parse_item)
 
     def parse_item(self, response):
         """Parse an ad page, with an apartment.

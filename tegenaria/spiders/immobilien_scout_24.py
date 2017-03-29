@@ -5,12 +5,13 @@ import re
 from getpass import getpass
 
 import keyring
-import scrapy
 from imapclient import IMAPClient
+from scrapy import Request, Spider
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 
 from tegenaria.items import ApartmentItem, json_config
+from tegenaria.spiders import CleanMixin
 
 IMAP_HOST = json_config(__file__, 'imap_host')
 IMAP_USERNAME = json_config(__file__, 'imap_username')
@@ -19,7 +20,7 @@ AD_URL_TEMPLATE = 'http://www.immobilienscout24.de/expose/{id}'
 REGEX = re.compile(r'expose/([0-9]+)')
 
 
-class ImmobilienScout24Spider(scrapy.Spider):
+class ImmobilienScout24Spider(Spider, CleanMixin):
     """A spider to crawl the Immobilien Scout 24 website."""
 
     name = 'immobilien_scout_24'
@@ -56,10 +57,10 @@ class ImmobilienScout24Spider(scrapy.Spider):
         for link in LinkExtractor(allow='/Suche/S-T/P-').extract_links(response):
             if link.url not in (self.searched_pages, self.start_urls):
                 self.searched_pages.add(link.url)
-                yield scrapy.Request(link.url, callback=self.parse)
+                yield Request(link.url, callback=self.parse)
 
         for link in LinkExtractor(allow=r'expose/[0-9]+$').extract_links(response):
-            yield scrapy.Request(link.url, callback=self.parse_item)
+            yield Request(link.url, callback=self.parse_item)
 
     def parse_item(self, response):
         """Parse an ad page with an apartment.
@@ -132,7 +133,7 @@ class ImmobilienScout24Spider(scrapy.Spider):
                 self.logger.error(err)
                 body = ''
             for url in [AD_URL_TEMPLATE.format(id=ad_id) for ad_id in set(REGEX.findall(body))]:
-                yield scrapy.Request(url, callback=self.parse_item)
+                yield Request(url, callback=self.parse_item)
 
 
 def imap_charset(raw_body):

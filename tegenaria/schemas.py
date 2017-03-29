@@ -1,10 +1,10 @@
 """Marshmallow schemas."""
 from marshmallow.decorators import pre_load
 from marshmallow_sqlalchemy import ModelSchema
-from scrapy import Spider  # noqa
 
 from tegenaria.extensions import db
 from tegenaria.models import Apartment
+from tegenaria.spiders import CleanMixin  # noqa
 
 
 class ApartmentSchema(ModelSchema):
@@ -19,5 +19,5 @@ class ApartmentSchema(ModelSchema):
     @pre_load
     def clean_item(self, in_data):
         """Clean an item before loading."""
-        spider = self.context['spider']  # type: Spider
+        spider = self.context['spider']  # type: CleanMixin
         return spider.clean_item(in_data)

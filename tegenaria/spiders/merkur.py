@@ -7,9 +7,10 @@ from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
 
 from tegenaria.items import ApartmentItem
+from tegenaria.spiders import CleanMixin
 
 
-class MerkurSpider(CrawlSpider):
+class MerkurSpider(CrawlSpider, CleanMixin):
     """Apartments from the Merkur Berlin real estate agency.
 
     @url http://www.merkur-berlin.de/?page_id=39

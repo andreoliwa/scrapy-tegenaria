@@ -1,4 +1,4 @@
-"""Fix columns types (https://github.com/andreoliwa/python-tegenaria/issues/69).
+"""Fix column types (https://github.com/andreoliwa/python-tegenaria/issues/69).
 
 Create Date: 2017-03-27 00:49:50.053095
 """
@@ -15,6 +15,7 @@ down_revision = '10e28a1a0962'
 def upgrade():
     """Apply changes to a database (create tables, columns, etc.)."""
     add_mandatory_column('apartment', 'json', postgresql.JSONB(astext_type=sa.Text()), "'{}'::json")
+    op.add_column('apartment', sa.Column('errors', postgresql.JSONB(astext_type=sa.Text()), nullable=True))
     op.alter_column('apartment', 'active', existing_type=sa.BOOLEAN(), nullable=False)
     op.drop_column('apartment', 'warm_rent_notes')
 
@@ -77,4 +78,5 @@ def downgrade():
 
     op.add_column('apartment', sa.Column('warm_rent_notes', sa.VARCHAR(), autoincrement=False, nullable=True))
     op.alter_column('apartment', 'active', existing_type=sa.BOOLEAN(), nullable=True)
+    op.drop_column('apartment', 'errors')
     op.drop_column('apartment', 'json')
