@@ -3,6 +3,7 @@
 import itertools
 import re
 from getpass import getpass
+from typing import Dict, Any
 
 import keyring
 from imapclient import IMAPClient
@@ -38,6 +39,7 @@ class ImmobilienScout24Spider(Spider, CleanMixin):
         'other': 'is24qa-sonstiges'
     }
     WARM_RENT_RE = re.compile(r'(?P<warm_rent>[0-9,.]+)[\s(]*(?P<comments>[^)]*)')
+    DEACTIVATED = 'Angebot wurde deaktiviert'
 
     def start_requests(self):
         """Read e-mails (if any) and then crawl URLs."""
@@ -69,6 +71,7 @@ class ImmobilienScout24Spider(Spider, CleanMixin):
         @returns items 1 1
         @scrapes url title address neighborhood cold_rent warm_rent rooms
         """
+        self.shutdown_on_error()
         item = ItemLoader(ApartmentItem(), response=response)
         item.add_value('url', response.url)
         item.add_css('title', 'h1#expose-title::text')
@@ -88,14 +91,29 @@ class ImmobilienScout24Spider(Spider, CleanMixin):
         item.add_css('cold_rent', 'div.is24qa-kaltmiete::text')
         item.add_css('warm_rent', 'dd.is24qa-gesamtmiete::text')
         item.add_css('rooms', 'div.is24qa-zi::text')
-        item_dict = item.load_item()
+        item.add_xpath('active', '//div[contains(@class, "status-message")]'
+                                 '/h3[starts-with(normalize-space(.), "Angebot")]/text()')
+        yield item.load_item()
+
+    def clean_item(self, data: Dict[str, Any]):
+        """Clean an item before loading."""
+        data['cold_rent'] = data['cold_rent'].replace('.', '')
 
         # Warm rent can have additional notes to the right.
-        match = self.WARM_RENT_RE.match(item_dict['warm_rent'])
-        if match:
-            item_dict.update(match.groupdict())
+        if 'warm_rent' in data:
+            match = self.WARM_RENT_RE.match(data['warm_rent'])
+            if match:
+                data.update(match.groupdict())
+                data['warm_rent'] = data['warm_rent'].replace('.', '')
 
-        yield item_dict
+        # Join repeated neighbourhood names.
+        if 'neighborhood' in data:
+            data['neighborhood'] = ' '.join(set(re.split('\W+', data['neighborhood'].strip(' ()'))))
+
+        if data.get('active') == self.DEACTIVATED:
+            data['active'] = False
+
+        return data
 
     def read_emails(self, ask_password=False):
         """Read email messages.

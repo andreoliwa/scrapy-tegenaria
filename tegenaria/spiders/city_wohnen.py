@@ -63,6 +63,7 @@ class CityWohnenSpider(CrawlSpider, CleanMixin):
         @returns items 1 1
         @scrapes url title availability description neighborhood address warm_rent size rooms
         """
+        self.shutdown_on_error()
         item = ItemLoader(ApartmentItem(), response=response)
         item.add_value('url', response.url)
 

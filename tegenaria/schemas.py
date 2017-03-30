@@ -1,4 +1,6 @@
 """Marshmallow schemas."""
+from typing import Any, Dict
+
 from marshmallow.decorators import pre_load
 from marshmallow_sqlalchemy import ModelSchema
 
@@ -17,7 +19,7 @@ class ApartmentSchema(ModelSchema):
         sqla_session = db.session
 
     @pre_load
-    def clean_item(self, in_data):
+    def clean_item(self, data: Dict[str, Any]):
         """Clean an item before loading."""
         spider = self.context['spider']  # type: CleanMixin
-        return spider.clean_item(in_data)
+        return spider.clean_item(data)
