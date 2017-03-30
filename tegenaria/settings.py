@@ -66,7 +66,7 @@ NEWSPIDER_MODULE = 'tegenaria.spiders'
 # USER_AGENT = 'tegenaria (+http://www.yourdomain.com)'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-# CONCURRENT_REQUESTS=32
+CONCURRENT_REQUESTS = 1
 
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
@@ -131,3 +131,6 @@ ITEM_PIPELINES = {
 # HTTPCACHE_DIR='httpcache'
 # HTTPCACHE_IGNORE_HTTP_CODES=[]
 # HTTPCACHE_STORAGE='scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+# https://doc.scrapy.org/en/latest/topics/extensions.html#closespider-errorcount
+CLOSESPIDER_ERRORCOUNT = 1

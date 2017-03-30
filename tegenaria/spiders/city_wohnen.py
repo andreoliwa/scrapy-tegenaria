@@ -2,6 +2,7 @@
 """Furnished apartments from City Wohnen."""
 import re
 from datetime import datetime
+from typing import Any, Dict
 from urllib.parse import unquote_plus
 
 import requests
@@ -20,16 +21,16 @@ class CityWohnenSpider(CrawlSpider, CleanMixin):
     name = 'city_wohnen'
     allowed_domains = ['city-wohnen.de']
 
-    MAX_RECORDS = 200
-    start_urls = [
+    MAX_RECORDS = 300
+    start_urls = (
         # This link shows an empty page...
         # 'https://www.city-wohnen.de/eng/berlin/furnished-flats/flat-search/'
 
         # ... because the actual results are loaded by an AJAX call.
         'https://www.city-wohnen.de/rpc.php?pageid=401&action=services&service=ciwo_search&cmd=search&'
         'filters=city%3Dberlin%26date_from%3D%26room_count%3D1%26rent_amount_min%3D0%26rent_amount_max%3D4375%26'
-        'person_count%3D1&order=available_from&page_nr=1&page_size={}'.format(MAX_RECORDS)
-    ]
+        'person_count%3D1&order=available_from&page_nr=1&page_size={}'.format(MAX_RECORDS),
+    )
 
     URL_REGEX = r'/eng/berlin/[0-9]+[a-z-]+'
     rules = (
@@ -38,7 +39,7 @@ class CityWohnenSpider(CrawlSpider, CleanMixin):
 
     field_regex = dict(
         availability=re.compile(r'.*from (?P<availability>[0-9/]+).*', re.MULTILINE),
-        neighborhood=re.compile(r'furnished apartment in (?P<neighborhood>[^\t]+)\t+'),
+        neighborhood=re.compile(r'furnished apartment in Berlin-(?P<neighborhood>.+)'),
         # The address is hidden on a Google Maps link, and there is only the street, not the number.
         address=re.compile(r'.+/maps/search/(?P<address>.+)/@[0-9.,]+')
     )
@@ -63,6 +64,7 @@ class CityWohnenSpider(CrawlSpider, CleanMixin):
         @returns items 1 1
         @scrapes url title availability description neighborhood address warm_rent size rooms
         """
+        self.shutdown_on_error()
         item = ItemLoader(ApartmentItem(), response=response)
         item.add_value('url', response.url)
 
@@ -80,19 +82,26 @@ class CityWohnenSpider(CrawlSpider, CleanMixin):
         item.add_value('size', features.get('Size'))
         item.add_value('rooms', features.get('Room/s'))
 
-        item_dict = item.load_item()
+        return item.load_item()
 
-        # After loading: clean fields.
+    def clean_item(self, data: Dict[str, Any]):
+        """Clean the item before loading."""
+        data['warm_rent'] = data['warm_rent'].replace('.', '')
+        data['rooms'] = data['rooms'].replace(',', '.')
+        data['size'] = data['size'].split('\xa0')[0].replace(',', '.')
+
         for field, regex in self.field_regex.items():
-            clean_field = item_dict.get(field, '').strip(' \t\n')
+            clean_field = data.get(field, '').strip(' \t\n')
             match = regex.match(clean_field)
-            if match:
-                item_dict.update(match.groupdict())
+            if not match:
+                continue
 
-        # Must be an ISO date for the database. TODO: remove on #69
-        item_dict['availability'] = datetime.strptime(item_dict.get('availability'), '%d/%m/%Y').date().isoformat()
+            data.update(match.groupdict())
+            if field == 'availability':
+                # Must be an ISO date for the database.
+                data['availability'] = datetime.strptime(data.get('availability'), '%d/%m/%Y').date().isoformat()
+            elif field == 'address':
+                # Decode the URL.
+                data['address'] = unquote_plus(data['address'])
 
-        # Decode the URL. TODO: remove on #69
-        item_dict['address'] = unquote_plus(item_dict['address'])
-
-        return item_dict
+        return data

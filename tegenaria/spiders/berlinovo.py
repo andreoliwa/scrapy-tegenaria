@@ -42,6 +42,7 @@ class BerlinovoSpider(Spider, CleanMixin):
         @returns items 1 1
         @scrapes url title description location address other neighborhood rooms
         """
+        self.shutdown_on_error()
         item = ItemLoader(ApartmentItem(), response=response)
         item.add_value('url', response.url)
         item.add_css('title', 'h1.title::text')

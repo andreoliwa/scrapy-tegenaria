@@ -31,6 +31,7 @@ class ApartmentItem(Item):
     """An apartment item."""
 
     url = Field(output_processor=Join())
+    active = Field(output_processor=Join())
     title = Field(output_processor=Join())
     address = Field(output_processor=Join())
     neighborhood = Field(output_processor=Join())

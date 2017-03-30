@@ -31,6 +31,7 @@ class AkeliusSpider(CrawlSpider, CleanMixin):
 
     def parse_item(self, response):
         """Parse a page with an apartment."""
+        self.shutdown_on_error()
         item = ItemLoader(ApartmentItem(), response=response)
         item.add_value('url', response.url)
         item.add_css('title', 'article.node.asset.view > header > h2::text')
