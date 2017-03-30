@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Apartments from the Merkur Berlin real estate agency."""
 import re
-from typing import Dict, Any
+from typing import Any, Dict
 
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader

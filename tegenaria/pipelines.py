@@ -37,12 +37,13 @@ class ApartmentPipeline(object):
             apartment = Apartment.get_or_create(item['url'])
             result = schema.load(json_data, instance=apartment)
             if result.errors:
-                # Save the errors and continue.
-                apartment.errors = result.errors
-
                 # Apply all valid fields to the new instance.
                 for key, value in result.data.items():
                     setattr(apartment, key, value)
+
+                # Save the errors and continue.
+                apartment.errors = result.errors
+
                 db.session.add(apartment)
             else:
                 # On success, we will have a model instance on `result.data`.

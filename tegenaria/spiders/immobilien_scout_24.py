@@ -3,7 +3,7 @@
 import itertools
 import re
 from getpass import getpass
-from typing import Dict, Any
+from typing import Any, Dict
 
 import keyring
 from imapclient import IMAPClient
@@ -96,7 +96,7 @@ class ImmobilienScout24Spider(Spider, CleanMixin):
         yield item.load_item()
 
     def clean_item(self, data: Dict[str, Any]):
-        """Clean an item before loading."""
+        """Clean the item before loading."""
         data['cold_rent'] = data['cold_rent'].replace('.', '')
 
         # Warm rent can have additional notes to the right.

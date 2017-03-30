@@ -20,6 +20,6 @@ class ApartmentSchema(ModelSchema):
 
     @pre_load
     def clean_item(self, data: Dict[str, Any]):
-        """Clean an item before loading."""
+        """Clean the item before loading."""
         spider = self.context['spider']  # type: CleanMixin
         return spider.clean_item(data)

@@ -13,7 +13,7 @@ class CleanMixin:
     shutdown_message = None  # type: str
 
     def clean_item(self, data: Dict[str, Any]):
-        """Clean an item before loading.
+        """Clean the item before loading.
 
         This method can be overridden in the inherited class.
         """
