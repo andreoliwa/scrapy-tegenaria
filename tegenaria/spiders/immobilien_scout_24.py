@@ -40,6 +40,7 @@ class ImmobilienScout24Spider(Spider, CleanMixin):
     }
     WARM_RENT_RE = re.compile(r'(?P<warm_rent>[0-9,.]+)[\s(]*(?P<comments>[^)]*)')
     DEACTIVATED = 'Angebot wurde deaktiviert'
+    FULL_ADDRESS_TEXT = 'Die vollständige Adresse der Immobilie erhalten Sie vom Anbieter.'
 
     def start_requests(self):
         """Read e-mails (if any) and then crawl URLs."""
@@ -108,6 +109,7 @@ class ImmobilienScout24Spider(Spider, CleanMixin):
 
         # Join repeated neighbourhood names.
         if 'neighborhood' in data:
+            data['neighborhood'] = data['neighborhood'].replace(self.FULL_ADDRESS_TEXT, '')
             data['neighborhood'] = ' '.join(set(re.split('\W+', data['neighborhood'].strip(' ()'))))
 
         if data.get('active') == self.DEACTIVATED:
