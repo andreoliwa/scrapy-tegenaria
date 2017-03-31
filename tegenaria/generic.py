@@ -6,6 +6,7 @@ from typing import Any, Optional
 import arrow as arrow
 import keyring
 from alembic import op
+from flask import json
 from markupsafe import Markup
 from sqlalchemy import Column
 
@@ -75,3 +76,14 @@ def add_mandatory_column(table_name: str, column_name: str, column_type: Any, de
 
     op.execute(sql.format(table=table_name, column=column_name, default_value=default_value))
     op.alter_column(table_name, column_name, nullable=False)
+
+
+def format_json_textarea(view, value):
+    """Format a dict as a (not so) pretty JSON.
+
+    For the future:
+    - Better formatting (don't use textarea);
+    - Highlight with Pygments.
+    """
+    return Markup('<pre><textarea rows="30" cols="50">{0}</textarea></pre>'.format(
+        json.dumps(value, indent=2, sort_keys=True)))

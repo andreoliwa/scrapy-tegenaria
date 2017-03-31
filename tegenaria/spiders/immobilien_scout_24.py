@@ -11,12 +11,12 @@ from scrapy import Request, Spider
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 
-from tegenaria.items import ApartmentItem, json_config
+from tegenaria.items import ApartmentItem
 from tegenaria.spiders import CleanMixin
 
-IMAP_HOST = json_config(__file__, 'imap_host')
-IMAP_USERNAME = json_config(__file__, 'imap_username')
-IMAP_FOLDER = json_config(__file__, 'imap_folder')
+IMAP_HOST = ''  # TODO: get this from .env json_config(__file__, 'imap_host')
+IMAP_USERNAME = ''  # TODO: get this from .env json_config(__file__, 'imap_username')
+IMAP_FOLDER = ''  # TODO: get this from .env json_config(__file__, 'imap_folder')
 AD_URL_TEMPLATE = 'http://www.immobilienscout24.de/expose/{id}'
 REGEX = re.compile(r'expose/([0-9]+)')
 
@@ -27,7 +27,9 @@ class ImmobilienScout24Spider(Spider, CleanMixin):
     name = 'immobilien_scout_24'
     allowed_domains = ['immobilienscout24.de']
     start_urls = (
-        'https://www.immobilienscout24.de/',
+        # TODO: get this from .env or from spider arguments
+        'https://www.immobilienscout24.de/Suche/S-T/Wohnung-Miete/Fahrzeitsuche/Berlin/10178/228300/2512424'
+        '/Alexanderstra_dfe/-/30/-3,00?enteredFrom=result_list',
     )
     searched_pages = set()
 
@@ -44,7 +46,8 @@ class ImmobilienScout24Spider(Spider, CleanMixin):
 
     def start_requests(self):
         """Read e-mails (if any) and then crawl URLs."""
-        self.start_urls = json_config(__file__, 'start_urls')
+        # TODO: get this from .env or from spider arguments
+        # self.start_urls = json_config(__file__, 'start_urls')
         return itertools.chain(
             self.read_emails(),
             super(ImmobilienScout24Spider, self).start_requests())

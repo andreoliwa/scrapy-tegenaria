@@ -2,10 +2,11 @@
 from datetime import date
 
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.sqla.filters import FilterEmpty
 from flask_admin.model import typefmt
 from sqlalchemy import func, lateral, true
 
-from tegenaria.generic import format_as_human_date, render_link, when_none
+from tegenaria.generic import format_as_human_date, format_json_textarea, render_link, when_none
 from tegenaria.models import Apartment, Distance, Pin
 
 MAPS_PLACE_URL = 'https://www.google.de/maps/place/{address}/'
@@ -13,7 +14,8 @@ MAPS_DIRECTIONS_URL = 'https://www.google.de/maps/dir/{origin}/{destination}/'
 
 MY_DEFAULT_FORMATTERS = dict(typefmt.BASE_FORMATTERS)
 MY_DEFAULT_FORMATTERS.update({
-    date: format_as_human_date
+    date: format_as_human_date,
+    dict: format_json_textarea
 })
 
 
@@ -63,12 +65,14 @@ class ApartmentModelView(ModelView):
 
     column_type_formatters = MY_DEFAULT_FORMATTERS
     column_searchable_list = ('address', 'neighborhood', 'comments', 'description', 'equipment', 'location', 'other')
-    column_details_list = ('title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent', 'warm_rent', 'opinion',
-                           'description', 'equipment', 'location', 'other', 'availability', 'comments', 'created_at',
-                           'updated_at')
+    column_details_list = ('url', 'title', 'errors', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent',
+                           'warm_rent', 'opinion', 'description', 'equipment', 'location', 'other', 'availability',
+                           'comments', 'created_at', 'updated_at', 'json')
     column_default_sort = ('warm_rent', False)
-    column_filters = ('url', 'active', 'title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent', 'warm_rent',
-                      'updated_at', 'distances.minutes', 'distances.meters')
+    column_filters = ('url', 'active', 'title',
+                      FilterEmpty(Apartment.errors, 'Errors'),
+                      'address', 'neighborhood', 'rooms', 'size', 'cold_rent',
+                      'warm_rent', 'updated_at', 'distances.minutes', 'distances.meters')
 
     details_modal = True
     edit_modal = True

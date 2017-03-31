@@ -23,6 +23,7 @@ before_script:
 script:
   - ./manage.py lint
   - py.test --verbose # --cov tegenaria
+  - scrapy check -v
 #after_success:
 #  - codecov
 after_failure:
