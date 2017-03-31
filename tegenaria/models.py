@@ -31,8 +31,8 @@ class Apartment(SurrogatePK, Model):
     availability = Column(db.Date)
     comments = Column(db.String())
 
-    json = db.Column(postgresql.JSONB, nullable=False)
-    errors = db.Column(postgresql.JSONB)
+    json = db.Column(postgresql.JSONB(none_as_null=True), nullable=False)
+    errors = db.Column(postgresql.JSONB(none_as_null=True))
 
     created_at = Column(db.DateTime, default=func.now())
     updated_at = Column(db.DateTime, onupdate=func.now(), default=func.now())
@@ -89,7 +89,7 @@ class Distance(SurrogatePK, Model):
     minutes = Column(db.Integer(), nullable=False)
 
     # Google Matrix JSON
-    json = db.Column(postgresql.JSONB, nullable=False)
+    json = db.Column(postgresql.JSONB(none_as_null=True), nullable=False)
     updated_at = Column(db.DateTime, nullable=False, onupdate=func.now(), default=func.now())
 
     def __repr__(self):
