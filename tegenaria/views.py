@@ -6,7 +6,7 @@ from flask_admin.contrib.sqla.filters import FilterEmpty
 from flask_admin.model import typefmt
 from sqlalchemy import func, lateral, true
 
-from tegenaria.generic import format_as_human_date, render_link, when_none
+from tegenaria.generic import format_as_human_date, format_json_textarea, render_link, when_none
 from tegenaria.models import Apartment, Distance, Pin
 
 MAPS_PLACE_URL = 'https://www.google.de/maps/place/{address}/'
@@ -14,7 +14,8 @@ MAPS_DIRECTIONS_URL = 'https://www.google.de/maps/dir/{origin}/{destination}/'
 
 MY_DEFAULT_FORMATTERS = dict(typefmt.BASE_FORMATTERS)
 MY_DEFAULT_FORMATTERS.update({
-    date: format_as_human_date
+    date: format_as_human_date,
+    dict: format_json_textarea
 })
 
 
