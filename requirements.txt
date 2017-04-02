@@ -18,7 +18,7 @@ flask-marshmallow==0.7.0
 
 # Database
 Flask-SQLAlchemy==2.2
-SQLAlchemy==1.1.7
+SQLAlchemy==1.1.8
 psycopg2==2.7.1
 marshmallow-sqlalchemy==0.13.0
 
@@ -46,7 +46,7 @@ ipdb==0.10.2
 ipython==5.3.0
 coverage==4.3.4
 pytest-cov==2.4.0
-Sphinx==1.5.3
+Sphinx==1.5.4
 
 # Lint and code style
 flake8==3.3.0

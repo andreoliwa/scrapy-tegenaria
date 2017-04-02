@@ -32,6 +32,7 @@ class ApartmentModelView(ModelView):
     can_create = False
     can_delete = False
     can_view_details = True
+    can_set_page_size = True
 
     form_columns = ('url', 'active', 'title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent', 'warm_rent',
                     'opinion', 'description', 'equipment', 'location', 'other', 'availability',

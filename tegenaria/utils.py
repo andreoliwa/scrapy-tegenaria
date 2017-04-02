@@ -143,14 +143,13 @@ def calculate_distance():
                 LOGGER.error('Error on Google Distance Matrix: %s', str(err))
                 continue
             LOGGER.warning('Processing results from Google Maps for %s', pin)
-            for one in [row['elements'][0] for row in result['rows']]:
-                duration, distance = one.get('duration', empty), one.get('distance', empty)
+            for row_dict in [row['elements'][0] for row in result['rows']]:
+                duration, distance = row_dict.get('duration', empty), row_dict.get('distance', empty)
+                meters = distance.get('value')
                 apt_id = ids.pop(0)
-                model = Distance.create(
-                    apartment_id=apt_id, pin_id=pin.id,
-                    distance_text=distance.get('text'), distance_value=distance.get('value'),
-                    duration_text=duration.get('text'), duration_value=duration.get('value'))
-                if distance.get('value') <= 0:
-                    LOGGER.error('Error calculating %s: %s', model, json.dumps(one))
+                model = Distance.create(apartment_id=apt_id, pin_id=pin.id, json=row_dict, meters=meters,
+                                        minutes=round(duration.get('value') / 60))
+                if meters <= 0:
+                    LOGGER.error('Error calculating %s: %s', model, json.dumps(row_dict))
                 else:
                     LOGGER.warning('Calculating %s', model)
