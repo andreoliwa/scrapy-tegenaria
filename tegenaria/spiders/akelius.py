@@ -22,7 +22,7 @@ class AkeliusSpider(CrawlSpider, CleanMixin):
     ]
 
     rules = (
-        Rule(LinkExtractor(allow=r'berlin/[0-9]+/'), callback='parse_item'),
+        Rule(LinkExtractor(allow=r'berlin/[0-9\.]+'), callback='parse_item'),
     )
 
     ADDRESS_REGEX = re.compile(r'<div class="g-map-marker".+<p>.+</div>.+infowindow', re.DOTALL)
