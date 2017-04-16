@@ -42,7 +42,7 @@ class MerkurSpider(CrawlSpider, CleanMixin):
     def parse_item(self, response):
         """Parse a page with an apartment.
 
-        @url http://www.merkur-berlin.de/?page_id=39&showExpose=1&exposeID=8CEE9DFD44D54DDB83BB0470EEBDF6C0
+        @url http://www.merkur-berlin.de/?page_id=39&showExpose=1&exposeID=926C081BECA043C9BE7756469D94722F
         @returns items 1 1
         @scrapes url title address rooms size warm_rent description location
         """
