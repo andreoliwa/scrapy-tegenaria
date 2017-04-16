@@ -53,7 +53,7 @@ setup(
     long_description=readme + '\n\n' + history,
     author='Wagner Augusto Andreoli',
     author_email='andreoliwa@gmail.com',
-    url='https://github.com/andreoliwa/python-tegenaria',
+    url='https://github.com/andreoliwa/scrapy-tegenaria',
     packages=[
         'tegenaria',
     ],
