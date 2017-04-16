@@ -22,7 +22,7 @@ MY_DEFAULT_FORMATTERS.update({
 class PinModelView(ModelView):
     """Custom model view for pins."""
 
-    can_create = False
+    can_create = True
     can_delete = False
 
 
