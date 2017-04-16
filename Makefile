@@ -46,7 +46,7 @@ lint:
 
 test:
 	py.test --verbose --cov tegenaria
-	# TODO python setup.py test
+	scrapy check -v
 
 test-all:
 	tox

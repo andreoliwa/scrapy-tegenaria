@@ -28,6 +28,24 @@ class AkeliusSpider(CrawlSpider, CleanMixin):
 
     ADDRESS_REGEX = re.compile(r'<div class="g-map-marker".+<p>.+</div>.+infowindow', re.DOTALL)
 
+    def parse(self, response):
+        """Parse the items from the main list, then start requests to get more details.
+
+        The number of rooms are only available on the list; maybe on purpose, to make scraping harder.
+        """
+        parser = etree.HTMLParser()
+        for html in response.xpath('//figure').extract():
+            tree = etree.fromstring(html, parser)
+            item = ApartmentItem()
+            item['url'] = response.urljoin(tree.xpath('//a/@href')[0])
+            item['rooms'] = tree.xpath('//p/span[@class="rooms"]/text()')[0]
+            item['size'] = tree.xpath('//p/span[@class="areaSize"]/text()')[0]
+            item['address'] = tree.xpath('normalize-space(//h3)')
+            yield item
+
+        for request in super().parse(response):
+            yield request
+
     def parse_item(self, response):
         """Parse a page with an apartment.
 
@@ -63,6 +81,7 @@ class AkeliusSpider(CrawlSpider, CleanMixin):
 
     def clean_item(self, data: Dict[str, Any]):
         """Clean the item before loading."""
+        self.clean_number(data, 'rooms', separator=None)
         self.clean_number(data, 'warm_rent')
         self.clean_number(data, 'size')
         self.clean_number(data, 'availability', separator=None)

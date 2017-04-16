@@ -25,6 +25,9 @@ class CleanMixin:
 
     def clean_number(self, data: Dict[str, Any], key: str, separator: Optional[str]=','):
         """Clean a numeric value from the dictionary."""
+        if key not in data:
+            return None
+
         values = self.DIGIT_ONLY_REGEX.findall(data[key])
         clean_value = ''.join(values)
         if separator == ',':
