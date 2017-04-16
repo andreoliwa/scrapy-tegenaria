@@ -21,9 +21,9 @@ def upgrade():
 
     op.alter_column('apartment', 'cold_rent',
                     existing_type=sa.VARCHAR(),
-                    type_=sa.Numeric(precision=7, scale=2),
+                    type_=sa.Numeric(precision=10, scale=2),
                     existing_nullable=True,
-                    postgresql_using='cold_rent::numeric(7,2)')
+                    postgresql_using='cold_rent::numeric(10,2)')
     op.alter_column('apartment', 'rooms',
                     existing_type=sa.VARCHAR(),
                     type_=sa.Numeric(precision=2, scale=1),
@@ -36,9 +36,9 @@ def upgrade():
                     postgresql_using='size::numeric(4,1)')
     op.alter_column('apartment', 'warm_rent',
                     existing_type=sa.VARCHAR(),
-                    type_=sa.Numeric(precision=7, scale=2),
+                    type_=sa.Numeric(precision=10, scale=2),
                     existing_nullable=True,
-                    postgresql_using='warm_rent::numeric(7,2)')
+                    postgresql_using='warm_rent::numeric(10,2)')
 
     add_mandatory_column('distance', 'json', postgresql.JSONB(astext_type=sa.Text()), "'{}'::json")
     add_mandatory_column('distance', 'meters', sa.Integer(), 'distance_value::INTEGER')

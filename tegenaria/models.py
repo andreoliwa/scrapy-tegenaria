@@ -18,8 +18,8 @@ class Apartment(SurrogatePK, Model):
     neighborhood = Column(db.String())
     rooms = Column(db.Numeric(2, 1))
     size = Column(db.Numeric(4, 1))
-    cold_rent = Column(db.Numeric(7, 2))
-    warm_rent = Column(db.Numeric(7, 2))
+    cold_rent = Column(db.Numeric(10, 2))
+    warm_rent = Column(db.Numeric(10, 2))
 
     opinion_id = reference_column('opinion', True)
     opinion = relationship('Opinion')
