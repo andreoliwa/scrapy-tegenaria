@@ -2,16 +2,13 @@
 """Helper utilities and decorators."""
 import logging
 import os
-import shutil
 from datetime import date, datetime, timedelta
-from uuid import uuid4
 
 import requests
 from flask import flash, json
 from googlemaps import Client
 from googlemaps.exceptions import HTTPError
 from sqlalchemy import and_, or_
-from sqlalchemy.exc import IntegrityError
 
 from tegenaria.extensions import db
 from tegenaria.generic import read_from_keyring
@@ -27,62 +24,6 @@ def flash_errors(form, category='warning'):
         for error in errors:
             flash('{0} - {1}'
                   .format(getattr(form, field).label.text, error), category)
-
-
-def save_json_to_db(input_dir, output_dir, model_class):
-    """Save JSON records in a database model.
-
-    :param input_dir: Input directory (must exist).
-    :type input_dir: str
-    :param output_dir: Output directory (will be created if doesn't exist).
-    :type output_dir: str
-    :param model_class: A SQLAlchemy model class.
-    :type model_class: Model
-    """
-    input_dir = os.path.expanduser(input_dir)
-    if not os.path.isdir(input_dir):
-        raise ValueError('Input dir {} is not a directory.'.format(input_dir))
-
-    output_dir = os.path.expanduser(output_dir)
-    os.makedirs(output_dir, exist_ok=True)
-
-    LOGGER.warning('Searching for JSON files in %s', input_dir)
-    saved_ids = []
-    for name in os.listdir(input_dir):
-        full_name = os.path.join(input_dir, name)
-        if not os.path.isfile(full_name) or not full_name.endswith('.json'):
-            continue
-
-        LOGGER.warning('Reading %s', full_name)
-        with open(full_name) as handle:
-            for line in handle:
-                original_raw_json = json.loads(line)
-                """:type: dict"""
-
-                # Remove all whitespace in every field, before inserting into the database.
-                json_dict = {}
-                for key, value in original_raw_json.items():
-                    json_dict[key] = value.strip()
-                json_dict.update(active=True, updated_at=datetime.now(), json=original_raw_json)
-
-                model = model_class(**json_dict)
-                try:
-                    model.save()
-                    saved_ids.append(model.id)
-                    LOGGER.warning('Creating %s', model)
-                except IntegrityError:
-                    db.session.rollback()
-                    existing = model_class.query.filter_by(url=model.url).one()
-                    existing.update(**json_dict)
-                    saved_ids.append(existing.id)
-                    LOGGER.warning('Updating %s', existing)
-
-        suffix, extension = os.path.splitext(name)
-        destination_name = os.path.join(output_dir, '{}_{}{}'.format(suffix, str(uuid4()), extension))
-        LOGGER.warning('Moving file to %s', destination_name)
-        shutil.move(full_name, destination_name)
-
-    LOGGER.warning('Done.')
 
 
 def remove_inactive_apartments():
