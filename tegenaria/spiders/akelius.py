@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Apartments from the Akelius real estate agency."""
 import re
+from typing import Any, Dict
 
 import requests
 from lxml import etree
@@ -59,3 +60,10 @@ class AkeliusSpider(CrawlSpider, CleanMixin):
             item.add_value('address', ', '.join(root.xpath('//p/text()')))
 
         return item.load_item()
+
+    def clean_item(self, data: Dict[str, Any]):
+        """Clean the item before loading."""
+        self.clean_number(data, 'warm_rent')
+        self.clean_number(data, 'size')
+        self.clean_number(data, 'availability', separator=None)
+        return data
