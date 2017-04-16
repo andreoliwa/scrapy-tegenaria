@@ -1,4 +1,4 @@
-"""Fix column types (https://github.com/andreoliwa/python-tegenaria/issues/69).
+"""Fix column types (https://github.com/andreoliwa/scrapy-tegenaria/issues/69).
 
 Create Date: 2017-03-27 00:49:50.053095
 """

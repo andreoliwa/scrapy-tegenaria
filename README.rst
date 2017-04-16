@@ -2,8 +2,8 @@
 Tegenaria
 =========
 
-.. image:: https://img.shields.io/travis/andreoliwa/python-tegenaria.svg
-        :target: https://travis-ci.org/andreoliwa/python-tegenaria
+.. image:: https://img.shields.io/travis/andreoliwa/scrapy-tegenaria.svg
+        :target: https://travis-ci.org/andreoliwa/scrapy-tegenaria
 
 .. image:: https://img.shields.io/pypi/v/tegenaria.svg
         :target: https://pypi.python.org/pypi/tegenaria
@@ -33,7 +33,7 @@ How to setup the dev environment
 
 ::
 
-  cd ~/some/path/python-tegenaria/scrapy
+  cd ~/some/path/scrapy-tegenaria/scrapy
   mkvirtualenv tegenaria-scrapy --python=/usr/bin/python2.7
   pwd > ~/.virtualenvs/tegenaria-scrapy/.project
   cdproject
@@ -45,7 +45,7 @@ How to setup the dev environment
 
 ::
 
-  cd ~/some/path/python-tegenaria/
+  cd ~/some/path/scrapy-tegenaria/
   mkvirtualenv tegenaria
   pwd > ~/.virtualenvs/tegenaria/.project
   cdproject
@@ -56,13 +56,13 @@ How to setup the dev environment
 Metrics
 -------
 
-.. image:: https://badge.waffle.io/andreoliwa/python-tegenaria.svg?label=ready&title=Ready
+.. image:: https://badge.waffle.io/andreoliwa/scrapy-tegenaria.svg?label=ready&title=Ready
    :alt: Stories in Ready
-   :target: http://waffle.io/andreoliwa/python-tegenaria
+   :target: http://waffle.io/andreoliwa/scrapy-tegenaria
 
-.. image:: https://graphs.waffle.io/andreoliwa/python-tegenaria/throughput.svg
+.. image:: https://graphs.waffle.io/andreoliwa/scrapy-tegenaria/throughput.svg
    :alt: Throughput Graph
-   :target: https://waffle.io/andreoliwa/python-tegenaria/metrics
+   :target: https://waffle.io/andreoliwa/scrapy-tegenaria/metrics
 
 Quickstart
 ----------
@@ -79,7 +79,7 @@ Then run the following commands to bootstrap your environment.
 
 ::
 
-    git clone https://github.com/andreoliwa/python-tegenaria
+    git clone https://github.com/andreoliwa/scrapy-tegenaria
     cd tegenaria
     pip install -r requirements/dev.txt
     python manage.py server
