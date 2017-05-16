@@ -12,7 +12,7 @@ from tegenaria.views import ApartmentModelView, PinModelView
 
 
 def create_app(config_object=ProdConfig):
-    """An application factory, as explained here.
+    """Application factory, as explained here.
 
     http://flask.pocoo.org/docs/patterns/appfactories/
 
