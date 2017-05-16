@@ -8,7 +8,7 @@ arrow==0.10.0
 marshmallow==2.13.5
 
 # Flask
-Flask==0.12.1
+Flask==0.12.2
 MarkupSafe==1.0
 Werkzeug==0.12.1
 Jinja2==2.9.6
