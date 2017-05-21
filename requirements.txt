@@ -46,7 +46,7 @@ ipdb==0.10.3
 ipython==6.0.0
 coverage==4.4.1
 pytest-cov==2.5.1
-Sphinx==1.5.6
+Sphinx==1.6.1
 
 # Lint and code style
 flake8==3.3.0
