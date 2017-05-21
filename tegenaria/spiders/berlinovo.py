@@ -25,7 +25,7 @@ class BerlinovoSpider(Spider, CleanMixin):
 
         @url https://www.berlinovo.de/en/suche-apartments
         @returns items 0 0
-        @returns requests 15 15
+        @returns requests 15 20
         """
         for link in LinkExtractor(allow=r'/en/suche-apartments.+page=', unique=True).extract_links(response):
             if link.url not in (self.searched_pages, self.start_urls):
