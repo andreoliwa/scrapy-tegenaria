@@ -2,7 +2,7 @@ wheel==0.29.0
 Scrapy==1.4.0
 googlemaps==2.4.6
 keyring==10.3.2
-requests==2.14.2
+requests==2.17.3
 IMAPClient==1.0.2
 arrow==0.10.0
 marshmallow==2.13.5
@@ -14,7 +14,7 @@ Werkzeug==0.12.2
 Jinja2==2.9.6
 itsdangerous==0.24
 Flask-Admin==1.5.0
-flask-marshmallow==0.7.0
+flask-marshmallow==0.8.0
 
 # Database
 Flask-SQLAlchemy==2.2
@@ -23,7 +23,7 @@ psycopg2==2.7.1
 marshmallow-sqlalchemy==0.13.1
 
 # Migrations
-Flask-Migrate==2.0.3
+Flask-Migrate==2.0.4
 
 # Forms
 Flask-WTF==0.14.2
@@ -37,16 +37,17 @@ Flask-DebugToolbar==0.10.1
 
 # Development and testing
 Flask-Script==2.0.5
-pytest==3.0.7
+pytest==3.1.1
 pytest-runfailed==0.6
 WebTest==2.0.27
 factory-boy==2.8.1
 Faker==0.7.15
 ipdb==0.10.3
-ipython==6.0.0
+ipython==6.1.0
 coverage==4.4.1
 pytest-cov==2.5.1
-Sphinx==1.6.1
+Sphinx==1.6.2
+pur==4.0.2
 
 # Lint and code style
 flake8==3.3.0
@@ -54,7 +55,7 @@ flake8-blind-except==0.1.1
 flake8-debugger==1.4.0
 flake8-docstrings==1.1.0
 flake8-isort==2.2.1
-flake8-quotes==0.10.1
-isort==4.2.5
+flake8-quotes==0.11.0
+isort==4.2.13
 pep8==1.7.0
 pep8-naming==0.4.1
