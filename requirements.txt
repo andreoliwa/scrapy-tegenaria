@@ -18,7 +18,7 @@ flask-marshmallow==0.8.0
 
 # Database
 Flask-SQLAlchemy==2.2
-SQLAlchemy==1.1.10
+SQLAlchemy==1.1.12
 psycopg2==2.7.1
 marshmallow-sqlalchemy==0.13.1
 
