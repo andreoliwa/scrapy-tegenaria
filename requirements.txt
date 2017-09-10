@@ -1,4 +1,4 @@
-wheel==0.29.0
+wheel==0.30.0
 Scrapy==1.4.0
 googlemaps==2.4.6
 keyring==10.3.2
