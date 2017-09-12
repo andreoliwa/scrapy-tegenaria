@@ -60,7 +60,7 @@ class CityWohnenSpider(CrawlSpider, CleanMixin):
     def parse_item(self, response):
         """Parse a page with an apartment.
 
-        @url https://www.city-wohnen.de/eng/berlin/32608-furnished-apartment-berlin-friedrichshain-pettenkoferstrasse
+        @url https://www.city-wohnen.de/eng/berlin/32638-moeblierte-wohnung-berlin-friedrichshain-gruenberger-strasse
         @returns items 1 1
         @scrapes url title availability description neighborhood address warm_rent size rooms
         """
