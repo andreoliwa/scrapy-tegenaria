@@ -40,29 +40,22 @@ class ApartmentModelView(ModelView):
 
     column_list = ('title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent', 'warm_rent',
                    'updated_at', 'minutes', 'meters')
-    column_labels = dict(
-        minutes='Minutes to pin',
-        meters='Meters to pin',
-    )
+    column_labels = {'minutes': 'Minutes to pin', 'meters': 'Meters to pin'}
 
     # https://flask-admin.readthedocs.io/en/latest/api/mod_model/#flask_admin.model.BaseModelView.column_formatters
-    column_formatters = dict(
-        title=lambda v, c, m, n: render_link(m.url, m.title),
-        address=lambda v, c, m, n: render_link(
+    column_formatters = {
+        'title': lambda v, c, m, n: render_link(m.url, m.title),
+        'address': lambda v, c, m, n: render_link(
             url=MAPS_PLACE_URL.format(address=m.address),
-            text=m.address
-        ),
-        minutes=lambda v, c, m, n: render_link(
+            text=m.address),
+        'minutes': lambda v, c, m, n: render_link(
             url=MAPS_DIRECTIONS_URL.format(origin=m.address, destination=c['row'].pin_address),
             text=when_none(c['row'].minutes),
-            title='from {} to {}'.format(m.address, c['row'].pin_address)
-        ),
-        meters=lambda v, c, m, n: render_link(
+            title='from {} to {}'.format(m.address, c['row'].pin_address)),
+        'meters': lambda v, c, m, n: render_link(
             url=MAPS_DIRECTIONS_URL.format(origin=m.address, destination=c['row'].pin_address),
             text=when_none(c['row'].meters),
-            title='from {} to {}'.format(m.address, c['row'].pin_address)
-        ),
-    )
+            title='from {} to {}'.format(m.address, c['row'].pin_address))}
 
     column_type_formatters = MY_DEFAULT_FORMATTERS
     column_searchable_list = ('address', 'neighborhood', 'comments', 'description', 'equipment', 'location', 'other')

@@ -37,12 +37,11 @@ class CityWohnenSpider(CrawlSpider, CleanMixin):
         Rule(LinkExtractor(allow=URL_REGEX), callback='parse_item', follow=True),
     )
 
-    field_regex = dict(
-        availability=re.compile(r'.*from (?P<availability>[0-9/]+).*', re.MULTILINE),
-        neighborhood=re.compile(r'furnished apartment in Berlin-(?P<neighborhood>.+)'),
-        # The address is hidden on a Google Maps link, and there is only the street, not the number.
-        address=re.compile(r'.+/maps/search/(?P<address>.+)/@[0-9.,]+')
-    )
+    field_regex = {
+        'availability': re.compile(r'.*from (?P<availability>[0-9/]+).*', re.MULTILINE),
+        'neighborhood': re.compile(r'furnished apartment in Berlin-(?P<neighborhood>.+)'),
+        'address': re.compile(r'.+/maps/search/(?P<address>.+)/@[0-9.,]+')
+    }
 
     def start_requests(self):
         """Parse the results from the hidden AJAX call, and start requests to parse the ads.

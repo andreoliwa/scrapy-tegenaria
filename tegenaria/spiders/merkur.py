@@ -52,13 +52,13 @@ class MerkurSpider(CrawlSpider, CleanMixin):
         item.add_xpath('title', '//h4[@class="entry-title"]/text()')
         item.add_xpath('address', '//address/text()')
 
-        for field, info in dict(rooms='Rooms', size='AreaLiving', warm_rent='PriceWarmmiete',
-                                cold_rent='Price').items():
+        for field, info in {'rooms': 'Rooms', 'size': 'AreaLiving', 'warm_rent': 'PriceWarmmiete',
+                            'cold_rent': 'Price'}.items():
             item.add_xpath(field, '//div[@class="infotables"]//tr[@id="infotable_{info}"]/td[@class='
                                   '"infotable_value"]/text()'.format(info=info))
 
-        for field, h2 in dict(description='Objekt', equipment='Ausstattung',
-                              location='Lage', other='Mehr Angebote').items():
+        for field, h2 in {'description': 'Objekt', 'equipment': 'Ausstattung', 'location': 'Lage',
+                          'other': 'Mehr Angebote'}.items():
             item.add_xpath(field, '//div[@class="infoblock"]/h2[starts-with(normalize-space(.),'
                                   ' "{h2}")]/following-sibling::p/text()'.format(h2=h2))
 
