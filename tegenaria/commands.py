@@ -7,6 +7,9 @@ from subprocess import call
 import click
 from flask import current_app
 from flask.cli import with_appcontext
+from scrapy.crawler import CrawlerProcess
+from scrapy.spiderloader import SpiderLoader
+from scrapy.utils.project import get_project_settings
 from werkzeug.exceptions import MethodNotAllowed, NotFound
 
 from tegenaria.generic import read_from_keyring
@@ -140,3 +143,24 @@ def vacuum():
     """Vacuum clean apartments: deactivate 404 pages, reprocess records with empty addresses."""
     remove_inactive_apartments()
     reprocess_invalid_apartments(read_from_keyring(PROJECT_NAME, 'json_dir', secret=False))
+
+
+@click.command()
+@click.argument('spiders', nargs=-1)
+def crawl(spiders):
+    """Crawl the desired spiders.
+
+    Type the name or part of the name of the spider.
+    Multiple spiders can be provided.
+    If none is given, all spiders will be crawled.
+    """
+    settings = get_project_settings()
+    loader = SpiderLoader(settings)
+
+    process = CrawlerProcess(settings)
+    for spider_name in loader.list():
+        if not spiders or any(part for part in spiders if part in spider_name):
+            process.crawl(spider_name)
+
+    # The script will block here until the crawling is finished
+    process.start()

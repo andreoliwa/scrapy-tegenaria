@@ -77,3 +77,6 @@ def register_commands(app):
     app.cli.add_command(commands.lint)
     app.cli.add_command(commands.clean)
     app.cli.add_command(commands.urls)
+    app.cli.add_command(commands.distance)
+    app.cli.add_command(commands.vacuum)
+    app.cli.add_command(commands.crawl)
