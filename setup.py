@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Setup script."""
-from setuptools import Command, find_packages, setup
+from setuptools import find_packages, setup
 
 import tegenaria
 
@@ -19,27 +19,6 @@ with open('requirements/dev.txt') as txt_file:
     lines = txt_file.read()
 test_requirements = [line for line in lines.split('\n') if '=' in line]
 test_requirements.extend(requirements)
-
-
-class PyTest(Command):
-    """Command to run py.test."""
-
-    user_options = []
-
-    def initialize_options(self):
-        """Init options."""
-        pass
-
-    def finalize_options(self):
-        """Finalise options."""
-        pass
-
-    def run(self):
-        """Run."""
-        import subprocess
-        import sys
-        errno = subprocess.call([sys.executable, 'runtests.py'])
-        raise SystemExit(errno)
 
 
 setup(
@@ -64,7 +43,6 @@ setup(
         'Natural Language :: English',
         'Programming Language :: Python :: 3.4',
     ],
-    cmdclass={'test': PyTest},
     test_suite='tests',
     tests_require=test_requirements,
     entry_points={
