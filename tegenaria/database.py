@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 """Database module, including the SQLAlchemy database object and DB-related utilities."""
-from sqlalchemy.orm import relationship
-
 from .extensions import db
 
 # Alias common SQLAlchemy names
-
 Column = db.Column
-relationship = relationship
+relationship = db.relationship
 
 
 class CRUDMixin(object):
@@ -56,11 +53,11 @@ class SurrogatePK(object):
     id = db.Column(db.Integer, primary_key=True)
 
     @classmethod
-    def get_by_id(cls, id):
+    def get_by_id(cls, record_id):
         """Get a record by its ID."""
-        if any((isinstance(id, (str, bytes)) and id.isdigit(),
-                isinstance(id, (int, float))), ):
-            return cls.query.get(int(id))
+        if any((isinstance(record_id, (str, bytes)) and record_id.isdigit(),
+                isinstance(record_id, (int, float))), ):
+            return cls.query.get(int(record_id))
         return None
 
 

@@ -1,13 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Setup script."""
+from setuptools import Command, find_packages, setup
+
 import tegenaria
-
-try:
-    from setuptools import setup, Command
-except ImportError:
-    from distutils.core import setup, Command
-
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
@@ -54,11 +50,8 @@ setup(
     author='Wagner Augusto Andreoli',
     author_email='andreoliwa@gmail.com',
     url='https://github.com/andreoliwa/scrapy-tegenaria',
-    packages=[
-        'tegenaria',
-    ],
-    package_dir={'tegenaria':
-                 'tegenaria'},
+    packages=find_packages(exclude=('tests',)),
+    package_dir={'tegenaria': 'tegenaria'},
     include_package_data=True,
     install_requires=requirements,
     license='BSD',

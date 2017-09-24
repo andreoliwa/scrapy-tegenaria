@@ -5,6 +5,7 @@ from flask_admin import Admin
 from flask_admin.base import AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 
+from tegenaria import commands
 from tegenaria.extensions import db, debug_toolbar, migrate
 from tegenaria.models import Apartment, Opinion, Pin
 from tegenaria.settings import ProdConfig
@@ -18,19 +19,22 @@ def create_app(config_object=ProdConfig):
 
     :param config_object: The configuration object to use.
     """
-    app = Flask(__name__)
+    app = Flask(__name__.split('.')[0])
     app.config.from_object(config_object)
     register_extensions(app)
     register_admin(app)
     register_errorhandlers(app)
+    register_shellcontext(app)
+    register_commands(app)
     return app
 
 
 def register_extensions(app):
-    """Register app extensions."""
+    """Register Flask extensions."""
     db.init_app(app)
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)
+    return None
 
 
 def register_admin(app):
@@ -56,3 +60,20 @@ def register_errorhandlers(app):
     for errcode in [401, 404, 500]:
         app.errorhandler(errcode)(render_error)
     return None
+
+
+def register_shellcontext(app):
+    """Register shell context objects."""
+    def shell_context():
+        """Shell context objects."""
+        return {'db': db}
+
+    app.shell_context_processor(shell_context)
+
+
+def register_commands(app):
+    """Register Click commands."""
+    app.cli.add_command(commands.test)
+    app.cli.add_command(commands.lint)
+    app.cli.add_command(commands.clean)
+    app.cli.add_command(commands.urls)

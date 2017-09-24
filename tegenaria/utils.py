@@ -63,7 +63,7 @@ def calculate_distance():
     morning = datetime(tomorrow.year, tomorrow.month, tomorrow.day, 9, 0)
     LOGGER.warning('Next morning: %s', morning)
 
-    empty = dict(text='ERROR', value=-1)
+    empty = {'text': 'ERROR', 'value': -1}
     for pin in Pin.query.all():
         while True:
             apartments = Apartment.query.outerjoin(Distance, and_(
