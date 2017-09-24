@@ -7,6 +7,7 @@ from subprocess import call
 import click
 from flask import current_app
 from flask.cli import with_appcontext
+from plumbum import RETCODE, local
 from scrapy.crawler import CrawlerProcess
 from scrapy.spiderloader import SpiderLoader
 from scrapy.utils.project import get_project_settings
@@ -22,9 +23,15 @@ TEST_PATH = os.path.join(PROJECT_ROOT, 'tests')
 
 @click.command()
 def test():
-    """Run the tests."""
+    """Run the tests and check spider contracts."""
     import pytest
     rv = pytest.main([TEST_PATH, '--verbose'])
+    if rv:
+        exit(rv)
+
+    # Run scrapy check with a return code, in the foreground.
+    scrapy = local['scrapy']
+    rv = scrapy['check', '-v'] & RETCODE(FG=True)
     exit(rv)
 
 

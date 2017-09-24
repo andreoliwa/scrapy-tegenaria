@@ -7,6 +7,7 @@ env:
 - FLASK_APP=autoapp.py FLASK_DEBUG=1
 python:
   - 3.5
+  - 3.6
 # TODO Database and code coverage later
 #services:
 #  - postgresql
