@@ -41,7 +41,7 @@ pytest==3.2.2
 pytest-runfailed==0.6
 WebTest==2.0.28
 factory-boy==2.9.2
-Faker==0.8.3
+Faker==0.8.4
 ipdb==0.10.3
 ipython==6.2.0
 coverage==4.4.1
