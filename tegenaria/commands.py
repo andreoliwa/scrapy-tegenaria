@@ -140,12 +140,14 @@ def urls(url, order):
 
 
 @click.command()
+@with_appcontext
 def distance():
     """Calculate distances."""
     calculate_distance()
 
 
 @click.command()
+@with_appcontext
 def vacuum():
     """Vacuum clean apartments: deactivate 404 pages, reprocess records with empty addresses."""
     remove_inactive_apartments()

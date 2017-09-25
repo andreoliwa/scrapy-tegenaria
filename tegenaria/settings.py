@@ -41,7 +41,6 @@ class DevConfig(Config):
     DB_NAME = 'dev.db'
     # Put the db file in project root
     SQLALCHEMY_DATABASE_URI = 'postgresql://tegenaria_dev:tegenaria_dev@localhost:5440/tegenaria_dev'
-    DEBUG_TB_ENABLED = True
     ASSETS_DEBUG = True  # Don't bundle/minify static assets
 
 
