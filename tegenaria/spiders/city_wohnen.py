@@ -13,10 +13,10 @@ from scrapy.spiders import CrawlSpider, Rule
 from w3lib.url import url_query_cleaner
 
 from tegenaria.items import ApartmentItem
-from tegenaria.spiders import CleanMixin
+from tegenaria.spiders import SpiderMixin
 
 
-class CityWohnenSpider(CrawlSpider, CleanMixin):
+class CityWohnenSpider(CrawlSpider, SpiderMixin):
     """Furnished apartments from City Wohnen."""
 
     name = 'city_wohnen'

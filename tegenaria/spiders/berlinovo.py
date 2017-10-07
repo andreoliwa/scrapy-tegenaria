@@ -8,10 +8,10 @@ from scrapy.loader import ItemLoader
 from w3lib.url import url_query_cleaner
 
 from tegenaria.items import ApartmentItem
-from tegenaria.spiders import CleanMixin
+from tegenaria.spiders import SpiderMixin
 
 
-class BerlinovoSpider(Spider, CleanMixin):
+class BerlinovoSpider(Spider, SpiderMixin):
     """A spider to crawl the Berlinovo website."""
 
     name = 'berlinovo'

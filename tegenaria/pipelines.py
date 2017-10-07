@@ -6,14 +6,15 @@ Don't forget to add your pipeline to the ITEM_PIPELINES setting
 See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 """
 from flask import current_app
-from scrapy.exceptions import CloseSpider
+from flask.helpers import get_debug_flag
+from scrapy.exceptions import CloseSpider, DropItem
 
 from tegenaria.app import create_app
 from tegenaria.extensions import db
 from tegenaria.models import Apartment
 from tegenaria.schemas import ApartmentSchema
-from tegenaria.settings import DevConfig
-from tegenaria.spiders import CleanMixin
+from tegenaria.settings import DevConfig, ProdConfig
+from tegenaria.spiders import SpiderMixin
 
 
 class ApartmentPipeline(object):
@@ -21,10 +22,11 @@ class ApartmentPipeline(object):
 
     def __init__(self):
         """Constructor."""
-        self.app = current_app or create_app(DevConfig)  # FIXME: get the right config according to the env variable
+        config = DevConfig if get_debug_flag() else ProdConfig
+        self.app = current_app or create_app(config)
         self.app.app_context().push()
 
-    def process_item(self, item, spider: CleanMixin):
+    def process_item(self, item, spider: SpiderMixin):
         """Process an item through the pipeline."""
         try:
             schema = ApartmentSchema()
@@ -50,6 +52,8 @@ class ApartmentPipeline(object):
                 db.session.add(result.data)
 
             db.session.commit()
+        except DropItem:
+            raise
         except Exception as err:
             spider.shutdown_message = str(err)
             raise CloseSpider('[{}] {}'.format(self.__class__.__name__, spider.shutdown_message))
