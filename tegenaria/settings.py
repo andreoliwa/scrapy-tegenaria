@@ -132,7 +132,7 @@ HTTPCACHE_ENABLED = True
 # HTTPCACHE_DIR = 'httpcache'
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-# HTTPCACHE_POLICY = 'scrapy.extensions.httpcache.RFC2616Policy'
+HTTPCACHE_POLICY = 'scrapy.extensions.httpcache.RFC2616Policy'
 
 # https://doc.scrapy.org/en/latest/topics/extensions.html#closespider-errorcount
 CLOSESPIDER_ERRORCOUNT = 1

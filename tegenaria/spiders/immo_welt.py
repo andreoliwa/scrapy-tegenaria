@@ -25,7 +25,7 @@ class ImmoWeltSpider(CrawlSpider, SpiderMixin):
     ]
 
     rules = (
-        Rule(LinkExtractor(allow=r'/wohnungen/mieten')),
+        Rule(LinkExtractor(allow=r'/berlin/wohnungen/mieten')),
         Rule(LinkExtractor(allow=r'/expose', process_value=url_query_cleaner), callback='parse_item', follow=True),
     )
 
