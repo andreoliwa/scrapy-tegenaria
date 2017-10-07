@@ -3,15 +3,16 @@
 from string import digits
 from typing import Any, Dict
 
+from scrapy.exceptions import DropItem
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
 
 from tegenaria.items import ApartmentItem
-from tegenaria.spiders import CleanMixin
+from tegenaria.spiders import SpiderMixin
 
 
-class ImmoWeltSpider(CrawlSpider, CleanMixin):
+class ImmoWeltSpider(CrawlSpider, SpiderMixin):
     """Flats, houses and furnished apartments from Immo Welt."""
 
     name = 'immo_welt'
@@ -24,10 +25,10 @@ class ImmoWeltSpider(CrawlSpider, CleanMixin):
 
     rules = (
         Rule(LinkExtractor(allow=r'/wohnungen/mieten')),
-        Rule(LinkExtractor(allow=r'/expose'), callback='parse_flat', follow=True),
+        Rule(LinkExtractor(allow=r'/expose'), callback='parse_item', follow=True),
     )
 
-    def parse_flat(self, response):
+    def parse_item(self, response):
         """Parse the flat response.
 
         @url https://www.immowelt.de/expose/2GEZJ4D?bc=101
@@ -59,8 +60,11 @@ class ImmoWeltSpider(CrawlSpider, CleanMixin):
         """Clean the item before loading."""
         if 'address' in data:
             zip_city_neighborhood, *_ = data['address'].split(',')
-            data['neighborhood'] = zip_city_neighborhood.translate(str.maketrans('', '', digits)).replace(
-                'Berlin', '').strip(' ()')
+            city_neighborhood = zip_city_neighborhood.translate(str.maketrans('', '', digits))
+            if 'Berlin' not in city_neighborhood:
+                raise DropItem
+
+            data['neighborhood'] = city_neighborhood.replace('Berlin', '').strip(' ()')
 
         self.clean_number(data, 'rooms')
         self.clean_number(data, 'size')

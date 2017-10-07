@@ -10,10 +10,10 @@ from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
 
 from tegenaria.items import ApartmentItem
-from tegenaria.spiders import CleanMixin
+from tegenaria.spiders import SpiderMixin
 
 
-class AkeliusSpider(CrawlSpider, CleanMixin):
+class AkeliusSpider(CrawlSpider, SpiderMixin):
     """Apartments from the Akelius real estate agency."""
 
     name = 'akelius'

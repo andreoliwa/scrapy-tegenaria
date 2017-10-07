@@ -12,7 +12,7 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 
 from tegenaria.items import ApartmentItem
-from tegenaria.spiders import CleanMixin
+from tegenaria.spiders import SpiderMixin
 
 IMAP_HOST = ''  # TODO: get this from .env json_config(__file__, 'imap_host')
 IMAP_USERNAME = ''  # TODO: get this from .env json_config(__file__, 'imap_username')
@@ -21,7 +21,7 @@ AD_URL_TEMPLATE = 'http://www.immobilienscout24.de/expose/{id}'
 REGEX = re.compile(r'expose/([0-9]+)')
 
 
-class ImmobilienScout24Spider(Spider, CleanMixin):
+class ImmobilienScout24Spider(Spider, SpiderMixin):
     """A spider to crawl the Immobilien Scout 24 website."""
 
     name = 'immobilien_scout_24'

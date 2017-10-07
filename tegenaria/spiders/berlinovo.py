@@ -7,10 +7,10 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 
 from tegenaria.items import ApartmentItem
-from tegenaria.spiders import CleanMixin
+from tegenaria.spiders import SpiderMixin
 
 
-class BerlinovoSpider(Spider, CleanMixin):
+class BerlinovoSpider(Spider, SpiderMixin):
     """A spider to crawl the Berlinovo website."""
 
     name = 'berlinovo'
