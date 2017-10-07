@@ -6,6 +6,7 @@ from typing import Any, Dict
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
+from w3lib.url import url_query_cleaner
 
 from tegenaria.items import ApartmentItem
 from tegenaria.spiders import CleanMixin
@@ -24,7 +25,7 @@ class ImmoWeltSpider(CrawlSpider, CleanMixin):
 
     rules = (
         Rule(LinkExtractor(allow=r'/wohnungen/mieten')),
-        Rule(LinkExtractor(allow=r'/expose'), callback='parse_flat', follow=True),
+        Rule(LinkExtractor(allow=r'/expose', process_value=url_query_cleaner), callback='parse_flat', follow=True),
     )
 
     def parse_flat(self, response):

@@ -10,6 +10,7 @@ from scrapy import Request
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
+from w3lib.url import url_query_cleaner
 
 from tegenaria.items import ApartmentItem
 from tegenaria.spiders import CleanMixin
@@ -34,7 +35,7 @@ class CityWohnenSpider(CrawlSpider, CleanMixin):
 
     URL_REGEX = r'/eng/berlin/[0-9]+[a-z-]+'
     rules = (
-        Rule(LinkExtractor(allow=URL_REGEX), callback='parse_item', follow=True),
+        Rule(LinkExtractor(allow=URL_REGEX, process_value=url_query_cleaner), callback='parse_item', follow=True),
     )
 
     field_regex = {

@@ -10,8 +10,9 @@ from imapclient import IMAPClient
 from scrapy import Request, Spider
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
+from w3lib.url import url_query_cleaner
 
-from tegenaria.items import ApartmentItem
+from tegenaria.items import ApartmentItem, sanitize_price
 from tegenaria.spiders import CleanMixin
 
 IMAP_HOST = ''  # TODO: get this from .env json_config(__file__, 'imap_host')
@@ -65,7 +66,7 @@ class ImmobilienScout24Spider(Spider, CleanMixin):
                 self.searched_pages.add(link.url)
                 yield Request(link.url, callback=self.parse)
 
-        for link in LinkExtractor(allow=r'expose/[0-9]+$').extract_links(response):
+        for link in LinkExtractor(allow=r'expose/[0-9]+$', process_value=url_query_cleaner).extract_links(response):
             yield Request(link.url, callback=self.parse_item)
 
     def parse_item(self, response):
@@ -108,7 +109,7 @@ class ImmobilienScout24Spider(Spider, CleanMixin):
             match = self.WARM_RENT_RE.match(data['warm_rent'])
             if match:
                 data.update(match.groupdict())
-                data['warm_rent'] = data['warm_rent'].replace('.', '')
+                data['warm_rent'] = sanitize_price(data['warm_rent'])
 
         # Join repeated neighbourhood names.
         if 'neighborhood' in data:
