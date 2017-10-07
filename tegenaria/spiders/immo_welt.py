@@ -7,6 +7,7 @@ from scrapy.exceptions import DropItem
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
+from w3lib.url import url_query_cleaner
 
 from tegenaria.items import ApartmentItem
 from tegenaria.spiders import SpiderMixin
@@ -25,7 +26,7 @@ class ImmoWeltSpider(CrawlSpider, SpiderMixin):
 
     rules = (
         Rule(LinkExtractor(allow=r'/wohnungen/mieten')),
-        Rule(LinkExtractor(allow=r'/expose'), callback='parse_item', follow=True),
+        Rule(LinkExtractor(allow=r'/expose', process_value=url_query_cleaner), callback='parse_item', follow=True),
     )
 
     def parse_item(self, response):
