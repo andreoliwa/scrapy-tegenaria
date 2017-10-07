@@ -10,9 +10,10 @@ from imapclient import IMAPClient
 from scrapy import Request, Spider
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
+from w3lib.url import url_query_cleaner
 
-from tegenaria.items import ApartmentItem
-from tegenaria.spiders import CleanMixin
+from tegenaria.items import ApartmentItem, sanitize_price
+from tegenaria.spiders import SpiderMixin
 
 IMAP_HOST = ''  # TODO: get this from .env json_config(__file__, 'imap_host')
 IMAP_USERNAME = ''  # TODO: get this from .env json_config(__file__, 'imap_username')
@@ -21,7 +22,7 @@ AD_URL_TEMPLATE = 'http://www.immobilienscout24.de/expose/{id}'
 REGEX = re.compile(r'expose/([0-9]+)')
 
 
-class ImmobilienScout24Spider(Spider, CleanMixin):
+class ImmobilienScout24Spider(Spider, SpiderMixin):
     """A spider to crawl the Immobilien Scout 24 website."""
 
     name = 'immobilien_scout_24'
@@ -65,7 +66,7 @@ class ImmobilienScout24Spider(Spider, CleanMixin):
                 self.searched_pages.add(link.url)
                 yield Request(link.url, callback=self.parse)
 
-        for link in LinkExtractor(allow=r'expose/[0-9]+$').extract_links(response):
+        for link in LinkExtractor(allow=r'expose/[0-9]+$', process_value=url_query_cleaner).extract_links(response):
             yield Request(link.url, callback=self.parse_item)
 
     def parse_item(self, response):
@@ -102,14 +103,13 @@ class ImmobilienScout24Spider(Spider, CleanMixin):
     def clean_item(self, data: Dict[str, Any]):
         """Clean the item before loading."""
         self.clean_number(data, 'rooms')
-        self.clean_number(data, 'cold_rent')
 
         # Warm rent can have additional notes to the right.
         if 'warm_rent' in data:
             match = self.WARM_RENT_RE.match(data['warm_rent'])
             if match:
                 data.update(match.groupdict())
-                data['warm_rent'] = data['warm_rent'].replace('.', '')
+                data['warm_rent'] = sanitize_price(data['warm_rent'])
 
         # Join repeated neighbourhood names.
         if 'neighborhood' in data:

@@ -7,9 +7,15 @@ http://doc.scrapy.org/en/latest/topics/items.html
 """
 import json
 import os
+import re
 
 from scrapy import Field, Item
 from scrapy.loader.processors import Join, MapCompose
+
+REGEX_DECIMAL_POINT = re.compile(r'^[\d,]+\.\d{2}$')
+REGEX_DECIMAL_COMMA = re.compile(r'^[\d.]+,\d{2}$')
+REGEX_GROUP_OF_THREE_COMMA = re.compile(r'^\d+(,\d{3})+$')
+REGEX_GROUP_OF_THREE_POINT = re.compile(r'^\d+(.\d{3})+$')
 
 
 def sanitize_price(value):
@@ -21,10 +27,14 @@ def sanitize_price(value):
 
     :return: Clean value.
     """
-    value = value.replace(u'\u20ac', '').replace(u'EUR', '')
-    if ',' in value:
+    value = value.replace(u'\u20ac', '').replace(u'EUR', '').strip()
+    if REGEX_DECIMAL_POINT.match(value) or REGEX_GROUP_OF_THREE_COMMA.match(value):
+        value = value.replace(',', '')
+    elif REGEX_DECIMAL_COMMA.match(value) or REGEX_GROUP_OF_THREE_POINT.match(value):
         value = value.replace('.', '').replace(',', '.')
-    return value.strip()
+    if value.endswith('.00'):
+        value = value[0:-3]
+    return value
 
 
 class ApartmentItem(Item):
@@ -37,12 +47,16 @@ class ApartmentItem(Item):
     neighborhood = Field(output_processor=Join())
     rooms = Field(output_processor=Join())
     size = Field(output_processor=Join())
+
+    cold_rent = Field(input_processor=MapCompose(sanitize_price), output_processor=Join())
     warm_rent = Field(input_processor=MapCompose(sanitize_price), output_processor=Join())
+    additional_costs = Field(input_processor=MapCompose(sanitize_price), output_processor=Join())
+    heating_costs = Field(input_processor=MapCompose(sanitize_price), output_processor=Join())
+
     comments = Field(output_processor=Join())
     description = Field(output_processor=Join())
     equipment = Field(output_processor=Join())
     location = Field(output_processor=Join())
-    cold_rent = Field(input_processor=MapCompose(sanitize_price), output_processor=Join())
     availability = Field(output_processor=Join())
     other = Field(output_processor=Join())
 

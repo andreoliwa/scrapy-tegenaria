@@ -6,12 +6,13 @@ from typing import Any, Dict
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
+from w3lib.url import url_query_cleaner
 
 from tegenaria.items import ApartmentItem
-from tegenaria.spiders import CleanMixin
+from tegenaria.spiders import SpiderMixin
 
 
-class MerkurSpider(CrawlSpider, CleanMixin):
+class MerkurSpider(CrawlSpider, SpiderMixin):
     """Apartments from the Merkur Berlin real estate agency.
 
     @url http://www.merkur-berlin.de/?page_id=39
@@ -27,16 +28,19 @@ class MerkurSpider(CrawlSpider, CleanMixin):
     ]
 
     rules = (
-        Rule(LinkExtractor(allow=r'exposeID=[\dA-F]+'), callback='parse_item', follow=True),
+        Rule(LinkExtractor(allow=r'exposeID=[\dA-F]+',
+                           process_value=lambda url: url_query_cleaner(url, parameterlist=('exposeID', 'showExpose'))),
+             callback='parse_item', follow=True),
     )
 
     SIZE_REGEX = re.compile(r'(?P<size>\d+[,.]\d+)')
 
     def clean_item(self, data: Dict[str, Any]):
         """Clean the size field."""
-        match = self.SIZE_REGEX.search(data['size'].replace(',', '.'))
-        if match:
-            data.update(match.groupdict())
+        if 'size' in data:
+            match = self.SIZE_REGEX.search(data['size'].replace(',', '.'))
+            if match:
+                data.update(match.groupdict())
         return data
 
     def parse_item(self, response):

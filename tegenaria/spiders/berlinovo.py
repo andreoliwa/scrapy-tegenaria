@@ -4,13 +4,14 @@ import re
 
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
+from w3lib.url import url_query_cleaner
 from scrapy.spiders import CrawlSpider, Rule
 
 from tegenaria.items import ApartmentItem
-from tegenaria.spiders import CleanMixin
+from tegenaria.spiders import SpiderMixin
 
 
-class BerlinovoSpider(CrawlSpider, CleanMixin):
+class BerlinovoSpider(CrawlSpider, SpiderMixin):
     """Furnished and regular apartments from Berlinovo."""
 
     name = 'berlinovo'
@@ -24,8 +25,8 @@ class BerlinovoSpider(CrawlSpider, CleanMixin):
     rules = (
         # Furnished apartments
         Rule(LinkExtractor(allow=r'/en/suche-(apartments|wohnungen).+page=')),
-        Rule(LinkExtractor(allow=r'/en/apartment/'), callback='parse_furnished', follow=True),
-        Rule(LinkExtractor(allow=r'/en/wohnung/'), callback='parse_regular', follow=True),
+        Rule(LinkExtractor(allow=r'/en/apartment/', process_value=url_query_cleaner), callback='parse_furnished', follow=True),
+        Rule(LinkExtractor(allow=r'/en/wohnung/', process_value=url_query_cleaner), callback='parse_regular', follow=True),
     )
 
     def parse_common(self, response):

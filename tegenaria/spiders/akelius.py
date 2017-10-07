@@ -8,12 +8,13 @@ from lxml import etree
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
+from w3lib.url import url_query_cleaner
 
 from tegenaria.items import ApartmentItem
-from tegenaria.spiders import CleanMixin
+from tegenaria.spiders import SpiderMixin
 
 
-class AkeliusSpider(CrawlSpider, CleanMixin):
+class AkeliusSpider(CrawlSpider, SpiderMixin):
     """Apartments from the Akelius real estate agency."""
 
     name = 'akelius'
@@ -23,7 +24,7 @@ class AkeliusSpider(CrawlSpider, CleanMixin):
     ]
 
     rules = (
-        Rule(LinkExtractor(allow=r'berlin/[0-9\.]+'), callback='parse_item'),
+        Rule(LinkExtractor(allow=r'berlin/[0-9\.]+', process_value=url_query_cleaner), callback='parse_item'),
     )
 
     ADDRESS_REGEX = re.compile(r'<div class="g-map-marker".+<p>.+</div>.+infowindow', re.DOTALL)
@@ -82,7 +83,6 @@ class AkeliusSpider(CrawlSpider, CleanMixin):
     def clean_item(self, data: Dict[str, Any]):
         """Clean the item before loading."""
         self.clean_number(data, 'rooms', separator=None)
-        self.clean_number(data, 'warm_rent')
         self.clean_number(data, 'size')
         self.clean_number(data, 'availability', separator=None)
         return data
