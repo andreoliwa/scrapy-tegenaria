@@ -9,6 +9,7 @@ arrow==0.10.0
 marshmallow==2.13.6
 click==6.7
 plumbum==1.6.3
+prettyconf==1.2.3
 
 # Flask
 Flask==0.12.2
