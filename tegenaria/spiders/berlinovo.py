@@ -5,6 +5,7 @@ import re
 from scrapy import Request, Spider
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
+from w3lib.url import url_query_cleaner
 
 from tegenaria.items import ApartmentItem
 from tegenaria.spiders import CleanMixin
@@ -27,12 +28,12 @@ class BerlinovoSpider(Spider, CleanMixin):
         @returns items 0 0
         @returns requests 15 20
         """
-        for link in LinkExtractor(allow=r'/en/suche-apartments.+page=', unique=True).extract_links(response):
+        for link in LinkExtractor(allow=r'/en/suche-apartments.+page=').extract_links(response):
             if link.url not in (self.searched_pages, self.start_urls):
                 self.searched_pages.add(link.url)
                 yield Request(link.url, callback=self.parse)
 
-        for link in LinkExtractor(allow=r'/en/apartment/', unique=True).extract_links(response):
+        for link in LinkExtractor(allow=r'/en/apartment/', process_value=url_query_cleaner).extract_links(response):
             yield Request(link.url, callback=self.parse_item)
 
     def parse_item(self, response):

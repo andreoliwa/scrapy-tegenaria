@@ -8,6 +8,7 @@ from lxml import etree
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
+from w3lib.url import url_query_cleaner
 
 from tegenaria.items import ApartmentItem
 from tegenaria.spiders import CleanMixin
@@ -23,7 +24,7 @@ class AkeliusSpider(CrawlSpider, CleanMixin):
     ]
 
     rules = (
-        Rule(LinkExtractor(allow=r'berlin/[0-9\.]+'), callback='parse_item'),
+        Rule(LinkExtractor(allow=r'berlin/[0-9\.]+', process_value=url_query_cleaner), callback='parse_item'),
     )
 
     ADDRESS_REGEX = re.compile(r'<div class="g-map-marker".+<p>.+</div>.+infowindow', re.DOTALL)
