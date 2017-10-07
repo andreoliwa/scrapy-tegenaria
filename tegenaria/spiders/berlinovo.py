@@ -1,52 +1,52 @@
 # -*- coding: utf-8 -*-
-"""A spider to crawl the Berlinovo website."""
+"""Furnished and regular apartments from Berlinovo."""
 import re
+from typing import Any, Dict
 
-from scrapy import Request, Spider
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
+from scrapy.spiders import CrawlSpider, Rule
 from w3lib.url import url_query_cleaner
 
 from tegenaria.items import ApartmentItem
 from tegenaria.spiders import SpiderMixin
 
 
-class BerlinovoSpider(Spider, SpiderMixin):
-    """A spider to crawl the Berlinovo website."""
+class BerlinovoSpider(CrawlSpider, SpiderMixin):
+    """Furnished and regular apartments from Berlinovo."""
 
     name = 'berlinovo'
     allowed_domains = ['berlinovo.de']
-    start_urls = (
+    start_urls = [
+        # Furnished apartments
         'https://www.berlinovo.de/en/suche-apartments',
+        # Regular housing
+        'https://www.berlinovo.de/en/suche-wohnungen',
+    ]
+    rules = (
+        Rule(LinkExtractor(allow=r'/en/suche-(apartments|wohnungen).+page=')),
+        Rule(LinkExtractor(allow=r'/en/apartment/', process_value=url_query_cleaner),
+             callback='parse_furnished', follow=True),
+        Rule(LinkExtractor(allow=r'/en/wohnung/', process_value=url_query_cleaner),
+             callback='parse_regular', follow=True),
     )
-    searched_pages = set()
 
-    def parse(self, response):
-        """Parse a search result HTML page.
+    def parse_common(self, response):
+        """Parse common fields for both."""
+        self.shutdown_on_error()
+        item = ItemLoader(ApartmentItem(), response=response)
+        item.add_value('url', response.url)
+        item.add_css('title', 'h1.title::text')
+        return item
 
-        @url https://www.berlinovo.de/en/suche-apartments
-        @returns items 0 0
-        @returns requests 15 20
-        """
-        for link in LinkExtractor(allow=r'/en/suche-apartments.+page=').extract_links(response):
-            if link.url not in (self.searched_pages, self.start_urls):
-                self.searched_pages.add(link.url)
-                yield Request(link.url, callback=self.parse)
-
-        for link in LinkExtractor(allow=r'/en/apartment/', process_value=url_query_cleaner).extract_links(response):
-            yield Request(link.url, callback=self.parse_item)
-
-    def parse_item(self, response):
+    def parse_furnished(self, response):
         """Parse an ad page, with an apartment.
 
         @url https://www.berlinovo.de/en/apartment/2-room-suite-house-heinrich-heine-stra-e-18-24-berlin-mitte
         @returns items 1 1
         @scrapes url title description location address other neighborhood rooms
         """
-        self.shutdown_on_error()
-        item = ItemLoader(ApartmentItem(), response=response)
-        item.add_value('url', response.url)
-        item.add_css('title', 'h1.title::text')
+        item = self.parse_common(response)
         item.add_xpath('description', '//div[contains(@class, field-name-body)]/div/div[4]/div/div/p/text()')
         item.add_xpath('location', '//div[contains(@class, field-name-field-position)]/div/div[5]/div[2]/div/text()')
 
@@ -73,3 +73,29 @@ class BerlinovoSpider(Spider, SpiderMixin):
         item.add_value('rooms', re.findall(r'([0-9]+)', ' '.join(room_list))[0])
 
         yield item.load_item()
+
+    def parse_regular(self, response):
+        """Parse a regular housing apartment ad.
+
+        @url https://www.berlinovo.de/en/wohnung/single-wohnung-hellersdorf-zu-vermieten
+        @returns items 1 1
+        @scrapes url title address rooms size cold_rent warm_rent description equipment
+        """
+        item = self.parse_common(response)
+        item.add_xpath('address', '//span[@class="address"]/text()')
+
+        for field, class_ in {'rooms': 'views-label-field-rooms', 'size': 'views-label-field-net-area-1',
+                              'cold_rent': 'views-label-field-net-rent'}.items():
+            item.add_xpath(field, '//span[contains(@class, "{}")]/following-sibling::span/text()'.format(class_))
+
+        item.add_xpath('warm_rent', '//div[contains(@class, "views-field-field-total-rent")]'
+                                    '/child::span[@class="field-content"]/text()')
+        item.add_xpath('description', '//div[contains(@class, field-name-field-description)]/div/div/p/text()')
+        item.add_xpath('equipment', '//div[starts-with(normalize-space(.), "Ausstattung")]//div/text()')
+        yield item.load_item()
+
+    def clean_item(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Clean the item before loading."""
+        self.clean_number(data, 'rooms')
+        self.clean_number(data, 'size')
+        return data
