@@ -102,7 +102,6 @@ class ImmobilienScout24Spider(Spider, CleanMixin):
     def clean_item(self, data: Dict[str, Any]):
         """Clean the item before loading."""
         self.clean_number(data, 'rooms')
-        self.clean_number(data, 'cold_rent')
 
         # Warm rent can have additional notes to the right.
         if 'warm_rent' in data:

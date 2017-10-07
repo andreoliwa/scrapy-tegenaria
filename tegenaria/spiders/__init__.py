@@ -19,7 +19,7 @@ class CleanMixin:
     def clean_item(self, data: Dict[str, Any]):
         """Clean the item before loading.
 
-        This method can be overridden in the inherited class.
+        This method should be overridden by the inherited class.
         """
         return data
 
@@ -38,6 +38,6 @@ class CleanMixin:
         return clean_value
 
     def shutdown_on_error(self):
-        """Shutdown the spider when an error occur. Call this method while parsing."""
+        """Shutdown the spider when an error occurs. Call this method while parsing."""
         if self.shutdown_message:
             raise CloseSpider(self.shutdown_message)

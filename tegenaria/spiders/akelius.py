@@ -82,7 +82,6 @@ class AkeliusSpider(CrawlSpider, CleanMixin):
     def clean_item(self, data: Dict[str, Any]):
         """Clean the item before loading."""
         self.clean_number(data, 'rooms', separator=None)
-        self.clean_number(data, 'warm_rent')
         self.clean_number(data, 'size')
         self.clean_number(data, 'availability', separator=None)
         return data

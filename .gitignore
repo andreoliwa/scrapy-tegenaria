@@ -94,3 +94,5 @@ env/
 
 # Database
 *.db
+
+.scrapy
