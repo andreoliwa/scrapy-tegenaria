@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 """Furnished and regular apartments from Berlinovo."""
 import re
+from typing import Any, Dict
 
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
-from w3lib.url import url_query_cleaner
 from scrapy.spiders import CrawlSpider, Rule
+from w3lib.url import url_query_cleaner
 
 from tegenaria.items import ApartmentItem
 from tegenaria.spiders import SpiderMixin
@@ -23,13 +24,15 @@ class BerlinovoSpider(CrawlSpider, SpiderMixin):
         'https://www.berlinovo.de/en/suche-wohnungen',
     ]
     rules = (
-        # Furnished apartments
         Rule(LinkExtractor(allow=r'/en/suche-(apartments|wohnungen).+page=')),
-        Rule(LinkExtractor(allow=r'/en/apartment/', process_value=url_query_cleaner), callback='parse_furnished', follow=True),
-        Rule(LinkExtractor(allow=r'/en/wohnung/', process_value=url_query_cleaner), callback='parse_regular', follow=True),
+        Rule(LinkExtractor(allow=r'/en/apartment/', process_value=url_query_cleaner),
+             callback='parse_furnished', follow=True),
+        Rule(LinkExtractor(allow=r'/en/wohnung/', process_value=url_query_cleaner),
+             callback='parse_regular', follow=True),
     )
 
     def parse_common(self, response):
+        """Parse common fields for both."""
         self.shutdown_on_error()
         item = ItemLoader(ApartmentItem(), response=response)
         item.add_value('url', response.url)
@@ -74,12 +77,25 @@ class BerlinovoSpider(CrawlSpider, SpiderMixin):
     def parse_regular(self, response):
         """Parse a regular housing apartment ad.
 
-        @url https://www.berlinovo.de/en/wohnung/single-wohnung-hellersdorf-zu-vermieten#history-back
+        @url https://www.berlinovo.de/en/wohnung/single-wohnung-hellersdorf-zu-vermieten
         @returns items 1 1
-        @scrapes url title description equipment
+        @scrapes url title address rooms size cold_rent warm_rent description equipment
         """
         item = self.parse_common(response)
+        item.add_xpath('address', '//span[@class="address"]/text()')
+
+        for field, class_ in {'rooms': 'views-label-field-rooms', 'size': 'views-label-field-net-area-1',
+                              'cold_rent': 'views-label-field-net-rent'}.items():
+            item.add_xpath(field, '//span[contains(@class, "{}")]/following-sibling::span/text()'.format(class_))
+
+        item.add_xpath('warm_rent', '//div[contains(@class, "views-field-field-total-rent")]'
+                                    '/child::span[@class="field-content"]/text()')
         item.add_xpath('description', '//div[contains(@class, field-name-field-description)]/div/div/p/text()')
         item.add_xpath('equipment', '//div[starts-with(normalize-space(.), "Ausstattung")]//div/text()')
-
         yield item.load_item()
+
+    def clean_item(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Clean the item before loading."""
+        self.clean_number(data, 'rooms')
+        self.clean_number(data, 'size')
+        return data
