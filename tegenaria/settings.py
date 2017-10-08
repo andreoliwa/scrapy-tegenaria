@@ -54,6 +54,7 @@ class TestConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
     WTF_CSRF_ENABLED = False  # Allows form testing
 
+GOOGLE_MAPS_API_KEY = config('GOOGLE_MAPS_API_KEY')
 
 BOT_NAME = 'tegenaria'
 

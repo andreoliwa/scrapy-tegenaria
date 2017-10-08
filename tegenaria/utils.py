@@ -7,12 +7,12 @@ from datetime import date, datetime, timedelta
 import requests
 from flask import flash, json
 from googlemaps import Client
-from googlemaps.exceptions import HTTPError
+from googlemaps.exceptions import ApiError, HTTPError
 from sqlalchemy import and_, or_
 
 from tegenaria.extensions import db
-from tegenaria.generic import read_from_keyring
 from tegenaria.models import Apartment, Distance, Pin
+from tegenaria.settings import GOOGLE_MAPS_API_KEY
 
 PROJECT_NAME = 'tegenaria'
 LOGGER = logging.getLogger(__name__)
@@ -57,7 +57,7 @@ def calculate_distance():
     - Call Google Maps Distance Matrix;
     - Save the results.
     """
-    maps = Client(key=read_from_keyring(PROJECT_NAME, 'google_maps_api_key'))
+    maps = Client(key=GOOGLE_MAPS_API_KEY)
     assert maps
     tomorrow = date.today() + timedelta(0 if datetime.now().hour < 9 else 1)
     morning = datetime(tomorrow.year, tomorrow.month, tomorrow.day, 9, 0)
@@ -68,7 +68,9 @@ def calculate_distance():
         while True:
             apartments = Apartment.query.outerjoin(Distance, and_(
                 Apartment.id == Distance.apartment_id, Distance.pin_id == pin.id)) \
-                .filter(Apartment.active.is_(True), Distance.apartment_id.is_(None)).limit(20)
+                .filter(Apartment.active.is_(True),
+                        Apartment.address.isnot(None),
+                        Distance.apartment_id.is_(None)).limit(20)
             search = {apartment.id: apartment.address for apartment in apartments.all()}
             if not search:
                 LOGGER.warning('All distances already calculated for %s', pin)
@@ -80,8 +82,8 @@ def calculate_distance():
             try:
                 result = maps.distance_matrix(
                     origin_addresses, [pin.address], mode='transit', units='metric', arrival_time=morning)
-            except HTTPError as err:
-                LOGGER.error('Error on Google Distance Matrix: %s', str(err))
+            except (ApiError, HTTPError) as err:
+                LOGGER.error('Error on Google Distance Matrix: %s %s', str(err), origin_addresses)
                 continue
             LOGGER.warning('Processing results from Google Maps for %s', pin)
             for row_dict in [row['elements'][0] for row in result['rows']]:
