@@ -34,13 +34,13 @@ class ApartmentModelView(ModelView):
     can_view_details = True
     can_set_page_size = True
 
-    form_columns = ('url', 'active', 'title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent', 'warm_rent',
-                    'opinion', 'description', 'equipment', 'location', 'other', 'availability',
+    form_columns = ('url', 'active', 'title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent_price',
+                    'warm_rent_price', 'opinion', 'description', 'equipment', 'location', 'other', 'availability',
                     'comments', 'created_at', 'updated_at')
 
-    column_list = ('title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent', 'warm_rent',
+    column_list = ('title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent_price', 'warm_rent_price',
                    'updated_at', 'minutes', 'meters')
-    column_labels = {'minutes': 'Minutes to pin', 'meters': 'Meters to pin'}
+    column_labels = {'minutes': 'Minutes', 'meters': 'Meters'}
 
     # https://flask-admin.readthedocs.io/en/latest/api/mod_model/#flask_admin.model.BaseModelView.column_formatters
     column_formatters = {
@@ -59,14 +59,14 @@ class ApartmentModelView(ModelView):
 
     column_type_formatters = MY_DEFAULT_FORMATTERS
     column_searchable_list = ('address', 'neighborhood', 'comments', 'description', 'equipment', 'location', 'other')
-    column_details_list = ('url', 'title', 'errors', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent',
-                           'warm_rent', 'opinion', 'description', 'equipment', 'location', 'other', 'availability',
-                           'comments', 'created_at', 'updated_at', 'json')
-    column_default_sort = ('warm_rent', False)
+    column_details_list = ('url', 'title', 'errors', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent_price',
+                           'warm_rent_price', 'opinion', 'description', 'equipment', 'location', 'other',
+                           'availability', 'comments', 'created_at', 'updated_at', 'json')
+    column_default_sort = ('warm_rent_price', False)
     column_filters = ('url', 'active', 'title',
                       FilterEmpty(Apartment.errors, 'Errors'),
-                      'address', 'neighborhood', 'rooms', 'size', 'cold_rent',
-                      'warm_rent', 'updated_at', 'distances.minutes', 'distances.meters')
+                      'address', 'neighborhood', 'rooms', 'size', 'cold_rent_price',
+                      'warm_rent_price', 'updated_at', 'distances.minutes', 'distances.meters')
 
     details_modal = True
     edit_modal = True
