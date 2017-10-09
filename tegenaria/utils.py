@@ -13,7 +13,6 @@ from sqlalchemy import and_, or_
 
 from tegenaria.extensions import db
 from tegenaria.models import Apartment, Distance, Pin
-from tegenaria.settings import GOOGLE_MATRIX_API_KEYS
 
 PROJECT_NAME = 'tegenaria'
 LOGGER = logging.getLogger(__name__)
@@ -56,6 +55,7 @@ class DistanceCalculator:
     def __init__(self):
         """Init instance."""
         self.matrix_client = None
+        from tegenaria.settings import GOOGLE_MATRIX_API_KEYS
         self.key_generator = cycle(GOOGLE_MATRIX_API_KEYS)
 
     def load_client(self):
