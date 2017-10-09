@@ -17,7 +17,7 @@ class Apartment(SurrogatePK, Model):
     address = Column(db.String())
     neighborhood = Column(db.String())
     rooms = Column(db.Numeric(3, 1))
-    size = Column(db.Numeric(5, 2))
+    size = Column(db.Numeric(6, 2))
 
     # Prices
     cold_rent_price = Column(db.Numeric(10, 2))
