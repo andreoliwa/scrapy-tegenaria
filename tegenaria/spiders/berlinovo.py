@@ -76,7 +76,7 @@ class BerlinovoSpider(CrawlSpider, SpiderMixin):
     def parse_regular(self, response):
         """Parse a regular housing apartment ad.
 
-        @url https://www.berlinovo.de/en/wohnung/single-wohnung-hellersdorf-zu-vermieten
+        @url https://www.berlinovo.de/en/wohnung/3-zimmer-wohnung-berlin-kaulsdorf-feldberger-ring-44-zu-vermieten
         @returns items 1 1
         @scrapes url title address rooms size cold_rent_price warm_rent_price description equipment
         """

@@ -14,7 +14,7 @@ from scrapy.utils.project import get_project_settings
 from werkzeug.exceptions import MethodNotAllowed, NotFound
 
 from tegenaria.generic import read_from_keyring
-from tegenaria.utils import PROJECT_NAME, calculate_distance, remove_inactive_apartments, reprocess_invalid_apartments
+from tegenaria.utils import PROJECT_NAME, DistanceCalculator, remove_inactive_apartments, reprocess_invalid_apartments
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.join(HERE, os.pardir)
@@ -143,7 +143,7 @@ def urls(url, order):
 @with_appcontext
 def distance():
     """Calculate distances."""
-    calculate_distance()
+    DistanceCalculator().calculate()
 
 
 @click.command()
