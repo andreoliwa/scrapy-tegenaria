@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Furnished and regular apartments from Berlinovo."""
 import re
-from typing import Any, Dict
 
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
@@ -93,9 +92,3 @@ class BerlinovoSpider(CrawlSpider, SpiderMixin):
         item.add_xpath('description', '//div[contains(@class, field-name-field-description)]/div/div/p/text()')
         item.add_xpath('equipment', '//div[starts-with(normalize-space(.), "Ausstattung")]//div/text()')
         yield item.load_item()
-
-    def clean_item(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Clean the item before loading."""
-        self.clean_number(data, 'rooms')
-        self.clean_number(data, 'size')
-        return data

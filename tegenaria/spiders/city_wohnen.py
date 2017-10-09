@@ -84,8 +84,8 @@ class CityWohnenSpider(CrawlSpider, SpiderMixin):
 
         return item.load_item()
 
-    def clean_item(self, data: Dict[str, Any]):
-        """Clean the item before loading."""
+    def before_marshmallow(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Clean the item before loading schema on Marshmallow."""
         data['warm_rent'] = data['warm_rent'].replace('.', '')
         data['rooms'] = data['rooms'].replace(',', '.')
         data['size'] = data['size'].split('\xa0')[0].replace(',', '.')

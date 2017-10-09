@@ -1,6 +1,8 @@
 # Everything needed in production
 
-Scrapy==1.4.0
+# Fetch from Github to fix this bug: https://github.com/scrapy/scrapy/issues/2914
+-e git+https://github.com/scrapy/scrapy.git#egg=Scrapy  #Scrapy==1.4.0
+
 googlemaps==2.5.1
 keyring==10.4.0
 requests==2.18.4

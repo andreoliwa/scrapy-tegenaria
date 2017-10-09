@@ -57,8 +57,8 @@ class ImmoWeltSpider(CrawlSpider, SpiderMixin):
                        '[contains(@class, "datacontent")]/text()'.format(cell_text))
         yield item.load_item()
 
-    def clean_item(self, data: Dict[str, Any]):
-        """Clean the item before loading."""
+    def before_marshmallow(self, data: Dict[str, Any]):
+        """Clean the item before loading schema on Marshmallow."""
         if 'address' in data:
             zip_city_neighborhood, *_ = data['address'].split(',')
             city_neighborhood = zip_city_neighborhood.translate(str.maketrans('', '', digits))
@@ -66,9 +66,6 @@ class ImmoWeltSpider(CrawlSpider, SpiderMixin):
                 raise DropItem
 
             data['neighborhood'] = city_neighborhood.replace('Berlin', '').strip(' ()')
-
-        self.clean_number(data, 'rooms')
-        self.clean_number(data, 'size')
 
         if not data.get('warm_rent', 0):
             result = 0

@@ -12,7 +12,7 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 from w3lib.url import url_query_cleaner
 
-from tegenaria.items import ApartmentItem, sanitize_price
+from tegenaria.items import ApartmentItem, clean_number
 from tegenaria.spiders import SpiderMixin
 
 IMAP_HOST = ''  # TODO: get this from .env json_config(__file__, 'imap_host')
@@ -100,16 +100,14 @@ class ImmobilienScout24Spider(Spider, SpiderMixin):
                                  '/h3[starts-with(normalize-space(.), "Angebot")]/text()')
         yield item.load_item()
 
-    def clean_item(self, data: Dict[str, Any]):
-        """Clean the item before loading."""
-        self.clean_number(data, 'rooms')
-
+    def before_marshmallow(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Clean the item before loading schema on Marshmallow."""
         # Warm rent can have additional notes to the right.
         if 'warm_rent' in data:
             match = self.WARM_RENT_RE.match(data['warm_rent'])
             if match:
                 data.update(match.groupdict())
-                data['warm_rent'] = sanitize_price(data['warm_rent'])
+                data['warm_rent'] = clean_number(data['warm_rent'])
 
         # Join repeated neighbourhood names.
         if 'neighborhood' in data:

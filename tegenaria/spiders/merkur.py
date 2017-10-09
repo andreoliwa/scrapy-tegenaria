@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Apartments from the Merkur Berlin real estate agency."""
 import re
-from typing import Any, Dict
 
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
@@ -34,14 +33,6 @@ class MerkurSpider(CrawlSpider, SpiderMixin):
     )
 
     SIZE_REGEX = re.compile(r'(?P<size>\d+[,.]\d+)')
-
-    def clean_item(self, data: Dict[str, Any]):
-        """Clean the size field."""
-        if 'size' in data:
-            match = self.SIZE_REGEX.search(data['size'].replace(',', '.'))
-            if match:
-                data.update(match.groupdict())
-        return data
 
     def parse_item(self, response):
         """Parse a page with an apartment.

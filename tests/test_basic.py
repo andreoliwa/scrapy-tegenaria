@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Basic tests."""
 from tegenaria.app import create_app
-from tegenaria.items import sanitize_price
+from tegenaria.items import clean_number
 from tegenaria.settings import DevConfig, ProdConfig
 
 
@@ -22,19 +22,30 @@ def test_dev_config():
     assert app.config['ASSETS_DEBUG'] is True
 
 
-def test_sanitize_price():
-    """Price cleaning."""
-    assert sanitize_price('1,000.00') == '1000'
-    assert sanitize_price('1,000.00 EUR ') == '1000'
-    assert sanitize_price('1.000,00') == '1000'
-    assert sanitize_price('EUR 1.000,00 ') == '1000'
-    assert sanitize_price(' 644.28') == '644.28'
-    assert sanitize_price(' 644,28') == '644.28'
-    assert sanitize_price('1,644.28') == '1644.28'
-    assert sanitize_price('1644,28  ') == '1644.28'
-    assert sanitize_price('1.644,28') == '1644.28'
-
-    assert sanitize_price('1,000,000') == '1000000'
-    assert sanitize_price('2.123.000') == '2123000'
-    assert sanitize_price('1,000') == '1000'
-    assert sanitize_price('2.123') == '2123'
+def test_clean_number():
+    """Number cleaning."""
+    data = {
+        '1,000.00': '1000',
+        '1,000.00 EUR ': '1000',
+        '1.000,00': '1000',
+        'EUR 1.000,00 ': '1000',
+        ' 644.28': '644.28',
+        ' 644,28': '644.28',
+        '1,644.28': '1644.28',
+        '1644,28  ': '1644.28',
+        '1.644,28': '1644.28',
+        '1,000,000': '1000000',
+        '2.123.000': '2123000',
+        '1,000': '1000',
+        '2.123': '2123',
+        '103.88 m²': '103.88',
+        '103,88 m²': '103.88',
+        '3 rooms': '3',
+        ' 2.0 room(s)': '2',
+        ' 5.0': '5',
+        ' 5.00 ': '5',
+        ' 5.000 ': '5000',
+        ' 5,000 ': '5000',
+    }
+    for input_value, expected_output in data.items():
+        assert clean_number(input_value) == expected_output, 'In: {} Out: {}'.format(input_value, expected_output)
