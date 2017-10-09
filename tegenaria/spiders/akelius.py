@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Apartments from the Akelius real estate agency."""
 import re
-from typing import Any, Dict
 
 import requests
 from lxml import etree
@@ -52,18 +51,19 @@ class AkeliusSpider(CrawlSpider, SpiderMixin):
 
         @url https://www.akelius.de/en/search/apartments/osten/berlin/2.7037.16
         @returns items 1 1
-        @scrapes url title warm_rent size availability cold_rent description address
+        @scrapes url title warm_rent_price size availability cold_rent_price description address
         """
         self.shutdown_on_error()
         item = ItemLoader(ApartmentItem(), response=response)
         item.add_value('url', response.url)
         item.add_xpath('title', '//h2/text()')
-        item.add_xpath('warm_rent', '//h2/following-sibling::p[starts-with(normalize-space(.), "Total rent")]/text()')
+        item.add_xpath('warm_rent_price',
+                       '//h2/following-sibling::p[starts-with(normalize-space(.), "Total rent")]/text()')
         item.add_xpath('size', '//h2//following-sibling::p[2]/text()')
         item.add_xpath('location',
                        '//h3[starts-with(normalize-space(.), "Location")]/following-sibling::div//span/text()')
         item.add_xpath('availability', '//h2//following-sibling::p[4]/text()')
-        item.add_xpath('cold_rent',
+        item.add_xpath('cold_rent_price',
                        '//h3[starts-with(normalize-space(.), "Apartment")]/following-sibling::div[1]/p[2]/span/text()')
         item.add_xpath('description',
                        '//h3[starts-with(normalize-space(.), "Building")]/following-sibling::div//span/text()')
@@ -79,10 +79,3 @@ class AkeliusSpider(CrawlSpider, SpiderMixin):
             item.add_value('address', ', '.join(root.xpath('//p/text()')))
 
         return item.load_item()
-
-    def clean_item(self, data: Dict[str, Any]):
-        """Clean the item before loading."""
-        self.clean_number(data, 'rooms', separator=None)
-        self.clean_number(data, 'size')
-        self.clean_number(data, 'availability', separator=None)
-        return data
