@@ -40,7 +40,7 @@ class ApartmentModelView(ModelView):
 
     column_list = ('title', 'address', 'neighborhood', 'rooms', 'size', 'cold_rent_price', 'warm_rent_price',
                    'updated_at', 'minutes', 'meters')
-    column_labels = {'minutes': 'Minutes to pin', 'meters': 'Meters to pin'}
+    column_labels = {'minutes': 'Minutes', 'meters': 'Meters'}
 
     # https://flask-admin.readthedocs.io/en/latest/api/mod_model/#flask_admin.model.BaseModelView.column_formatters
     column_formatters = {

@@ -96,6 +96,7 @@ class ImmobilienScout24Spider(Spider, SpiderMixin):
         item.add_css('cold_rent_price', 'div.is24qa-kaltmiete::text')
         item.add_css('warm_rent_price', 'dd.is24qa-gesamtmiete::text')
         item.add_css('rooms', 'div.is24qa-zi::text')
+        item.add_xpath('size', '//div[contains(@class, "is24qa-flaeche ")]/text()')
         item.add_xpath('active', '//div[contains(@class, "status-message")]'
                                  '/h3[starts-with(normalize-space(.), "Angebot")]/text()')
         yield item.load_item()
