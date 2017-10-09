@@ -41,7 +41,7 @@ class ImmobilienScout24Spider(Spider, SpiderMixin):
         'location': 'is24qa-lage',
         'other': 'is24qa-sonstiges'
     }
-    WARM_RENT_RE = re.compile(r'(?P<warm_rent>[0-9,.]+)[\s(]*(?P<comments>[^)]*)')
+    WARM_RENT_RE = re.compile(r'(?P<warm_rent_price>[0-9,.]+)[\s(]*(?P<comments>[^)]*)')
     DEACTIVATED = 'Angebot wurde deaktiviert'
     FULL_ADDRESS_TEXT = 'Die vollständige Adresse der Immobilie erhalten Sie vom Anbieter.'
 
@@ -74,7 +74,7 @@ class ImmobilienScout24Spider(Spider, SpiderMixin):
 
         @url https://www.immobilienscout24.de/expose/93354819
         @returns items 1 1
-        @scrapes url title address neighborhood cold_rent warm_rent rooms
+        @scrapes url title address neighborhood cold_rent_price warm_rent_price rooms
         """
         self.shutdown_on_error()
         item = ItemLoader(ApartmentItem(), response=response)
@@ -93,8 +93,8 @@ class ImmobilienScout24Spider(Spider, SpiderMixin):
             item.add_value('address', street_zip)
             item.add_value('neighborhood', ''.join(parts[1:]).strip(' ,'))
 
-        item.add_css('cold_rent', 'div.is24qa-kaltmiete::text')
-        item.add_css('warm_rent', 'dd.is24qa-gesamtmiete::text')
+        item.add_css('cold_rent_price', 'div.is24qa-kaltmiete::text')
+        item.add_css('warm_rent_price', 'dd.is24qa-gesamtmiete::text')
         item.add_css('rooms', 'div.is24qa-zi::text')
         item.add_xpath('active', '//div[contains(@class, "status-message")]'
                                  '/h3[starts-with(normalize-space(.), "Angebot")]/text()')
@@ -103,11 +103,11 @@ class ImmobilienScout24Spider(Spider, SpiderMixin):
     def before_marshmallow(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Clean the item before loading schema on Marshmallow."""
         # Warm rent can have additional notes to the right.
-        if 'warm_rent' in data:
-            match = self.WARM_RENT_RE.match(data['warm_rent'])
+        if 'warm_rent_price' in data:
+            match = self.WARM_RENT_RE.match(data['warm_rent_price'])
             if match:
                 data.update(match.groupdict())
-                data['warm_rent'] = clean_number(data['warm_rent'])
+                data['warm_rent_price'] = clean_number(data['warm_rent_price'])
 
         # Join repeated neighbourhood names.
         if 'neighborhood' in data:

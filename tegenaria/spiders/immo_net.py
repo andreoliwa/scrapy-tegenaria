@@ -29,8 +29,8 @@ class ImmoNetSpider(CrawlSpider, SpiderMixin):
 
         @url https://www.immonet.de/angebot/32188674
         @returns items 1 1
-        @scrapes url title address rooms size cold_rent warm_rent additional_costs heating_costs description equipment
-        @scrapes location other
+        @scrapes url title address rooms size cold_rent_price warm_rent_price additional_price heating_price
+        @scrapes description equipment location other
         """
         self.shutdown_on_error()
         item = ItemLoader(ApartmentItem(), response=response)
@@ -38,9 +38,9 @@ class ImmoNetSpider(CrawlSpider, SpiderMixin):
         item.add_xpath('title', '//h1/text()')
         item.add_xpath('address', '//div[contains(@class, "row")]//span[@id = "infobox-static-address"]/text()')
 
-        for field, id_ in {'rooms': 'equipmentid_1', 'size': 'areaid_1', 'cold_rent': 'priceid_2',
-                           'warm_rent': 'priceid_4', 'additional_costs': 'priceid_20',
-                           'heating_costs': 'priceid_5', 'description': 'objectDescription',
+        for field, id_ in {'rooms': 'equipmentid_1', 'size': 'areaid_1', 'cold_rent_price': 'priceid_2',
+                           'warm_rent_price': 'priceid_4', 'additional_price': 'priceid_20',
+                           'heating_price': 'priceid_5', 'description': 'objectDescription',
                            'equipment': 'ausstattung', 'location': 'locationDescription',
                            'other': 'otherDescription'}.items():
             item.add_xpath(field, '//*[@id="{}"]/text()'.format(id_))

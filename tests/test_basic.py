@@ -46,6 +46,12 @@ def test_clean_number():
         ' 5.00 ': '5',
         ' 5.000 ': '5000',
         ' 5,000 ': '5000',
+        '2,0': '2',
+        ' 10,0 ': '10',
+        '2,5': '2.5',
+        '2.5': '2.5',
+        '3,50': '3.50',
+        '3.50': '3.50',
     }
     for input_value, expected_output in data.items():
         assert clean_number(input_value) == expected_output, 'In: {} Out: {}'.format(input_value, expected_output)

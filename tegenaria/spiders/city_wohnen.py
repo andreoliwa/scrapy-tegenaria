@@ -62,7 +62,7 @@ class CityWohnenSpider(CrawlSpider, SpiderMixin):
 
         @url https://www.city-wohnen.de/eng/berlin/32638-moeblierte-wohnung-berlin-friedrichshain-gruenberger-strasse
         @returns items 1 1
-        @scrapes url title availability description neighborhood address warm_rent size rooms
+        @scrapes url title availability description neighborhood address warm_rent_price size rooms
         """
         self.shutdown_on_error()
         item = ItemLoader(ApartmentItem(), response=response)
@@ -78,7 +78,7 @@ class CityWohnenSpider(CrawlSpider, SpiderMixin):
         keys = response.css('div.object_meta table.object_meta_data th::text').extract()
         values = response.css('div.object_meta table.object_meta_data td::text').extract()
         features = dict(zip(keys, values))
-        item.add_value('warm_rent', features.get('Rent'))
+        item.add_value('warm_rent_price', features.get('Rent'))
         item.add_value('size', features.get('Size'))
         item.add_value('rooms', features.get('Room/s'))
 
@@ -86,10 +86,6 @@ class CityWohnenSpider(CrawlSpider, SpiderMixin):
 
     def before_marshmallow(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Clean the item before loading schema on Marshmallow."""
-        data['warm_rent'] = data['warm_rent'].replace('.', '')
-        data['rooms'] = data['rooms'].replace(',', '.')
-        data['size'] = data['size'].split('\xa0')[0].replace(',', '.')
-
         for field, regex in self.field_regex.items():
             clean_field = data.get(field, '').strip(' \t\n')
             match = regex.match(clean_field)

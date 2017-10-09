@@ -11,8 +11,8 @@ from scrapy import Field, Item
 from scrapy.loader.processors import Join, MapCompose
 
 REGEX_DIGITS_SEPARATORS_ONLY = re.compile(r'[\d,.]+')
-REGEX_DECIMAL_POINT = re.compile(r'^[\d,]+\.\d{2}$')
-REGEX_DECIMAL_COMMA = re.compile(r'^[\d.]+,\d{2}$')
+REGEX_DECIMAL_POINT = re.compile(r'^[\d,]+\.\d{1,2}$')
+REGEX_DECIMAL_COMMA = re.compile(r'^[\d.]+,\d{1,2}$')
 REGEX_GROUP_OF_THREE_COMMA = re.compile(r'^\d+(,\d{3})+$')
 REGEX_GROUP_OF_THREE_POINT = re.compile(r'^\d+(.\d{3})+$')
 
@@ -44,10 +44,10 @@ class ApartmentItem(Item):
     rooms = Field(input_processor=MapCompose(clean_number), output_processor=Join())
     size = Field(input_processor=MapCompose(clean_number), output_processor=Join())
 
-    cold_rent = Field(input_processor=MapCompose(clean_number), output_processor=Join())
-    warm_rent = Field(input_processor=MapCompose(clean_number), output_processor=Join())
-    additional_costs = Field(input_processor=MapCompose(clean_number), output_processor=Join())
-    heating_costs = Field(input_processor=MapCompose(clean_number), output_processor=Join())
+    cold_rent_price = Field(input_processor=MapCompose(clean_number), output_processor=Join())
+    warm_rent_price = Field(input_processor=MapCompose(clean_number), output_processor=Join())
+    additional_price = Field(input_processor=MapCompose(clean_number), output_processor=Join())
+    heating_price = Field(input_processor=MapCompose(clean_number), output_processor=Join())
 
     comments = Field(output_processor=Join())
     description = Field(output_processor=Join())

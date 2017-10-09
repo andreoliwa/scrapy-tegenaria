@@ -60,7 +60,7 @@ class BerlinovoSpider(CrawlSpider, SpiderMixin):
         item.add_xpath(
             'equipment',
             '//*[@id="block-views-aktuelle-wohnung-block-3"]/div/div/div/div/div[18]/div/div/ul/li/span/text()')
-        item.add_xpath('warm_rent',
+        item.add_xpath('warm_rent_price',
                        '//*[@id="block-views-aktuelle-wohnung-block-3"]/div/div/div/div/div[5]/span[2]/text()')
 
         item.add_xpath('other', '//*[@id="block-views-aktuelle-wohnung-block-3"]/div/div/div/div/div/span/text()')
@@ -78,17 +78,17 @@ class BerlinovoSpider(CrawlSpider, SpiderMixin):
 
         @url https://www.berlinovo.de/en/wohnung/single-wohnung-hellersdorf-zu-vermieten
         @returns items 1 1
-        @scrapes url title address rooms size cold_rent warm_rent description equipment
+        @scrapes url title address rooms size cold_rent_price warm_rent_price description equipment
         """
         item = self.parse_common(response)
         item.add_xpath('address', '//span[@class="address"]/text()')
 
         for field, class_ in {'rooms': 'views-label-field-rooms', 'size': 'views-label-field-net-area-1',
-                              'cold_rent': 'views-label-field-net-rent'}.items():
+                              'cold_rent_price': 'views-label-field-net-rent'}.items():
             item.add_xpath(field, '//span[contains(@class, "{}")]/following-sibling::span/text()'.format(class_))
 
-        item.add_xpath('warm_rent', '//div[contains(@class, "views-field-field-total-rent")]'
-                                    '/child::span[@class="field-content"]/text()')
+        item.add_xpath('warm_rent_price', '//div[contains(@class, "views-field-field-total-rent")]'
+                                          '/child::span[@class="field-content"]/text()')
         item.add_xpath('description', '//div[contains(@class, field-name-field-description)]/div/div/p/text()')
         item.add_xpath('equipment', '//div[starts-with(normalize-space(.), "Ausstattung")]//div/text()')
         yield item.load_item()
