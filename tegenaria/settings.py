@@ -10,6 +10,7 @@ http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 """
 import os
+from typing import List  # noqa
 
 from prettyconf import config
 
@@ -54,7 +55,8 @@ class TestConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
     WTF_CSRF_ENABLED = False  # Allows form testing
 
-GOOGLE_MAPS_API_KEY = config('GOOGLE_MAPS_API_KEY')
+
+GOOGLE_MATRIX_API_KEYS = config('GOOGLE_MATRIX_API_KEYS', cast=config.list)  # type: List[str]
 
 BOT_NAME = 'tegenaria'
 
