@@ -56,7 +56,7 @@ class TestConfig(Config):
     WTF_CSRF_ENABLED = False  # Allows form testing
 
 
-GOOGLE_MATRIX_API_KEYS = config('GOOGLE_MATRIX_API_KEYS', cast=config.list)  # type: List[str]
+GOOGLE_MATRIX_API_KEYS = config('GOOGLE_MATRIX_API_KEYS', cast=config.list, default=[])  # type: List[str]
 
 BOT_NAME = 'tegenaria'
 
