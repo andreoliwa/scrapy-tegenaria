@@ -32,7 +32,7 @@ class ImmoWeltSpider(CrawlSpider, SpiderMixin):
     def parse_item(self, response):
         """Parse the flat response.
 
-        @url https://www.immowelt.de/expose/2GEZJ4D?bc=101
+        @url https://www.immowelt.de/expose/2GT7W4N
         @returns items 1 1
         @scrapes url title address rooms size cold_rent_price warm_rent_price additional_price heating_price description
         """
