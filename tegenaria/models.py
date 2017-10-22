@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """SQLAlchemy models."""
+from datetime import timedelta
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.sql.functions import func
 
@@ -55,6 +56,15 @@ class Apartment(SurrogatePK, Model):
         :rtype: Apartment
         """
         return cls.query.filter_by(url=url).first() or Apartment()
+
+    @classmethod
+    def check_recently_updated(cls, minute_limit: int) -> bool:
+        """Return True if any apartment was updated within the desired time frame."""
+        has_update = cls.query.filter(cls.created_at >= db.func.now() - timedelta(minutes=minute_limit)).count() > 0
+        if has_update:
+            print('Skipping because an apartment was updated in the last {} minutes ({} hours)'.format(
+                minute_limit, int(minute_limit / 60)))
+        return has_update
 
 
 class Opinion(SurrogatePK, Model):

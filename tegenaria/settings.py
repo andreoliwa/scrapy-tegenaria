@@ -57,6 +57,8 @@ class TestConfig(Config):
 
 
 GOOGLE_MATRIX_API_KEYS = config('GOOGLE_MATRIX_API_KEYS', cast=config.list, default=[])  # type: List[str]
+CRAWL_MINUTE_LIMIT = config('CRAWL_MINUTE_LIMIT', cast=int, default=12 * 60)  # type: int
+DISTANCE_MINUTE_LIMIT = config('DISTANCE_MINUTE_LIMIT', cast=int, default=2)  # type: int
 
 BOT_NAME = 'tegenaria'
 

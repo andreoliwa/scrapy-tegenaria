@@ -5,26 +5,16 @@ Define your item pipelines here.
 Don't forget to add your pipeline to the ITEM_PIPELINES setting
 See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 """
-from flask import current_app
-from flask.helpers import get_debug_flag
 from scrapy.exceptions import CloseSpider, DropItem
 
-from tegenaria.app import create_app
 from tegenaria.extensions import db
 from tegenaria.models import Apartment
 from tegenaria.schemas import ApartmentSchema
-from tegenaria.settings import DevConfig, ProdConfig
 from tegenaria.spiders import SpiderMixin
 
 
 class ApartmentPipeline(object):
     """Clean and save an apartment to the database."""
-
-    def __init__(self):
-        """Constructor."""
-        config = DevConfig if get_debug_flag() else ProdConfig
-        self.app = current_app or create_app(config)
-        self.app.app_context().push()
 
     def process_item(self, item, spider: SpiderMixin):
         """Process an item through the pipeline."""

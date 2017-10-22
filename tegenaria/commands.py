@@ -14,6 +14,8 @@ from scrapy.utils.project import get_project_settings
 from werkzeug.exceptions import MethodNotAllowed, NotFound
 
 from tegenaria.generic import read_from_keyring
+from tegenaria.models import Apartment
+from tegenaria.settings import CRAWL_MINUTE_LIMIT, DISTANCE_MINUTE_LIMIT
 from tegenaria.utils import PROJECT_NAME, DistanceCalculator, remove_inactive_apartments, reprocess_invalid_apartments
 
 HERE = os.path.abspath(os.path.dirname(__file__))
@@ -140,9 +142,13 @@ def urls(url, order):
 
 
 @click.command()
+@click.option('--cron', default=False, is_flag=True, help='Cron job: run only if no apartment was updated recently')
 @with_appcontext
-def distance():
+def distance(cron: bool):
     """Calculate distances."""
+    if cron and Apartment.check_recently_updated(DISTANCE_MINUTE_LIMIT):
+        return
+
     DistanceCalculator().calculate()
 
 
@@ -155,14 +161,19 @@ def vacuum():
 
 
 @click.command()
+@click.option('--cron', default=False, is_flag=True, help='Cron job: run only if no apartment was updated recently')
 @click.argument('spiders', nargs=-1)
-def crawl(spiders):
+@with_appcontext
+def crawl(cron: bool, spiders):
     """Crawl the desired spiders.
 
     Type the name or part of the name of the spider.
     Multiple spiders can be provided.
     If none is given, all spiders will be crawled.
     """
+    if cron and Apartment.check_recently_updated(CRAWL_MINUTE_LIMIT):
+        return
+
     settings = get_project_settings()
     loader = SpiderLoader(settings)
 
