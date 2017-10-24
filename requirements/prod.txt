@@ -26,7 +26,7 @@ flask-marshmallow==0.8.0
 Flask-SQLAlchemy==2.3.2
 SQLAlchemy==1.1.14
 psycopg2==2.7.3.1
-marshmallow-sqlalchemy==0.13.1
+marshmallow-sqlalchemy==0.13.2
 
 # Migrations
 Flask-Migrate==2.1.1
