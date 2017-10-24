@@ -18,7 +18,7 @@ Sphinx==1.6.4
 pur==4.0.2
 
 # Lint and code style
-flake8==3.4.1
+flake8==3.5.0
 flake8-blind-except==0.1.1
 flake8-bugbear==17.4.0
 flake8-comprehensions==1.4.1
