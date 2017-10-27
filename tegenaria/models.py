@@ -25,6 +25,9 @@ class Apartment(SurrogatePK, Model):
     additional_price = Column(db.Numeric(10, 2))
     heating_price = Column(db.Numeric(10, 2))
 
+    # Flags
+    fitted_kitchen = Column(db.Boolean)
+
     opinion_id = reference_column('opinion', True)
     opinion = relationship('Opinion')
 

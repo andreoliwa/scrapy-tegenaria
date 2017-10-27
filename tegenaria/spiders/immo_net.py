@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """Flats from ImmoNet."""
+from typing import Dict, Any
+
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
@@ -30,7 +32,7 @@ class ImmoNetSpider(CrawlSpider, SpiderMixin):
         @url https://www.immonet.de/angebot/31010622?drop=sel&related=false
         @returns items 1 1
         @scrapes url title address rooms size cold_rent_price warm_rent_price additional_price description
-        @scrapes equipment location
+        @scrapes equipment location fitted_kitchen
         """
         self.shutdown_on_error()
         item = ItemLoader(ApartmentItem(), response=response)
@@ -45,4 +47,11 @@ class ImmoNetSpider(CrawlSpider, SpiderMixin):
                            'other': 'otherDescription'}.items():
             item.add_xpath(field, '//*[@id="{}"]/text()'.format(id_))
 
+        item.add_xpath('fitted_kitchen', '//li[@id="featureId_11"]/span[contains(text(), "EBK")]/text()')
+
         yield item.load_item()
+
+    def before_marshmallow(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Clean the item before loading schema on Marshmallow."""
+        data['fitted_kitchen'] = ('EBK' in data.get('fitted_kitchen', ''))
+        return data

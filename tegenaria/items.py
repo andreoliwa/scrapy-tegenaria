@@ -49,6 +49,8 @@ class ApartmentItem(Item):
     additional_price = Field(input_processor=MapCompose(clean_number), output_processor=Join())
     heating_price = Field(input_processor=MapCompose(clean_number), output_processor=Join())
 
+    fitted_kitchen = Field(output_processor=Join())
+
     comments = Field(output_processor=Join())
     description = Field(output_processor=Join())
     equipment = Field(output_processor=Join())

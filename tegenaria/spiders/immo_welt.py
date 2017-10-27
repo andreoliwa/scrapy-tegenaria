@@ -57,7 +57,7 @@ class ImmoWeltSpider(CrawlSpider, SpiderMixin):
                        '[contains(@class, "datacontent")]/text()'.format(cell_text))
         yield item.load_item()
 
-    def before_marshmallow(self, data: Dict[str, Any]):
+    def before_marshmallow(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Clean the item before loading schema on Marshmallow."""
         if 'address' in data:
             zip_city_neighborhood, *_ = data['address'].split(',')
