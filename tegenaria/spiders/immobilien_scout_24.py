@@ -9,10 +9,9 @@ import keyring
 from imapclient import IMAPClient
 from scrapy import Request, Spider
 from scrapy.linkextractors import LinkExtractor
-from scrapy.loader import ItemLoader
 from w3lib.url import url_query_cleaner
 
-from tegenaria.items import ApartmentItem, clean_number
+from tegenaria.items import ApartmentItem, ApartmentLoader, clean_number
 from tegenaria.spiders import SpiderMixin
 
 IMAP_HOST = ''  # TODO: get this from .env json_config(__file__, 'imap_host')
@@ -77,7 +76,7 @@ class ImmobilienScout24Spider(Spider, SpiderMixin):
         @scrapes url title address neighborhood cold_rent_price warm_rent_price rooms
         """
         self.shutdown_on_error()
-        item = ItemLoader(ApartmentItem(), response=response)
+        item = ApartmentLoader(ApartmentItem(), response=response)
         item.add_value('url', response.url)
         item.add_css('title', 'h1#expose-title::text')
 

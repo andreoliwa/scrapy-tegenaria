@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 """Flats from ImmoNet."""
-from typing import Dict, Any
+from typing import Any, Dict
 
 from scrapy.linkextractors import LinkExtractor
-from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
 from w3lib.url import url_query_cleaner
 
-from tegenaria.items import ApartmentItem
+from tegenaria.items import ApartmentItem, ApartmentLoader
 from tegenaria.spiders import SpiderMixin
 
 
@@ -35,7 +34,7 @@ class ImmoNetSpider(CrawlSpider, SpiderMixin):
         @scrapes equipment location fitted_kitchen
         """
         self.shutdown_on_error()
-        item = ItemLoader(ApartmentItem(), response=response)
+        item = ApartmentLoader(ApartmentItem(), response=response)
         item.add_value('url', response.url)
         item.add_xpath('title', '//h1/text()')
         item.add_xpath('address', '//div[contains(@class, "row")]//span[@id = "infobox-static-address"]/text()')
@@ -53,5 +52,5 @@ class ImmoNetSpider(CrawlSpider, SpiderMixin):
 
     def before_marshmallow(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Clean the item before loading schema on Marshmallow."""
-        data['fitted_kitchen'] = ('EBK' in data.get('fitted_kitchen', ''))
+        data['fitted_kitchen'] = ('fitted_kitchen' in data)
         return data

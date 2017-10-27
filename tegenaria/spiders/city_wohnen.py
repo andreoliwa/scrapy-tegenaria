@@ -8,11 +8,10 @@ from urllib.parse import unquote_plus
 import requests
 from scrapy import Request
 from scrapy.linkextractors import LinkExtractor
-from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
 from w3lib.url import url_query_cleaner
 
-from tegenaria.items import ApartmentItem
+from tegenaria.items import ApartmentItem, ApartmentLoader
 from tegenaria.spiders import SpiderMixin
 
 
@@ -65,7 +64,7 @@ class CityWohnenSpider(CrawlSpider, SpiderMixin):
         @scrapes url title availability description neighborhood address warm_rent_price size rooms
         """
         self.shutdown_on_error()
-        item = ItemLoader(ApartmentItem(), response=response)
+        item = ApartmentLoader(ApartmentItem(), response=response)
         item.add_value('url', response.url)
 
         item.add_css('title', 'div.text_data > h2::text')

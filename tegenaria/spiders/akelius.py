@@ -5,11 +5,10 @@ import re
 import requests
 from lxml import etree
 from scrapy.linkextractors import LinkExtractor
-from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
 from w3lib.url import url_query_cleaner
 
-from tegenaria.items import ApartmentItem
+from tegenaria.items import ApartmentItem, ApartmentLoader
 from tegenaria.spiders import SpiderMixin
 
 
@@ -54,7 +53,7 @@ class AkeliusSpider(CrawlSpider, SpiderMixin):
         @scrapes url title warm_rent_price size availability cold_rent_price description address
         """
         self.shutdown_on_error()
-        item = ItemLoader(ApartmentItem(), response=response)
+        item = ApartmentLoader(ApartmentItem(), response=response)
         item.add_value('url', response.url)
         item.add_xpath('title', '//h2/text()')
         item.add_xpath('warm_rent_price',

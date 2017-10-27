@@ -52,6 +52,10 @@ def test_clean_number():
         '2.5': '2.5',
         '3,50': '3.50',
         '3.50': '3.50',
+        '110 m²': '110',
+        '171,58 €': '171.58',
+        '1.350 €': '1350',
+        '310 €': '310',
     }
     for input_value, expected_output in data.items():
         assert clean_number(input_value) == expected_output, 'In: {} Out: {}'.format(input_value, expected_output)

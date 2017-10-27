@@ -3,11 +3,10 @@
 import re
 
 from scrapy.linkextractors import LinkExtractor
-from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
 from w3lib.url import url_query_cleaner
 
-from tegenaria.items import ApartmentItem
+from tegenaria.items import ApartmentItem, ApartmentLoader
 from tegenaria.spiders import SpiderMixin
 
 
@@ -33,7 +32,7 @@ class BerlinovoSpider(CrawlSpider, SpiderMixin):
     def parse_common(self, response):
         """Parse common fields for both."""
         self.shutdown_on_error()
-        item = ItemLoader(ApartmentItem(), response=response)
+        item = ApartmentLoader(ApartmentItem(), response=response)
         item.add_value('url', response.url)
         item.add_css('title', 'h1.title::text')
         return item

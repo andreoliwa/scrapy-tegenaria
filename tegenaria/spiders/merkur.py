@@ -3,11 +3,10 @@
 import re
 
 from scrapy.linkextractors import LinkExtractor
-from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
 from w3lib.url import url_query_cleaner
 
-from tegenaria.items import ApartmentItem
+from tegenaria.items import ApartmentItem, ApartmentLoader
 from tegenaria.spiders import SpiderMixin
 
 
@@ -42,7 +41,7 @@ class MerkurSpider(CrawlSpider, SpiderMixin):
         @scrapes url title address rooms size warm_rent_price description location
         """
         self.shutdown_on_error()
-        item = ItemLoader(ApartmentItem(), response=response)
+        item = ApartmentLoader(ApartmentItem(), response=response)
         item.add_value('url', response.url)
         item.add_xpath('title', '//h4[@class="entry-title"]/text()')
         item.add_xpath('address', '//address/text()')

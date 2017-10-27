@@ -8,6 +8,7 @@ http://doc.scrapy.org/en/latest/topics/items.html
 import re
 
 from scrapy import Field, Item
+from scrapy.loader import ItemLoader
 from scrapy.loader.processors import Join, MapCompose
 
 REGEX_DIGITS_SEPARATORS_ONLY = re.compile(r'[\d,.]+')
@@ -33,27 +34,37 @@ def clean_number(value: str) -> str:
     return value
 
 
+NumericField = Field(input_processor=MapCompose(clean_number))
+
+
+class ApartmentLoader(ItemLoader):
+    """A item loader for an apartment."""
+
+    default_input_processor = MapCompose(str.strip)
+    default_output_processor = Join()
+
+
 class ApartmentItem(Item):
     """An apartment item."""
 
-    url = Field(output_processor=Join())
-    active = Field(output_processor=Join())
-    title = Field(output_processor=Join())
-    address = Field(output_processor=Join())
-    neighborhood = Field(output_processor=Join())
-    rooms = Field(input_processor=MapCompose(clean_number), output_processor=Join())
-    size = Field(input_processor=MapCompose(clean_number), output_processor=Join())
+    url = Field()
+    active = Field()
+    title = Field()
+    address = Field()
+    neighborhood = Field()
+    rooms = NumericField
+    size = NumericField
 
-    cold_rent_price = Field(input_processor=MapCompose(clean_number), output_processor=Join())
-    warm_rent_price = Field(input_processor=MapCompose(clean_number), output_processor=Join())
-    additional_price = Field(input_processor=MapCompose(clean_number), output_processor=Join())
-    heating_price = Field(input_processor=MapCompose(clean_number), output_processor=Join())
+    cold_rent_price = NumericField
+    warm_rent_price = NumericField
+    additional_price = NumericField
+    heating_price = NumericField
 
-    fitted_kitchen = Field(output_processor=Join())
+    fitted_kitchen = Field()
 
-    comments = Field(output_processor=Join())
-    description = Field(output_processor=Join())
-    equipment = Field(output_processor=Join())
-    location = Field(output_processor=Join())
-    availability = Field(output_processor=Join())
-    other = Field(output_processor=Join())
+    comments = Field()
+    description = Field()
+    equipment = Field()
+    location = Field()
+    availability = Field()
+    other = Field()

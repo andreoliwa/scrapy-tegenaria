@@ -5,11 +5,10 @@ from typing import Any, Dict
 
 from scrapy.exceptions import DropItem
 from scrapy.linkextractors import LinkExtractor
-from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
 from w3lib.url import url_query_cleaner
 
-from tegenaria.items import ApartmentItem
+from tegenaria.items import ApartmentItem, ApartmentLoader
 from tegenaria.spiders import SpiderMixin
 
 
@@ -37,7 +36,7 @@ class ImmoWeltSpider(CrawlSpider, SpiderMixin):
         @scrapes url title address rooms size cold_rent_price warm_rent_price additional_price heating_price description
         """
         self.shutdown_on_error()
-        item = ItemLoader(ApartmentItem(), response=response)
+        item = ApartmentLoader(ApartmentItem(), response=response)
         item.add_value('url', response.url)
         item.add_xpath('title', '//h1/text()')
         item.add_xpath('address', '//div[@class="location"]/span[@class="no_s"]/text()')
@@ -55,6 +54,9 @@ class ImmoWeltSpider(CrawlSpider, SpiderMixin):
                 field, '//div[contains(@class, "datatable")]/div[contains(@class, "datarow")]/div[contains'
                        '(@class, "datalabel")][starts-with(normalize-space(.), "{}")]/following-sibling::div'
                        '[contains(@class, "datacontent")]/text()'.format(cell_text))
+
+        item.add_xpath('fitted_kitchen', '///span[contains(text(), "Einbauküche")]/text()')
+
         yield item.load_item()
 
     def before_marshmallow(self, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -77,4 +79,5 @@ class ImmoWeltSpider(CrawlSpider, SpiderMixin):
                     pass
             data['warm_rent_price'] = result
 
+        data['fitted_kitchen'] = ('fitted_kitchen' in data)
         return data
