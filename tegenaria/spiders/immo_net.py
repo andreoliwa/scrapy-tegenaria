@@ -27,7 +27,7 @@ class ImmoNetSpider(CrawlSpider, SpiderMixin):
     def parse_item(self, response):
         """Parse the flat response.
 
-        @url https://www.immonet.de/angebot/31010622?drop=sel&related=false
+        @url https://www.immonet.de/angebot/32437621?drop=sel&related=false
         @returns items 1 1
         @scrapes url title address rooms size cold_rent_price warm_rent_price additional_price description
         @scrapes equipment location
