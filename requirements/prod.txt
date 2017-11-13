@@ -4,7 +4,7 @@
 -e git+https://github.com/scrapy/scrapy.git#egg=Scrapy  #Scrapy==1.4.0
 
 googlemaps==2.5.1
-keyring==10.4.0
+keyring==10.5.0
 requests==2.18.4
 IMAPClient==1.0.2
 arrow==0.10.0
