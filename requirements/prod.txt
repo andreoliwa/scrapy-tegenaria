@@ -6,7 +6,7 @@
 googlemaps==2.5.1
 keyring==10.5.0
 requests==2.18.4
-IMAPClient==1.0.2
+IMAPClient==1.1.0
 arrow==0.10.0
 marshmallow==2.14.0
 click==6.7
