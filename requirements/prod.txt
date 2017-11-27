@@ -10,7 +10,7 @@ IMAPClient==1.0.2
 arrow==0.10.0
 marshmallow==2.14.0
 click==6.7
-plumbum==1.6.3
+plumbum==1.6.4
 prettyconf==1.2.3
 
 # Flask
