@@ -1,12 +1,12 @@
 """Generic utilities that can be reused by other projects."""
-import re
+import re  # noqa
 from getpass import getpass
 from typing import Any, Optional
 
-import arrow as arrow
-import keyring
+import arrow  # noqa
 from alembic import op
 from flask import json
+from keyring import get_password, set_password
 from markupsafe import Markup
 from sqlalchemy import Column
 
@@ -22,13 +22,13 @@ def read_from_keyring(project_name, key, secret=True, always_ask=False):
     :param always_ask: Always ask for the value in a prompt.
     :return: Value stored in the keyring.
     """
-    value = keyring.get_password(project_name, key)
+    value = get_password(project_name, key)
     if not value or always_ask:
         prompt_function = getpass if secret else input
         value = prompt_function("Type a value for the key '{}.{}': ".format(project_name, key))
     if not value:
         raise ValueError('{}.{} is not set in the keyring.'.format(project_name, key))
-    keyring.set_password(project_name, key, value)
+    set_password(project_name, key, value)
     return value
 
 

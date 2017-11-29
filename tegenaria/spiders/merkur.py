@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Apartments from the Merkur Berlin real estate agency."""
-import re
+import re  # noqa
 
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader

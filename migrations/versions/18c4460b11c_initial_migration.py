@@ -4,7 +4,7 @@ Revision ID: 18c4460b11c
 Revises: None
 Create Date: 2015-08-10 00:12:27.516484
 """
-import sqlalchemy as sa
+import sqlalchemy as sa  # noqa
 from alembic import op
 
 revision = '18c4460b11c'

@@ -5,7 +5,7 @@ Define here the models for your scraped items.
 See documentation in:
 http://doc.scrapy.org/en/latest/topics/items.html
 """
-import re
+import re  # noqa
 
 from scrapy import Field, Item
 from scrapy.loader.processors import Join, MapCompose

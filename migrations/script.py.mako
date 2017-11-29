@@ -2,8 +2,8 @@
 
 Create Date: ${create_date}
 """
+import sqlalchemy as sa  # noqa
 from alembic import op
-import sqlalchemy as sa
 ${imports if imports else ""}
 
 revision = ${repr(up_revision)}
