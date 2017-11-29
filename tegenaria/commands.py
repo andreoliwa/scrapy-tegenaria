@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """Click commands."""
-import os
+import os  # noqa
 from glob import glob
 from subprocess import call
 
-import click
+from click import argument, command, echo, option
 from flask import current_app
 from flask.cli import with_appcontext
 from plumbum import RETCODE, local
@@ -21,11 +21,11 @@ PROJECT_ROOT = os.path.join(HERE, os.pardir)
 TEST_PATH = os.path.join(PROJECT_ROOT, 'tests')
 
 
-@click.command()
+@command()
 def test():
     """Run the tests and check spider contracts."""
-    import pytest
-    rv = pytest.main([TEST_PATH, '--verbose'])
+    from pytest import main
+    rv = main([TEST_PATH, '--verbose'])
     if rv:
         exit(rv)
 
@@ -35,8 +35,8 @@ def test():
     exit(rv)
 
 
-@click.command()
-@click.option('-f', '--fix-imports', default=False, is_flag=True,
+@command()
+@option('-f', '--fix-imports', default=False, is_flag=True,
               help='Fix imports using isort, before linting')
 def lint(fix_imports):
     """Lint and check code style with flake8 and isort."""
@@ -50,7 +50,7 @@ def lint(fix_imports):
     def execute_tool(description, *args):
         """Execute a checking tool with its arguments."""
         command_line = list(args) + files_and_directories
-        click.echo('{}: {}'.format(description, ' '.join(command_line)))
+        echo('{}: {}'.format(description, ' '.join(command_line)))
         rv = call(command_line)
         if rv != 0:
             exit(rv)
@@ -60,7 +60,7 @@ def lint(fix_imports):
     execute_tool('Checking code style', 'flake8')
 
 
-@click.command()
+@command()
 def clean():
     """Remove *.pyc and *.pyo files recursively starting at current directory.
 
@@ -70,15 +70,13 @@ def clean():
         for filename in file_names:
             if filename.endswith('.pyc') or filename.endswith('.pyo'):
                 full_pathname = os.path.join(dir_path, filename)
-                click.echo('Removing {}'.format(full_pathname))
+                echo('Removing {}'.format(full_pathname))
                 os.remove(full_pathname)
 
 
-@click.command()
-@click.option('--url', default=None,
-              help='Url to test (ex. /static/image.png)')
-@click.option('--order', default='rule',
-              help='Property on Rule to order by (default: rule)')
+@command()
+@option('--url', default=None, help='Url to test (ex. /static/image.png)')
+@option('--order', default='rule', help='Property on Rule to order by (default: rule)')
 @with_appcontext
 def urls(url, order):
     """Display all of the url matching routes for the project.
@@ -132,21 +130,21 @@ def urls(url, order):
         str_template += '  {:' + str(max_arguments_length) + '}'
         table_width += 2 + max_arguments_length
 
-    click.echo(str_template.format(*column_headers[:column_length]))
-    click.echo('-' * table_width)
+    echo(str_template.format(*column_headers[:column_length]))
+    echo('-' * table_width)
 
     for row in rows:
-        click.echo(str_template.format(*row[:column_length]))
+        echo(str_template.format(*row[:column_length]))
 
 
-@click.command()
+@command()
 @with_appcontext
 def distance():
     """Calculate distances."""
     DistanceCalculator().calculate()
 
 
-@click.command()
+@command()
 @with_appcontext
 def vacuum():
     """Vacuum clean apartments: deactivate 404 pages, reprocess records with empty addresses."""
@@ -154,8 +152,8 @@ def vacuum():
     reprocess_invalid_apartments(read_from_keyring(PROJECT_NAME, 'json_dir', secret=False))
 
 
-@click.command()
-@click.argument('spiders', nargs=-1)
+@command()
+@argument('spiders', nargs=-1)
 def crawl(spiders):
     """Crawl the desired spiders.
 

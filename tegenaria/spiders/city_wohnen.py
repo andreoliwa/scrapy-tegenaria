@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """Furnished apartments from City Wohnen."""
-import re
+import re  # noqa
 from datetime import datetime
 from typing import Any, Dict
 from urllib.parse import unquote_plus
 
-import requests
+import requests  # noqa
 from scrapy import Request
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader

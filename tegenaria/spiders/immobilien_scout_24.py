@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """A spider to crawl the Immobilien Scout 24 website."""
-import itertools
-import re
+import re  # noqa
 from getpass import getpass
+from itertools import chain
 from typing import Any, Dict
 
-import keyring
 from imapclient import IMAPClient
+from keyring import get_password, set_password
 from scrapy import Request, Spider
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
@@ -49,7 +49,7 @@ class ImmobilienScout24Spider(Spider, SpiderMixin):
         """Read e-mails (if any) and then crawl URLs."""
         # TODO: get this from .env or from spider arguments
         # self.start_urls = json_config(__file__, 'start_urls')
-        return itertools.chain(
+        return chain(
             self.read_emails(),
             super(ImmobilienScout24Spider, self).start_requests())
 
@@ -131,7 +131,7 @@ class ImmobilienScout24Spider(Spider, SpiderMixin):
             self.logger.info('Empty host')
             return
 
-        password = keyring.get_password(IMAP_HOST, IMAP_USERNAME)
+        password = get_password(IMAP_HOST, IMAP_USERNAME)
         if not password or ask_password:
             password = getpass(prompt='Type your email password: ')
         if not password:
@@ -140,7 +140,7 @@ class ImmobilienScout24Spider(Spider, SpiderMixin):
 
         server = IMAPClient(IMAP_HOST, use_uid=True, ssl=True)
         server.login(IMAP_USERNAME, password)
-        keyring.set_password(IMAP_HOST, IMAP_USERNAME, password)
+        set_password(IMAP_HOST, IMAP_USERNAME, password)
         server.select_folder(IMAP_FOLDER)
         messages = server.search('UNSEEN')
         self.logger.info("%d unread messages in folder '%s'.", len(messages), IMAP_FOLDER)

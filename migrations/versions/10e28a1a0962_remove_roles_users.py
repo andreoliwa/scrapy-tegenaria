@@ -2,7 +2,7 @@
 
 Create Date: 2017-03-26 04:38:43.954950
 """
-import sqlalchemy as sa
+import sqlalchemy as sa  # noqa
 from alembic import op
 from sqlalchemy.dialects import postgresql
 

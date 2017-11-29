@@ -2,7 +2,7 @@
 
 Create Date: 2017-10-07 03:18:39.964460
 """
-import sqlalchemy as sa
+import sqlalchemy as sa  # noqa
 from alembic import op
 
 revision = '39dde2613b9f'

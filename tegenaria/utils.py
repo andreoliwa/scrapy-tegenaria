@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """Helper utilities and decorators."""
-import logging
-import os
+import logging  # noqa
+import os  # noqa
 from datetime import date, datetime, timedelta
 from itertools import cycle
 
-import requests
+import requests  # noqa
 from flask import flash, json
 from googlemaps import Client
 from googlemaps.exceptions import ApiError, HTTPError, Timeout
