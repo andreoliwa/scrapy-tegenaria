@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Furnished and regular apartments from Berlinovo."""
-import re
+import re  # noqa
 
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader

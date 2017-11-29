@@ -3,7 +3,7 @@
 """Setup script."""
 from setuptools import find_packages, setup
 
-import tegenaria
+from tegenaria import __version__
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
@@ -23,7 +23,7 @@ test_requirements.extend(requirements)
 
 setup(
     name='tegenaria',
-    version=tegenaria.__version__,
+    version=__version__,
     description='Scrapy spiders to collect different items.',
     long_description=readme + '\n\n' + history,
     author='Wagner Augusto Andreoli',

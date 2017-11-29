@@ -4,7 +4,7 @@ Revision ID: 2ac931bbe13
 Revises: 18c4460b11c
 Create Date: 2015-08-23 02:31:31.170542
 """
-import sqlalchemy as sa
+import sqlalchemy as sa  # noqa
 from alembic import op
 
 revision = '2ac931bbe13'

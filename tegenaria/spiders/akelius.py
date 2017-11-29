@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Apartments from the Akelius real estate agency."""
-import re
+import re  # noqa
 
-import requests
+import requests  # noqa
 from lxml import etree
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
