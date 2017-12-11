@@ -95,7 +95,7 @@ class CityWohnenSpider(CrawlSpider, SpiderMixin):
             data.update(match.groupdict())
             if field == 'availability':
                 # Must be an ISO date for the database.
-                data['availability'] = datetime.strptime(data.get('availability'), '%d/%m/%Y').date().isoformat()
+                data['availability'] = datetime.strptime(data.get('availability', ''), '%d/%m/%Y').date().isoformat()
             elif field == 'address':
                 # Decode the URL.
                 data['address'] = unquote_plus(data['address'])

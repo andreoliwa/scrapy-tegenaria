@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Setup script."""
 from setuptools import find_packages, setup
+import toml
 
 from tegenaria import __version__
 
@@ -11,14 +12,10 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read().replace('.. :changelog:', '')
 
-with open('requirements/prod.txt') as txt_file:
-    lines = txt_file.read()
-requirements = [line for line in lines.split('\n') if '=' in line]
-
-with open('requirements/dev.txt') as txt_file:
-    lines = txt_file.read()
-test_requirements = [line for line in lines.split('\n') if '=' in line]
-test_requirements.extend(requirements)
+pip_file = toml.load(open('Pipfile'))
+# TODO: Get pinned versions or commits from Git. This solution looks better: https://stackoverflow.com/a/47594760
+requirements = list(pip_file['packages'].keys())
+test_requirements = list(pip_file['dev-packages'].keys())
 
 
 setup(
@@ -41,7 +38,7 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
-        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.6',
     ],
     test_suite='tests',
     tests_require=test_requirements,
