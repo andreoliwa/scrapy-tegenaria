@@ -16,7 +16,8 @@ python:
 #  - postgresql
 install:
 #  - pip install codecov
-  - pip install -r requirements/dev.txt
+  - pip install pipenv
+  - pipenv install --dev
 before_script:
   - pip freeze
 #  - psql -U postgres -c 'CREATE USER tegenaria;'
