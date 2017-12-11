@@ -8,7 +8,7 @@ keyring==10.5.0
 requests==2.18.4
 IMAPClient==1.1.0
 arrow==0.12.0
-marshmallow==2.14.0
+marshmallow==2.15.0
 click==6.7
 plumbum==1.6.4
 prettyconf==1.2.3
@@ -16,7 +16,7 @@ prettyconf==1.2.3
 # Flask
 Flask==0.12.2
 MarkupSafe==1.0
-Werkzeug==0.12.2
+Werkzeug==0.13
 Jinja2==2.10
 itsdangerous==0.24
 Flask-Admin==1.5.0
