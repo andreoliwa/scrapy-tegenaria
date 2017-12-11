@@ -6,6 +6,7 @@ from flask_admin.contrib.sqla.filters import FilterEmpty
 from flask_admin.model import typefmt
 from sqlalchemy import func, lateral, true
 
+from tegenaria.extensions import db
 from tegenaria.generic import format_as_human_date, format_json_textarea, render_link, when_none
 from tegenaria.models import Apartment, Distance, Pin
 
@@ -71,6 +72,14 @@ class ApartmentModelView(ModelView):
     details_modal = True
     edit_modal = True
 
+    custom_where = [
+        # Apartment.rooms == 3,
+    ]
+
+    custom_order_by = [
+        Apartment.rooms >= 2.5,
+    ]
+
     def get_query(self):
         """Return a query for apartments and their distances to pins."""
         lateral_pin = lateral(
@@ -84,10 +93,22 @@ class ApartmentModelView(ModelView):
         # AttributeError: 'result' object has no attribute 'id'
         columns = [c for c in Apartment.__table__.columns] + \
                   [lateral_pin.c.pin_address, lateral_distance.c.minutes, lateral_distance.c.meters]
+        for index, expression in enumerate(self.custom_order_by):
+            name = f'order_criteria_{index}'
+            case_column = db.case([(expression, 0)], else_=1).label(name)
+            columns.append(case_column)
+
         query = self.session.query(*columns).filter(Apartment.active.is_(True))
 
         # All pins that might have a distance or not.
-        return query.join(lateral_pin, true()).outerjoin(lateral_distance, true())
+        query = query.join(lateral_pin, true()).outerjoin(lateral_distance, true())
+        query = query.filter(*self.custom_where)
+        return query
+
+    def _order_by(self, query, joins, sort_joins, sort_field, sort_desc):
+        for index in range(len(self.custom_order_by)):
+            query = query.order_by(f'order_criteria_{index}')
+        return super()._order_by(query, joins, sort_joins, sort_field, sort_desc)
 
     def get_count_query(self):
         """Return the count query for the query above."""
