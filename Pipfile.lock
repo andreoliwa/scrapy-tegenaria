@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "6a69b3786a0493f47167a90a16376f9593b2e511596484f74d663fb1373b95cb"
+            "sha256": "35efcb2a254b5aa670356708c0f626aa9b971e8b581902edf61b85b650dcf0bb"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -743,13 +743,6 @@
                 "sha256:4b9ee1d9f790826fb576830f75635fb6a9092484939be67869953df027b42110"
             ],
             "version": "==2.2.2"
-        },
-        "flake8-module-imports": {
-            "hashes": [
-                "sha256:f27193cb6daac18824c1ec97cdee51c7774458e87bffa791136bafee2c34a650",
-                "sha256:984088d74ffc8a2b56751ddb74f5185c5eddfaf3ae6224c2382be8c890b15f99"
-            ],
-            "version": "==1.1"
         },
         "flake8-mypy": {
             "hashes": [

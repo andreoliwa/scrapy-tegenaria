@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Setup script."""
-from setuptools import find_packages, setup
 import toml
+from setuptools import find_packages, setup
 
 from tegenaria import __version__
 
