@@ -68,7 +68,7 @@ class ImmoWeltSpider(CrawlSpider, SpiderMixin):
             data['neighborhood'] = city_neighborhood.replace('Berlin', '').strip(' ()')
 
         if not data.get('warm_rent_price', 0):
-            result = 0
+            result = 0.0
             for field in ('cold_rent_price', 'additional_price', 'heating_price'):
                 try:
                     result += float(data.get(field, 0))

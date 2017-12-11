@@ -3,7 +3,7 @@
 import re  # noqa
 from getpass import getpass
 from itertools import chain
-from typing import Any, Dict
+from typing import Any, Dict, Set
 
 from imapclient import IMAPClient
 from keyring import get_password, set_password
@@ -32,7 +32,7 @@ class ImmobilienScout24Spider(Spider, SpiderMixin):
         'https://www.immobilienscout24.de/Suche/S-T/Wohnung-Miete/Fahrzeitsuche/Berlin/10178/228300/2512424'
         '/Alexanderstra_dfe/-/30/-3,00?enteredFrom=result_list',
     )
-    searched_pages = set()
+    searched_pages: Set[str] = set()
 
     CITY = ' Berlin'
     DIV_PRE_MAPPING = {
