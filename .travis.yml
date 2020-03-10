@@ -4,10 +4,12 @@ dist: trusty
 language: python
 cache: pip
 env:
-  - FLASK_APP=autoapp.py
-  - FLASK_DEBUG=1
-python:
-  - 3.7
+  global:
+    - FLASK_APP=autoapp.py
+    - FLASK_DEBUG=1
+jobs:
+  include:
+    - python: 3.7
 # TODO Database and code coverage later
 #services:
 #  - postgresql
