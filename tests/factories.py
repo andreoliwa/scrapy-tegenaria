@@ -20,8 +20,8 @@ class BaseFactory(SQLAlchemyModelFactory):
 class PinFactory(BaseFactory):
     """Pin factory."""
 
-    name = Sequence(lambda n: 'name{0}'.format(n))
-    address = Sequence(lambda n: 'address {0}'.format(n))
+    name = Sequence(lambda n: "name{}".format(n))
+    address = Sequence(lambda n: "address {}".format(n))
 
     class Meta:
         """Configuration of this factory."""

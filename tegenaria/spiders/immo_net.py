@@ -12,16 +12,20 @@ from tegenaria.spiders import SpiderMixin
 class ImmoNetSpider(CrawlSpider, SpiderMixin):
     """Flats from ImmoNet."""
 
-    name = 'immo_net'
-    allowed_domains = ['immonet.de']
+    name = "immo_net"
+    allowed_domains = ["immonet.de"]
     start_urls = [
-        'https://www.immonet.de/berlin/wohnung-mieten.html',
+        "https://www.immonet.de/berlin/wohnung-mieten.html",
     ]
 
     rules = (
-        Rule(LinkExtractor(allow=r'/berlin/.+(wohnung|wg|wohnen|haus)',
-                           deny='/berlin/.+(studenten|senioren|behinderten|immobilien)')),
-        Rule(LinkExtractor(allow=r'/angebot', process_value=url_query_cleaner), callback='parse_item', follow=True),
+        Rule(
+            LinkExtractor(
+                allow=r"/berlin/.+(wohnung|wg|wohnen|haus)",
+                deny="/berlin/.+(studenten|senioren|behinderten|immobilien)",
+            )
+        ),
+        Rule(LinkExtractor(allow=r"/angebot", process_value=url_query_cleaner), callback="parse_item", follow=True),
     )
 
     def parse_item(self, response):
@@ -34,15 +38,22 @@ class ImmoNetSpider(CrawlSpider, SpiderMixin):
         """
         self.shutdown_on_error()
         item = ItemLoader(ApartmentItem(), response=response)
-        item.add_value('url', response.url)
-        item.add_xpath('title', '//h1/text()')
-        item.add_xpath('address', '//div[contains(@class, "row")]//span[@id = "infobox-static-address"]/text()')
+        item.add_value("url", response.url)
+        item.add_xpath("title", "//h1/text()")
+        item.add_xpath("address", '//div[contains(@class, "row")]//span[@id = "infobox-static-address"]/text()')
 
-        for field, id_ in {'rooms': 'equipmentid_1', 'size': 'areaid_1', 'cold_rent_price': 'priceid_2',
-                           'warm_rent_price': 'priceid_4', 'additional_price': 'priceid_20',
-                           'heating_price': 'priceid_5', 'description': 'objectDescription',
-                           'equipment': 'ausstattung', 'location': 'locationDescription',
-                           'other': 'otherDescription'}.items():
+        for field, id_ in {
+            "rooms": "equipmentid_1",
+            "size": "areaid_1",
+            "cold_rent_price": "priceid_2",
+            "warm_rent_price": "priceid_4",
+            "additional_price": "priceid_20",
+            "heating_price": "priceid_5",
+            "description": "objectDescription",
+            "equipment": "ausstattung",
+            "location": "locationDescription",
+            "other": "otherDescription",
+        }.items():
             item.add_xpath(field, '//*[@id="{}"]/text()'.format(id_))
 
         yield item.load_item()

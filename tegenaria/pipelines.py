@@ -30,13 +30,13 @@ class ApartmentPipeline(object):
         """Process an item through the pipeline."""
         try:
             schema = ApartmentSchema()
-            schema.context['spider'] = spider
+            schema.context["spider"] = spider
 
             json_data = dict(item)
-            json_data['json'] = dict(item)
-            json_data['errors'] = None
+            json_data["json"] = dict(item)
+            json_data["errors"] = None
 
-            apartment = Apartment.get_or_create(item['url'])
+            apartment = Apartment.get_or_create(item["url"])
             result = schema.load(json_data, instance=apartment)
             if result.errors:
                 # Apply all valid fields to the new instance.
@@ -56,5 +56,5 @@ class ApartmentPipeline(object):
             raise
         except Exception as err:
             spider.shutdown_message = str(err)
-            raise CloseSpider('[{}] {}'.format(self.__class__.__name__, spider.shutdown_message))
+            raise CloseSpider("[{}] {}".format(self.__class__.__name__, spider.shutdown_message))
         return item

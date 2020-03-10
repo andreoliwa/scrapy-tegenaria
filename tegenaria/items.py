@@ -5,31 +5,31 @@ Define here the models for your scraped items.
 See documentation in:
 http://doc.scrapy.org/en/latest/topics/items.html
 """
-import re  # noqa
+import re
 
 from scrapy import Field, Item
 from scrapy.loader.processors import Join, MapCompose
 
-REGEX_DIGITS_SEPARATORS_ONLY = re.compile(r'[\d,.]+')
-REGEX_DECIMAL_POINT = re.compile(r'^[\d,]+\.\d{1,2}$')
-REGEX_DECIMAL_COMMA = re.compile(r'^[\d.]+,\d{1,2}$')
-REGEX_GROUP_OF_THREE_COMMA = re.compile(r'^\d+(,\d{3})+$')
-REGEX_GROUP_OF_THREE_POINT = re.compile(r'^\d+(.\d{3})+$')
+REGEX_DIGITS_SEPARATORS_ONLY = re.compile(r"[\d,.]+")
+REGEX_DECIMAL_POINT = re.compile(r"^[\d,]+\.\d{1,2}$")
+REGEX_DECIMAL_COMMA = re.compile(r"^[\d.]+,\d{1,2}$")
+REGEX_GROUP_OF_THREE_COMMA = re.compile(r"^\d+(,\d{3})+$")
+REGEX_GROUP_OF_THREE_POINT = re.compile(r"^\d+(.\d{3})+$")
 
 
 def clean_number(value: str) -> str:
     """Clean a numeric value, fix the decimal separator, remove any extra chars."""
     digits_separators = REGEX_DIGITS_SEPARATORS_ONLY.findall(value)
-    value = ''.join(digits_separators)
+    value = "".join(digits_separators)
 
     if REGEX_DECIMAL_POINT.match(value) or REGEX_GROUP_OF_THREE_COMMA.match(value):
-        value = value.replace(',', '')
+        value = value.replace(",", "")
     elif REGEX_DECIMAL_COMMA.match(value) or REGEX_GROUP_OF_THREE_POINT.match(value):
-        value = value.replace('.', '').replace(',', '.')
+        value = value.replace(".", "").replace(",", ".")
 
-    for ending in ('.00', '.0'):
+    for ending in (".00", ".0"):
         if value.endswith(ending):
-            value = value[0:-len(ending)]
+            value = value[0 : -len(ending)]
     return value
 
 

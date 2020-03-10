@@ -1,11 +1,16 @@
-[[source]]
-url = "https://pypi.python.org/simple"
-verify_ssl = true
-name = "pypi"
+[tool.nitpick]
+# Use the default style and override some things (like the Python version)
+style = ["https://raw.githubusercontent.com/andreoliwa/nitpick/develop/nitpick-style.toml"]
 
-[packages]
-# Fetch from Github to fix this bug: https://github.com/scrapy/scrapy/issues/2914
-scrapy = {git = "https://github.com/scrapy/scrapy.git", editable = true}
+[tool.poetry]
+name = "scrapy-tegenaria"
+version = "0.1.0"
+description = "🕷🕸 Spiders to crawl ads of houses and apartments. 🏠🏢"
+authors = ["Augusto Wagner Andreoli <andreoliwa@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+scrapy = "*"
 googlemaps = "*"
 keyring = "*"
 requests = "*"
@@ -32,7 +37,7 @@ wtforms = "*"
 gunicorn = "*"
 toml = "*"
 
-[dev-packages]
+[tool.poetry.dev-dependencies]
 flask-debugtoolbar = "*"
 flask-script = "*"
 pytest = "*"
@@ -55,3 +60,12 @@ sphinx = "*"
 "flake8-polyfill" = "*"
 "flake8-pytest" = "*"
 "flake8-quotes" = "*"
+ipython = "*"
+pylint = "*"
+
+[tool.black]
+line-length = 120
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
