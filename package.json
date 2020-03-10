@@ -1,0 +1,47 @@
+{
+  "name": "scrapy-tegenaria",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andreoliwa/scrapy-tegenaria"
+  },
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogFile": "CHANGELOG.md"
+        }
+      ],
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "bumpversion --allow-dirty --no-commit --no-tag --new-version ${nextRelease.version} patch && pre-commit run --all-files end-of-file-fixer || true"
+        }
+      ],
+      "@semantic-release/github",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "setup.cfg",
+            "src/tegenaria/__init__.py",
+            "pyproject.toml",
+            "package.json",
+            "docs/conf.py",
+            "README.rst",
+            "CHANGELOG.md",
+            "setup.py"
+          ]
+        }
+      ]
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  }
+}

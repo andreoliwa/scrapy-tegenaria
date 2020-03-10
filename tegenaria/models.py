@@ -9,7 +9,7 @@ from tegenaria.database import Column, Model, SurrogatePK, db, reference_column,
 class Apartment(SurrogatePK, Model):
     """A home (apartment, flat, etc.)."""
 
-    __tablename__ = 'apartment'
+    __tablename__ = "apartment"
 
     url = Column(db.String(), unique=True, nullable=False)
     active = Column(db.Boolean, default=True, nullable=False)
@@ -25,8 +25,8 @@ class Apartment(SurrogatePK, Model):
     additional_price = Column(db.Numeric(10, 2))
     heating_price = Column(db.Numeric(10, 2))
 
-    opinion_id = reference_column('opinion', True)
-    opinion = relationship('Opinion')
+    opinion_id = reference_column("opinion", True)
+    opinion = relationship("Opinion")
 
     description = Column(db.String())
     equipment = Column(db.String())
@@ -41,11 +41,11 @@ class Apartment(SurrogatePK, Model):
     created_at = Column(db.DateTime, default=func.now())
     updated_at = Column(db.DateTime, onupdate=func.now(), default=func.now())
 
-    distances = relationship('Distance')
+    distances = relationship("Distance")
 
     def __repr__(self):
         """Represent the object as a unique string."""
-        return '<Apartment({}: {} {})>'.format(self.id, self.url, self.opinion.title if self.opinion else '')
+        return "<Apartment({}: {} {})>".format(self.id, self.url, self.opinion.title if self.opinion else "")
 
     @classmethod
     def get_or_create(cls, url: str):
@@ -60,7 +60,7 @@ class Apartment(SurrogatePK, Model):
 class Opinion(SurrogatePK, Model):
     """An opinion about an apartment."""
 
-    __tablename__ = 'opinion'
+    __tablename__ = "opinion"
 
     title = Column(db.String())
 
@@ -68,26 +68,26 @@ class Opinion(SurrogatePK, Model):
 class Pin(SurrogatePK, Model):
     """A pin in the map, a reference address to be used when calculating distances."""
 
-    __tablename__ = 'pin'
+    __tablename__ = "pin"
 
     name = Column(db.String())
     address = Column(db.String())
 
     def __repr__(self):
         """Represent the object as a unique string."""
-        return '<Pin({}, {})>'.format(self.name, self.address)
+        return "<Pin({}, {})>".format(self.name, self.address)
 
 
 class Distance(SurrogatePK, Model):
     """Distance from a pin to an apartment."""
 
-    __tablename__ = 'distance'
+    __tablename__ = "distance"
 
-    apartment_id = reference_column('apartment')
-    apartment = relationship('Apartment')
+    apartment_id = reference_column("apartment")
+    apartment = relationship("Apartment")
 
-    pin_id = reference_column('pin')
-    pin = relationship('Pin')
+    pin_id = reference_column("pin")
+    pin = relationship("Pin")
 
     meters = Column(db.Integer(), nullable=False)
     minutes = Column(db.Integer(), nullable=False)
@@ -99,4 +99,5 @@ class Distance(SurrogatePK, Model):
     def __repr__(self):
         """Represent the object as a unique string."""
         return "<Distance('{}' to '{}', {}m / {} min.)>".format(
-            self.apartment.address, self.pin.address, self.meters, self.minutes)
+            self.apartment.address, self.pin.address, self.meters, self.minutes
+        )

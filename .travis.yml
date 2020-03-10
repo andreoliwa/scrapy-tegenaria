@@ -1,12 +1,13 @@
 # Config file for automatic testing at travis-ci.org
-sudo: false  # http://docs.travis-ci.com/user/migrating-from-legacy/
-dist: trusty
+os: linux
+dist: xenial
 language: python
 cache: pip
 env:
-- FLASK_APP=autoapp.py FLASK_DEBUG=1
-python:
-  - 3.6
+  global:
+    - FLASK_APP=autoapp.py
+    - FLASK_DEBUG=1
+python: 3.7
 # TODO Database and code coverage later
 #services:
 #  - postgresql
@@ -15,17 +16,15 @@ python:
 #  hosts:
 #  - postgresql
 install:
-#  - pip install codecov
-  - pip install pipenv
-  - pipenv install --dev
+  - pip3 install --upgrade pip poetry coveralls pre-commit
+  - poetry install --no-ansi --no-interaction
 before_script:
   - pip freeze
 #  - psql -U postgres -c 'CREATE USER tegenaria;'
 #  - psql -U postgres -c 'CREATE DATABASE tegenaria_test;'
 #  - psql -U postgres -c 'GRANT ALL PRIVILEGES ON DATABASE tegenaria_test TO tegenaria;'
-before_script:
-  - flask lint
-script: flask test
+script:
+  - pre-commit run --all-files
 #after_success:
 #  - codecov
 after_failure:

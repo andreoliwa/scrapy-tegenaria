@@ -3,8 +3,9 @@ This package will contain the spiders of your Scrapy project.
 
 Please refer to the documentation for information on how to create and manage your spiders.
 """
+from typing import Any, Dict
+
 from scrapy.exceptions import CloseSpider
-from typing import Dict, Any
 
 
 class SpiderMixin:

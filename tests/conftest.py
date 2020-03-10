@@ -8,7 +8,7 @@ from tegenaria.database import db as _db
 from tegenaria.settings import TestConfig
 
 
-@yield_fixture(scope='function')
+@yield_fixture(scope="function")
 def app():
     """Yield a new app."""
     _app = create_app(TestConfig)
@@ -20,13 +20,13 @@ def app():
     ctx.pop()
 
 
-@fixture(scope='function')
+@fixture(scope="function")
 def testapp(app):
     """A Webtest app."""
     return TestApp(app)
 
 
-@yield_fixture(scope='function')
+@yield_fixture(scope="function")
 def db(app):
     """Yield an empty database."""
     _db.app = app

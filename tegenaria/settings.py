@@ -9,8 +9,8 @@ http://doc.scrapy.org/en/latest/topics/settings.html
 http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 """
-import os  # noqa
-from typing import List  # noqa
+import os
+from typing import List
 
 from prettyconf import config
 
@@ -18,7 +18,7 @@ from prettyconf import config
 class Config(object):
     """App configuration."""
 
-    SECRET_KEY = os.environ.get('TEGENARIA_SECRET', 'secret-key')  # TODO: Change me
+    SECRET_KEY = os.environ.get("TEGENARIA_SECRET", "secret-key")  # TODO: Change me
     APP_DIR = os.path.abspath(os.path.dirname(__file__))  # This directory
     PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
     ASSETS_DEBUG = False
@@ -30,20 +30,20 @@ class Config(object):
 class ProdConfig(Config):
     """Production configuration."""
 
-    ENV = 'prod'
+    ENV = "prod"
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = 'postgresql://tegenaria:tegenaria@localhost:5440/tegenaria'
+    SQLALCHEMY_DATABASE_URI = "postgresql://tegenaria:tegenaria@localhost:5440/tegenaria"
     DEBUG_TB_ENABLED = False  # Disable Debug toolbar
 
 
 class DevConfig(Config):
     """Development configuration."""
 
-    ENV = 'dev'
+    ENV = "dev"
     DEBUG = True
-    DB_NAME = 'dev.db'
+    DB_NAME = "dev.db"
     # Put the db file in project root
-    SQLALCHEMY_DATABASE_URI = 'postgresql://tegenaria_dev:tegenaria_dev@localhost:5440/tegenaria_dev'
+    SQLALCHEMY_DATABASE_URI = "postgresql://tegenaria_dev:tegenaria_dev@localhost:5440/tegenaria_dev"
     ASSETS_DEBUG = True  # Don't bundle/minify static assets
 
 
@@ -52,16 +52,16 @@ class TestConfig(Config):
 
     TESTING = True
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite://'
+    SQLALCHEMY_DATABASE_URI = "sqlite://"
     WTF_CSRF_ENABLED = False  # Allows form testing
 
 
-GOOGLE_MATRIX_API_KEYS = config('GOOGLE_MATRIX_API_KEYS', cast=config.list, default=[])  # type: List[str]
+GOOGLE_MATRIX_API_KEYS = config("GOOGLE_MATRIX_API_KEYS", cast=config.list, default=[])  # type: List[str]
 
-BOT_NAME = 'tegenaria'
+BOT_NAME = "tegenaria"
 
-SPIDER_MODULES = ['tegenaria.spiders']
-NEWSPIDER_MODULE = 'tegenaria.spiders'
+SPIDER_MODULES = ["tegenaria.spiders"]
+NEWSPIDER_MODULE = "tegenaria.spiders"
 
 # FEED_URI = 'file:///tmp/tegenaria/%(name)s.json'
 # FEED_FORMAT = 'jsonlines'
@@ -75,7 +75,7 @@ CONCURRENT_REQUESTS = 1
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = config('DOWNLOAD_DELAY', cast=float, default=0.5)
+DOWNLOAD_DELAY = config("DOWNLOAD_DELAY", cast=float, default=0.5)
 
 # The download delay setting will honor only one of:
 # CONCURRENT_REQUESTS_PER_DOMAIN=16
@@ -114,7 +114,7 @@ DOWNLOAD_DELAY = config('DOWNLOAD_DELAY', cast=float, default=0.5)
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'tegenaria.pipelines.ApartmentPipeline': 300,
+    "tegenaria.pipelines.ApartmentPipeline": 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -135,7 +135,7 @@ HTTPCACHE_ENABLED = True
 # HTTPCACHE_DIR = 'httpcache'
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-HTTPCACHE_POLICY = 'scrapy.extensions.httpcache.RFC2616Policy'
+HTTPCACHE_POLICY = "scrapy.extensions.httpcache.RFC2616Policy"
 
 # https://doc.scrapy.org/en/latest/topics/extensions.html#closespider-errorcount
 CLOSESPIDER_ERRORCOUNT = 1

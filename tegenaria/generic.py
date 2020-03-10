@@ -1,16 +1,16 @@
 """Generic utilities that can be reused by other projects."""
-import re  # noqa
+import re
 from getpass import getpass
 from typing import Any, Optional
 
-import arrow  # noqa
+import arrow
 from alembic import op
 from flask import json
 from keyring import get_password, set_password
 from markupsafe import Markup
 from sqlalchemy import Column
 
-FIELDS_REGEX = re.compile(r'{([^}]+)}')
+FIELDS_REGEX = re.compile(r"{([^}]+)}")
 
 
 def read_from_keyring(project_name, key, secret=True, always_ask=False):
@@ -27,7 +27,7 @@ def read_from_keyring(project_name, key, secret=True, always_ask=False):
         prompt_function = getpass if secret else input
         value = prompt_function("Type a value for the key '{}.{}': ".format(project_name, key))
     if not value:
-        raise ValueError('{}.{} is not set in the keyring.'.format(project_name, key))
+        raise ValueError("{}.{} is not set in the keyring.".format(project_name, key))
     set_password(project_name, key, value)
     return value
 
@@ -37,21 +37,28 @@ def format_as_human_date(view, value):
     return arrow.get(value).humanize()
 
 
-def render_link(url: str, text: str = None, target: Optional[str] = '_blank', title: str = None) -> str:
+def render_link(url: str, text: str = None, target: Optional[str] = "_blank", title: str = None) -> str:
     """Render a HTML link (the <a> tag)."""
-    return Markup('<a title="{title}" href="{url}"{target}>{text}</a>'.format(
-        url=url, text=text,
-        target=' target="{}"'.format(target) if target else '',
-        title=title if title else text))
+    return Markup(
+        '<a title="{title}" href="{url}"{target}>{text}</a>'.format(
+            url=url, text=text, target=' target="{}"'.format(target) if target else "", title=title if title else text
+        )
+    )
 
 
-def when_none(value: Any, something: Any = '') -> str:
+def when_none(value: Any, something: Any = "") -> str:
     """Return something when the value is None. Default: empty string."""
     return something if value is None else value
 
 
-def add_mandatory_column(table_name: str, column_name: str, column_type: Any, default_value: str = None,
-                         column_exists: bool = False, update_only_null: bool = False):
+def add_mandatory_column(
+    table_name: str,
+    column_name: str,
+    column_type: Any,
+    default_value: str = None,
+    column_exists: bool = False,
+    update_only_null: bool = False,
+):
     """Add a mandatory column to a table.
 
     NOT NULL fields must be populated with some value before setting `nullable=False`.
@@ -65,7 +72,7 @@ def add_mandatory_column(table_name: str, column_name: str, column_type: Any, de
     :param update_only_null: Flag to only update values that are null and leave the others
     """
     if default_value is None:
-        default_value = 'uuid_generate_v4()'
+        default_value = "uuid_generate_v4()"
 
     if not column_exists:
         op.add_column(table_name, Column(column_name, column_type, nullable=True))
@@ -85,5 +92,6 @@ def format_json_textarea(view, value):
     - Better formatting (don't use textarea);
     - Highlight with Pygments.
     """
-    return Markup('<pre><textarea rows="30" cols="50">{0}</textarea></pre>'.format(
-        json.dumps(value, indent=2, sort_keys=True)))
+    return Markup(
+        '<pre><textarea rows="30" cols="50">{}</textarea></pre>'.format(json.dumps(value, indent=2, sort_keys=True))
+    )
