@@ -89,6 +89,7 @@ output/*/index.html
 # Virtualenvs
 env/
 .venv
+*.env
 
 # PyCharm
 .idea/

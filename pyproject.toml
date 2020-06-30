@@ -6,7 +6,7 @@ style = ["https://raw.githubusercontent.com/andreoliwa/nitpick/develop/nitpick-s
 name = "scrapy-tegenaria"
 version = "0.1.0"
 description = "🕷🕸 Spiders to crawl ads of houses and apartments. 🏠🏢"
-authors = ["Augusto Wagner Andreoli <andreoliwa@gmail.com>"]
+authors = ["Augusto W. Andreoli <andreoliwa@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
